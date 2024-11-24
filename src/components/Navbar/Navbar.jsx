@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "./Navbar.css";
 
 export default function Navbar() {
@@ -7,22 +8,19 @@ export default function Navbar() {
       <nav className="navbar">
         <ul className="nav-items">
           <li>
-            <a href="">Početna</a>
+            <Link to="/pocetna">Početna</Link>
           </li>
           <li>
-            <a href="">Naše usluge</a>
+            <Link to="/usluge">Usluge</Link>
           </li>
           <li>
-            <a href="">Cenovnik</a>
+            <Link to="/osoblje">Osoblje</Link>
           </li>
           <li>
-            <a href="">Naš tim</a>
+            <Link to="/vesti">Vesti</Link>
           </li>
           <li>
-            <a href="">Vesti</a>
-          </li>
-          <li>
-            <a href="">Login</a>
+            <Link to="/login">Login</Link>
           </li>
         </ul>
         <div className="search-container">

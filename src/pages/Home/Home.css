@@ -1,0 +1,48 @@
+/* Slideshow */
+.slideshow {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  .slide {
+    position: relative;
+  }
+  
+  .slide-image {
+    width: 100%;
+    height: 100vh;
+    object-fit: cover;
+  }
+  
+  .welcome-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 2.5rem;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 1rem 2rem;
+    border-radius: 10px;
+  }
+  
+  /* Osnovni podaci o klinici */
+  .clinic-info {
+    padding: 2rem;
+    background-color: #f9f9f9;
+    text-align: center;
+  }
+  
+  .clinic-info h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .clinic-info p {
+    font-size: 1.2rem;
+    line-height: 1.6;
+  }
+  
