@@ -20,16 +20,27 @@ nav {
 
 .nav-items li {
   margin-left: 20px;
+  transition: background-color 0.3s, border-radius 0.3s; /* Dodajemo transition za border-radius */
+  border-radius: 10px; /* Postavljanje border-radius u početnom stanju */
+}
+
+.nav-items li:hover {
+  background-color: #3a5f99; /* Promena pozadine pri hoveru */
 }
 
 .nav-items a {
   color: white;
   text-decoration: none;
   font-weight: bold;
+  display: block;
+  padding: 10px;
+  transition: background-color 0.3s, border-radius 0.3s; /* Dodajemo transition za border-radius */
+  border-radius: 5px; /* Postavljanje border-radius u početnom stanju */
 }
 
 .nav-items a:hover {
-  text-decoration: underline;
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.1); /* Dodavanje svetle pozadine pri hoveru */
 }
 
 .search-container {

@@ -20,7 +20,7 @@ export default function Navbar() {
             <Link to="/vesti">Vesti</Link>
           </li>
           <li>
-            <Link to="/login">Login</Link>
+            <Link to="/login">Prijavi se</Link>
           </li>
         </ul>
         <div className="search-container">
