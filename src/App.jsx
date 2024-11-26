@@ -6,6 +6,8 @@ import Services from './pages/Services/Services';
 import Staff from './pages/Staff/Staff';
 import News from './pages/News/News';
 import Login from './pages/Login/Login';
+import Register from './pages/Register/Register';
+
 
 function App() {
   
@@ -20,6 +22,7 @@ function App() {
                 <Route path="/osoblje" element={<Staff />} />
                 <Route path="/vesti" element={<News />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
             </Routes>
         </div>
     </Router>
