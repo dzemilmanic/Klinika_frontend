@@ -2,7 +2,7 @@ nav {
   background-color: #1f3b6d;
   padding: 10px 20px;
   color: white;
-  position: fixed; 
+  position: fixed;
   width: 100%; 
   top: 0; 
   z-index: 2; 
@@ -24,9 +24,9 @@ nav {
   border-radius: 10px; /* Postavljanje border-radius u početnom stanju */
 }
 
-.nav-items li:hover {
-  background-color: #3a5f99; /* Promena pozadine pri hoveru */
-}
+/*.nav-items li:hover {
+  background-color: #3a5f99;
+}*/
 
 .nav-items a {
   color: white;
@@ -56,4 +56,7 @@ nav {
 
 .search-button {
   padding: 5px 10px;
+}
+@media (max-width:768px) {
+  
 }

@@ -14,7 +14,6 @@ function App() {
   return (
     <Router>
         <Navbar />
-        <div style={{ padding: "1rem" }}>
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/pocetna" element={<Home />} />
@@ -24,7 +23,6 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
             </Routes>
-        </div>
     </Router>
 );
 };

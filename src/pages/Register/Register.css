@@ -3,13 +3,17 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    overflow-x: hidden;
 }
 
 /* Kontejner stranice */
 .register-page {
+    margin-top: 50px;
     display: flex;
     justify-content: center;
     align-items: center;
+    min-width: 100vw;
+    margin:auto;
     min-height: 100vh; /* Visina celog ekrana */
     background-color: #f8f9fa;
 }

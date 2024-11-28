@@ -24,7 +24,7 @@ export default function Login() {
             Prijavi se
           </button>
         </form>
-        <div class="register-link">
+        <div className="register-link">
           Nemate registrovan nalog? <a href="/register">Registrujte se</a>
         </div>
       </div>

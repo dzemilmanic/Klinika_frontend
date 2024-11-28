@@ -10,6 +10,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    min-width: 100vw;
     min-height: 100vh; /* Visina celog ekrana */
     background-color: #f8f9fa;
 }

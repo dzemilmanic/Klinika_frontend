@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import "./Navbar.css";
 
 export default function Navbar() {
@@ -7,21 +7,11 @@ export default function Navbar() {
     <header>
       <nav className="navbar">
         <ul className="nav-items">
-          <li>
-            <Link to="/pocetna">Početna</Link>
-          </li>
-          <li>
-            <Link to="/usluge">Usluge</Link>
-          </li>
-          <li>
-            <Link to="/osoblje">Osoblje</Link>
-          </li>
-          <li>
-            <Link to="/vesti">Vesti</Link>
-          </li>
-          <li>
-            <Link to="/login">Prijavi se</Link>
-          </li>
+            <NavLink to="/pocetna">Početna</NavLink>
+            <NavLink to="/usluge">Usluge</NavLink>
+            <NavLink to="/osoblje">Osoblje</NavLink>
+            <NavLink to="/vesti">Vesti</NavLink>
+            <NavLink to="/login">Prijavi se</NavLink>
         </ul>
         <div className="search-container">
           <input type="text" placeholder="Pretraži..." className="search-bar" />
