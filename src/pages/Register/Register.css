@@ -20,6 +20,7 @@
 
 /* Stil za registracionu formu */
 .register-container {
+    margin-top: 100px;
     width: 100%;
     max-width: 400px; /* Maksimalna širina */
     padding: 20px;
