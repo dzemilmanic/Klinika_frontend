@@ -1,48 +1,72 @@
-/* Slideshow */
-.slideshow {
-    position: relative;
-    width: 100%;
-    height: 100vh;
-    overflow: hidden;
-  }
-  
-  .slide {
-    position: relative;
-  }
-  
-  .slide-image {
-    width: 100%;
-    height: 100vh;
-    object-fit: cover;
-  }
-  
-  .welcome-text {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-    font-size: 2.5rem;
-    text-align: center;
-    background-color: rgba(0, 0, 0, 0.5);
-    padding: 1rem 2rem;
-    border-radius: 10px;
-  }
-  
-  /* Osnovni podaci o klinici */
-  .clinic-info {
-    padding: 2rem;
-    background-color: #f9f9f9;
-    text-align: center;
-  }
-  
-  .clinic-info h2 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-  }
-  
-  .clinic-info p {
-    font-size: 1.2rem;
-    line-height: 1.6;
-  }
-  
+/* Home Slider CSS */
+
+/* Slider zauzima ceo ekran i nije prekriven navbar-om */
+.slider {
+  position: relative;
+  width: 100vw; /* Širina slidera je 100% širine ekrana */
+  height: calc(100vh - 60px); /* Visina slidera je 100% visine ekrana minus visina navbar-a */
+  overflow: hidden;
+  margin-top: 60px; /* Razmak da bi slider bio ispod navbar-a */
+}
+
+/* Slajd zauzima celu površinu slidera */
+.slide {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 1s ease-in-out, transform 1s ease-in-out; /* Tranzicija za opacity i transform */
+  position: absolute;
+}
+
+/* Aktivni slajd sa punom opacitetom */
+.slide-active {
+  opacity: 1;
+  transform: translateX(0); /* Pomeranje slajda */
+}
+
+/* Strelice za navigaciju, postavljene na ivice */
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translate(0, -50%);
+  font-size: 45px;
+  color: #fff;
+  z-index: 1;
+  cursor: pointer;
+}
+
+.arrow-left {
+  left: 32px;
+}
+
+.arrow-right {
+  right: 32px;
+}
+
+/* Pozicioniranje tačaka ispod slajdova */
+.dots-container {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  z-index: 1;
+}
+
+.dot {
+  margin: 0 3px;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+/* Dodajte marginu za telo stranice da ne bi bilo preklapanja sa footer-om */
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  padding-bottom: 80px; /* Oduzimanje visine footera od tela stranice */
+}
