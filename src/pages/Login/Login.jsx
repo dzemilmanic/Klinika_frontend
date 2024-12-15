@@ -15,6 +15,7 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     setError("");
     setSuccessMessage("");
 
@@ -23,12 +24,12 @@ export default function Login() {
     try {
       const response = await axios.post("https://localhost:7151/api/Auth/Login", loginData);
       setSuccessMessage("Uspešno ste se prijavili!");
-
       // Sačuvaj JWT token u lokalnom skladištu ili globalnom stanju
       localStorage.setItem("jwtToken", response.data.JwtToken);
-
+      
       // Preusmeri korisnika na glavnu stranu nakon uspešne prijave
       navigate("/pocetna"); // Pretpostavimo da postoji 'dashboard' stranica
+      window.location.reload()
     } catch (err) {
       setError(err.response?.data?.message || "Došlo je do greške prilikom prijave.");
     }
