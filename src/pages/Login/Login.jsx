@@ -24,7 +24,8 @@ export default function Login() {
     try {
       const response = await axios.post("https://localhost:7151/api/Auth/Login", loginData);
       setSuccessMessage("Uspešno ste se prijavili!");
-      // Sačuvaj JWT token u lokalnom skladištu ili globalnom stanju
+      console.log(response.data);
+      // Sačuvaj JWT token u lokalnom skladištu
       localStorage.setItem("jwtToken", response.data.JwtToken);
       
       // Preusmeri korisnika na glavnu stranu nakon uspešne prijave
