@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import "./News.css";
 
 const News = () => {
@@ -9,35 +8,37 @@ const News = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [newContent, setNewContent] = useState("");
-  const [userRole, setUserRole] = useState("User"); // Pretpostavljamo da korisnik ima ulogu 'User' po defaultu
+  const [userRole, setUserRole] = useState("User"); // Default uloga
 
   useEffect(() => {
     // Funkcija za dobijanje svih vesti
     const fetchNews = async () => {
       try {
-        const response = await axios.get("https://localhost:7151/api/News");
-        setNews(response.data);
+        const response = await fetch("https://localhost:7151/api/News");
+        if (!response.ok) {
+          throw new Error("Došlo je do greške pri učitavanju vesti.");
+        }
+        const data = await response.json();
+        setNews(data);
         setLoading(false);
       } catch (error) {
-        setError("Došlo je do greške pri učitavanju vesti.");
+        setError(error.message);
         setLoading(false);
       }
     };
 
     fetchNews();
 
-    // Pretpostavljamo da je ulogovan korisnik sa određenom rolom
-    // Ovo bi trebalo da bude implementirano u zavisnosti od autentifikacije
-    //setUserRole("Admin"); // Možeš ovo zameniti sa stvarnom logikom za autentifikaciju
+    // Provera tokena i postavljanje uloge
     const token = localStorage.getItem("jwtToken");
     if (token) {
       try {
-        // Token je u formatu: header.payload.signature
-        const payload = token.split(".")[1]; // Uzmi payload deo tokena
-        const decodedPayload = atob(payload); // Dekodiraj payload
-        const userRole = JSON.parse(decodedPayload).role; // Pretpostavljamo da je 'role' deo payloada
-        setUserRole(userRole); // Postavljamo ulogu korisnika
-      } catch (error) {
+        // Ekstraktujemo payload iz tokena
+        const payload = token.split(".")[1]; // Srednji deo tokena
+        const decodedPayload = JSON.parse(atob(payload)); // Dekodiramo payload
+        const roles = decodedPayload["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || "User"; // Ako nema uloge, postavljamo "User"
+        setUserRole(roles); // Postavljamo ulogu korisnika
+       } catch (error) {
         setError("Greška pri dekodiranju tokena.");
       }
     }
@@ -51,21 +52,25 @@ const News = () => {
         content: newContent,
         publishedDate: new Date().toISOString(),
       };
-      const config = {
+
+      const response = await fetch("https://localhost:7151/api/News", {
+        method: "POST",
         headers: {
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-      };
+        body: JSON.stringify(newNews),
+      });
 
-      const response = await axios.post(
-        "https://localhost:7151/api/News",
-        newNews,
-        config
-      );
-      setNews([response.data, ...news]); // Dodajemo novu vest na početak liste
+      if (!response.ok) {
+        throw new Error("Došlo je do greške pri dodavanju vesti.");
+      }
+
+      const addedNews = await response.json();
+      setNews([addedNews, ...news]); // Dodajemo novu vest na početak liste
       setIsModalOpen(false); // Zatvaramo modal
     } catch (error) {
-      setError("Došlo je do greške pri dodavanju vesti.");
+      setError(error.message);
     }
   };
 
@@ -109,7 +114,7 @@ const News = () => {
               value={newContent}
               onChange={(e) => setNewContent(e.target.value)}
             />
-            <button onClick={handleAddNews}>Dodaj vestu</button>
+            <button onClick={handleAddNews}>Dodaj vest</button>
             <button onClick={() => setIsModalOpen(false)}>Zatvori</button>
           </div>
         </div>

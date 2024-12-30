@@ -26,7 +26,7 @@ export default function Login() {
       setSuccessMessage("Uspešno ste se prijavili!");
       console.log(response.data);
       // Sačuvaj JWT token u lokalnom skladištu
-      localStorage.setItem("jwtToken", response.data.JwtToken);
+      localStorage.setItem("jwtToken", response.data.jwtToken);
       
       // Preusmeri korisnika na glavnu stranu nakon uspešne prijave
       navigate("/pocetna"); // Pretpostavimo da postoji 'dashboard' stranica
