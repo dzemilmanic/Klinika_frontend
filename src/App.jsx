@@ -7,7 +7,8 @@ import Staff from './pages/Staff/Staff';
 import News from './pages/News/News';
 import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';
-import Footer from './components/Footer/Footer'
+import Footer from './components/Footer/Footer';
+import Profile from './pages/Profile/Profile';
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
                 <Route path="/usluge" element={<Services />} />
                 <Route path="/osoblje" element={<Staff />} />
                 <Route path="/vesti" element={<News />} />
+                <Route path="/profil" element={<Profile />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
             </Routes>

@@ -60,7 +60,6 @@ export default function Navbar() {
               Vesti
             </NavLink>
           </li>
-          {/* Prikazivanje dugmeta za login ili logout */}
           {!isLoggedIn ? (
             <li>
               <NavLink to="/login" onClick={() => setIsMenuOpen(false)}>
@@ -68,11 +67,18 @@ export default function Navbar() {
               </NavLink>
             </li>
           ) : (
-            <li>
-              <button onClick={handleLogout} className="logout-button">
-                Odjavi se
-              </button>
-            </li>
+            <>
+              <li>
+                <NavLink to="/profil" onClick={() => setIsMenuOpen(false)}>
+                  Profil
+                </NavLink>
+              </li>
+              <li>
+                <button onClick={handleLogout} className="logout-button">
+                  Odjavi se
+                </button>
+              </li>
+            </>
           )}
         </ul>
         <div className="search-container">

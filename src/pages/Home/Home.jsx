@@ -43,6 +43,7 @@ const Home = () => {
   return (
     <div>
       <div className="slider">
+        <div className="welcome-text">Dobrodošli u Oculus</div> {/* Tekst iznad slajdova */}
         <div>
           <div className="arrow arrow-left" onClick={goToPrevious}>
             ❰
@@ -70,9 +71,6 @@ const Home = () => {
             </div>
           ))}
         </div>
-      </div>
-      <div>
-        <h1>dobro dosli dragi gosti osti sti ti i</h1>
       </div>
     </div>
   );
