@@ -1,0 +1,89 @@
+/* Kontejner za korisnike */
+.staff-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 100vw;
+    min-height: 100vh; /* Visina celog ekrana */
+    background-color: #f8f9fa;
+}
+
+.staff-container {
+    margin: 20px auto;
+    max-width: 900px;
+    font-family: Arial, sans-serif;
+}
+
+
+
+/* Grid za kartice */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Tri kartice u redu na velikim ekranima */
+    gap: 20px;
+    padding: 0;
+}
+
+/* Kartica korisnika */
+.staff-card {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    text-align: center;
+}
+
+/* Stil za ime korisnika */
+.staff-name {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+/* Stil za email korisnika */
+.staff-email {
+    font-size: 20px;
+    color: #555;
+}
+
+/* Hover efekat na karticama */
+.staff-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.staff-container h2 {
+    color: #1a1a1a;
+    margin-bottom: 2rem;
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-align: center;
+    position: relative;
+    padding-bottom: 0.5rem;
+  }
+  .staff-container h2::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: #180069;
+    border-radius: 2px;
+  }
+/* Stil za greške */
+.error {
+    color: red;
+    text-align: center;
+    font-size: 18px;
+}
+
+/* Medijski upit za male ekrane (do 768px) */
+@media (max-width: 768px) {
+    .cards-grid {
+        grid-template-columns: 1fr; /* Jedna kartica u redu na malim ekranima */
+    }
+}
