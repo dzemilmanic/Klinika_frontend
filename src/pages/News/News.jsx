@@ -1,162 +1,127 @@
 import React, { useState, useEffect } from "react";
-import { Pencil, Trash2 } from "lucide-react";
+import NewsCard from "../../components/NewsCard";
+import AddNewsModal from "../../components/AddNewsModal";
 import "./News.css";
-
-const NewsCard = ({
-  id,
-  title,
-  content,
-  publishedDate,
-  isAdmin,
-  onEdit,
-  onDelete,
-}) => (
-  <div className="news-card">
-    <div className="news-card-header">
-      <h3>{title}</h3>
-      {isAdmin && (
-        <div className="news-card-actions">
-          <button
-            className="icon-button"
-            title="Izmeni vest"
-            onClick={() => onEdit(id)}
-          >
-            <Pencil size={18} className="text-blue-500 hover:text-blue-700" />
-          </button>
-          <button
-            className="icon-button"
-            title="Obriši vest"
-            onClick={() => onDelete(id)}
-          >
-            <Trash2 size={18} className="text-red-500 hover:text-red-700" />
-          </button>
-        </div>
-      )}
-    </div>
-    <p>{content}</p>
-    <small>{new Date(publishedDate).toLocaleDateString()}</small>
-  </div>
-);
-
-const AddNewsModal = ({
-  isOpen,
-  onClose,
-  onAdd,
-  title,
-  setTitle,
-  content,
-  setContent,
-  errorMessage,
-}) => {
-  if (!isOpen) return null;
-
-  return (
-    <div className="modal">
-      <div className="modal-content">
-        <h3>Dodaj novu vest</h3>
-        <input
-          type="text"
-          placeholder="Naslov"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-        {errorMessage && title.length < 2 && (
-          <p className="error-message">Naslov mora imati najmanje 2 slova.</p>
-        )}
-        <textarea
-          placeholder="Sadržaj"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-        />
-        {errorMessage && content.length < 10 && (
-          <p className="error-message">Sadržaj mora imati najmanje 10 slova.</p>
-        )}
-        <button onClick={onAdd}>Dodaj vest</button>
-        <button onClick={onClose}>Zatvori</button>
-      </div>
-    </div>
-  );
-};
 
 const News = () => {
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newTitle, setNewTitle] = useState("");
-  const [newContent, setNewContent] = useState("");
-  const [userRole, setUserRole] = useState("User");
   const [errorMessage, setErrorMessage] = useState("");
+  const [editNews, setEditNews] = useState(null);
+  const [userRole, setUserRole] = useState("User");
 
   useEffect(() => {
-    const fetchNews = async () => {
-      try {
-        const response = await fetch("https://localhost:7151/api/News");
-        if (!response.ok) {
-          throw new Error("Došlo je do greške pri učitavanju vesti.");
-        }
-        const data = await response.json();
-        setNews(data);
-        setLoading(false);
-      } catch (error) {
-        setError(error.message);
-        setLoading(false);
-      }
-    };
-
     fetchNews();
+    checkUserRole();
+  }, []);
 
+  const fetchNews = async () => {
+    try {
+      const response = await fetch("https://localhost:7151/api/News");
+      if (!response.ok) {
+        throw new Error("Error loading news.");
+      }
+      const data = await response.json();
+      setNews(data);
+      setLoading(false);
+    } catch (error) {
+      setError(error.message);
+      setLoading(false);
+    }
+  };
+
+  const checkUserRole = () => {
     const token = localStorage.getItem("jwtToken");
     if (token) {
       try {
         const payload = token.split(".")[1];
         const decodedPayload = JSON.parse(atob(payload));
-        const roles =
-          decodedPayload[
-            "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
-          ] || "User";
+        const roles = decodedPayload["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || "User";
         setUserRole(roles);
       } catch (error) {
-        setError("Greška pri dekodiranju tokena.");
+        setError("Error decoding token.");
       }
     }
-  }, []);
+  };
 
-  const handleAddNews = async () => {
-    if (newTitle.length < 2 || newContent.length < 10) {
-      setErrorMessage(
-        "Naslov mora imati najmanje 2 slova, a sadržaj najmanje 10 slova."
-      );
+  const handleAddNews = async (title, content) => {
+    if (title.length < 2 || content.length < 10) {
+      setErrorMessage("Title must have at least 2 characters and content at least 10 characters.");
       return;
     }
 
     const token = localStorage.getItem("jwtToken");
     try {
-      const newNews = {
-        title: newTitle,
-        content: newContent,
-        publishedDate: new Date().toISOString(),
-      };
-
       const response = await fetch("https://localhost:7151/api/News", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(newNews),
+        body: JSON.stringify({
+          title,
+          content,
+          publishedDate: new Date().toISOString(),
+        }),
       });
 
       if (!response.ok) {
-        throw new Error("Došlo je do greške pri dodavanju vesti.");
+        throw new Error("Error adding news.");
       }
 
       const addedNews = await response.json();
       setNews([addedNews, ...news]);
       setIsModalOpen(false);
-      setNewTitle("");
-      setNewContent("");
-      setErrorMessage(""); // Resetovanje greške nakon uspešnog dodavanja
+      setErrorMessage("");
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
+  };
+
+  const handleEditNews = (id) => {
+    const newsToEdit = news.find((item) => item.id === id);
+    setEditNews(newsToEdit);
+    setIsModalOpen(true);
+  };
+
+  const handleEditNewsSubmit = async (title, content) => {
+    if (title.length < 2 || content.length < 10) {
+      setErrorMessage("Title must have at least 2 characters and content at least 10 characters.");
+      return;
+    }
+
+    const token = localStorage.getItem("jwtToken");
+    try {
+      const response = await fetch(`https://localhost:7151/api/News/${editNews.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          id: editNews.id,
+          title,
+          content,
+          publishedDate: new Date().toISOString(),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Error updating news.");
+      }
+
+      const updatedNewsData = await response.json();
+      setNews(news.map((item) => (item.id === updatedNewsData.id ? updatedNewsData : item)));
+      setTitle("");
+    setContent("");
+    setEditNews(null);
+    setIsModalOpen(false);
+    setErrorMessage("");
+
+    console.log("News updated successfully!");
+      //window.location.reload();
     } catch (error) {
       setErrorMessage(error.message);
     }
@@ -173,21 +138,22 @@ const News = () => {
       });
 
       if (!response.ok) {
-        throw new Error("Došlo je do greške pri brisanju vesti.");
+        throw new Error("Error deleting news.");
       }
 
-      setNews(news.filter((newsItem) => newsItem.id !== id));
+      setNews(news.filter((item) => item.id !== id));
     } catch (error) {
       setError(error.message);
     }
   };
 
-  const handleEditNews = (id) => {
-    // Implementacija otvaranja modalnog prozora za izmenu vesti
-    console.log("Izmeni vest sa ID:", id);
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setEditNews(null);
+    setErrorMessage("");
   };
 
-  if (loading) return <h2>Učitavanje...</h2>;
+  if (loading) return <h2>Loading...</h2>;
   if (error) return <h2>{error}</h2>;
 
   const isAdmin = userRole === "Admin";
@@ -210,10 +176,7 @@ const News = () => {
             news.map((newsItem) => (
               <NewsCard
                 key={newsItem.id}
-                id={newsItem.id}
-                title={newsItem.title}
-                content={newsItem.content}
-                publishedDate={newsItem.publishedDate}
+                {...newsItem}
                 isAdmin={isAdmin}
                 onEdit={handleEditNews}
                 onDelete={handleDeleteNews}
@@ -224,13 +187,11 @@ const News = () => {
 
         <AddNewsModal
           isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
+          onClose={handleCloseModal}
           onAdd={handleAddNews}
-          title={newTitle}
-          setTitle={setNewTitle}
-          content={newContent}
-          setContent={setNewContent}
+          onEdit={handleEditNewsSubmit}
           errorMessage={errorMessage}
+          editNews={editNews}
         />
       </div>
     </div>

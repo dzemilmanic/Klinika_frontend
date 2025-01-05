@@ -58,8 +58,8 @@
   .news-cards {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 2rem;
-    padding: 1rem;
+    gap: 3rem;
+    padding: 2rem;
   }
   
   @media (min-width: 768px) {
