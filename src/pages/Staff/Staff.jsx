@@ -8,7 +8,7 @@ const Staff = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await fetch("https://localhost:7151/api/Auth/GetUsers", {
+                const response = await fetch("https://localhost:7151/api/Roles/doctors", {
                     method: "GET",
                 });
 
