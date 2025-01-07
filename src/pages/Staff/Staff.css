@@ -86,3 +86,24 @@
         grid-template-columns: 1fr; /* Jedna kartica u redu na malim ekranima */
     }
 }
+.be-member-btn {
+    background: linear-gradient(45deg, #5080da, #08216f);
+    color: white;
+    padding: 0.75rem 2rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    display: block;
+    margin: 0 auto 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .be-member-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    background: linear-gradient(45deg, #3415b1, #0e2674);
+  }
+  
