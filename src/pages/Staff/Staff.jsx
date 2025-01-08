@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
-import RoleRequestForm from "../../components/RoleRequestForm"; // Uvoz nove komponente
-import "./Staff.css"; // Uvoz CSS fajla
+import RoleRequestForm from "../../components/RoleRequestForm";
+import RoleRequests from "../../components/RoleRequests"; // Uvoz nove komponente
+import "./Staff.css";
 
 const Staff = () => {
   const [users, setUsers] = useState([]);
   const [error, setError] = useState("");
-  const [role, setRole] = useState(""); // Stanje za ulogu korisnika
-  const [showForm, setShowForm] = useState(false); // Stanje za prikaz forme
-  const [requestStatus, setRequestStatus] = useState(""); // Stanje za status zahteva
+  const [role, setRole] = useState("");
+  const [showForm, setShowForm] = useState(false);
+  const [requestStatus, setRequestStatus] = useState("");
+  const [requests, setRequests] = useState([]);
+  const [showRequests, setShowRequests] = useState(false);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -27,7 +30,6 @@ const Staff = () => {
         const data = await response.json();
         setUsers(data);
 
-        // Provera i dekodiranje JWT tokena za ulogu korisnika
         const token = localStorage.getItem("jwtToken");
         if (token) {
           try {
@@ -37,7 +39,7 @@ const Staff = () => {
               decodedPayload[
                 "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
               ] || "User";
-            setRole(roles); // Postavljanje uloge
+            setRole(roles);
           } catch (error) {
             setError("Error decoding token.");
           }
@@ -67,7 +69,7 @@ const Staff = () => {
         }
 
         const data = await response.json();
-        setRequestStatus(data.status); // Status može biti "Pending", "Approved", "Rejected" ili null
+        setRequestStatus(data.status);
       } catch (err) {
         setError(err.message);
       }
@@ -77,44 +79,49 @@ const Staff = () => {
     fetchRequestStatus();
   }, []);
 
-  const handleFormSubmit = async ({ biography, image }) => {
-    if (requestStatus === "Pending") {
-      alert("Već ste poslali zahtev. Molimo sačekajte odobrenje.");
-      return;
+  const token = localStorage.getItem("jwtToken");
+  if (!token) return;
+
+  const fetchRoleRequests = async () => {
+    try {
+      const response = await fetch("https://localhost:7151/api/RoleRequest/all", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch role requests.");
+      }
+
+      const data = await response.json();
+      setRequests(data);
+    } catch (err) {
+      setError(err.message);
     }
+  };
 
-    const formData = new FormData();
-    formData.append("Biography", biography);
-    formData.append("Image", image);
-
-    const token = localStorage.getItem("jwtToken");
-    if (!token) {
-      alert("Niste prijavljeni. Molimo vas prijavite se ponovo.");
-      return;
-    }
-
+  const handleRequestAction = async (requestId, action) => {
     try {
       const response = await fetch(
-        "https://localhost:7151/api/RoleRequest/submit",
+        `https://localhost:7151/api/RoleRequest/${action}/${requestId}`,
         {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
           },
-          body: formData,
         }
       );
 
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Server returned ${response.status}: ${errorText}`);
+        throw new Error("Failed to update request status.");
       }
 
-      alert("Zahtev je uspešno poslat!");
-      setShowForm(false);
-      setRequestStatus("Pending"); // Ažuriraj status zahteva
+      alert(`Zahtev je ${action === "approve" ? "odobren" : "odbijen"}.`);
+      fetchRoleRequests();
     } catch (err) {
-      alert("Greška prilikom slanja zahteva: " + err.message);
+      alert("Greška prilikom ažuriranja statusa zahteva: " + err.message);
     }
   };
 
@@ -141,6 +148,17 @@ const Staff = () => {
               Postani jedan od nas
             </button>
           )}
+          {role === "Admin" && (
+            <button
+              onClick={() => {
+                setShowRequests(!showRequests);
+                if (!showRequests) fetchRoleRequests();
+              }}
+              className="view-requests-btn"
+            >
+              Pregledaj zahteve
+            </button>
+          )}
         </div>
 
         <div className="cards-grid">
@@ -162,6 +180,10 @@ const Staff = () => {
               isOpen={showForm}
             />
           </div>
+        )}
+
+        {showRequests && (
+          <RoleRequests requests={requests} onAction={handleRequestAction} />
         )}
       </div>
     </div>

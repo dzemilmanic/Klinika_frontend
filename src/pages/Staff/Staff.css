@@ -86,7 +86,7 @@
         grid-template-columns: 1fr; /* Jedna kartica u redu na malim ekranima */
     }
 }
-.be-member-btn {
+.be-member-btn, .view-requests-btn {
     background: linear-gradient(45deg, #5080da, #08216f);
     color: white;
     padding: 0.75rem 2rem;
@@ -106,4 +106,9 @@
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
     background: linear-gradient(45deg, #3415b1, #0e2674);
   }
+  .view-requests-btn:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    background: linear-gradient(45deg, #3415b1, #0e2674);
   
+  }
