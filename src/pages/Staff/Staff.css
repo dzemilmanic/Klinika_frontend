@@ -112,3 +112,90 @@
     background: linear-gradient(45deg, #3415b1, #0e2674);
   
   }
+
+  /* Stil za slike u kartici */
+.staff-image {
+    width: 100%; /* Širina slike da zauzme celu širinu kartice */
+    height: 200px; /* Fiksna visina slike */
+    object-fit: cover; /* Prilagođavanje slike unutar dimenzija */
+    border-radius: 8px; /* Zaobljeni uglovi slike */
+    margin-bottom: 10px; /* Razmak ispod slike */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Blaga senka za sliku */
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Glatka tranzicija */
+}
+
+/* Hover efekat za slike */
+.staff-card:hover .staff-image {
+    transform: scale(1.05); /* Blago povećanje slike na hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Naglašena senka na hover */
+}
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Tamna pozadina */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    background: white;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 700px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: modalFade 0.3s ease-out;
+  }
+  
+  .no-requests-message {
+    text-align: center;
+    padding: 2rem;
+    color: #6b7280;
+    font-size: 1.125rem;
+  }
+  
+  @keyframes modalFade {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Custom scrollbar for modal content */
+  .modal-content::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .modal-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+  
+  .modal-content::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+  }
+  
+  .modal-content::-webkit-scrollbar-thumb:hover {
+    background: #a1a1a1;
+  }
+  
+  @media (max-width: 640px) {
+    .modal {
+      padding: 0.5rem;
+    }
+    
+    .modal-content {
+      max-height: 95vh;
+    }
+  }

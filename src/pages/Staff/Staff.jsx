@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import RoleRequestForm from "../../components/RoleRequestForm";
-import RoleRequests from "../../components/RoleRequests"; // Uvoz nove komponente
+import RoleRequests from "../../components/RoleRequests";
 import "./Staff.css";
-
 const Staff = () => {
   const [users, setUsers] = useState([]);
   const [error, setError] = useState("");
@@ -15,13 +14,10 @@ const Staff = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch(
-          "https://localhost:7151/api/Roles/doctors",
-          {
-            method: "GET",
-            credentials: "include",
-          }
-        );
+        const response = await fetch("https://localhost:7151/api/Roles/doctors", {
+          method: "GET",
+          credentials: "include",
+        });
 
         if (!response.ok) {
           throw new Error("Failed to fetch users.");
@@ -35,10 +31,7 @@ const Staff = () => {
           try {
             const payload = token.split(".")[1];
             const decodedPayload = JSON.parse(atob(payload));
-            const roles =
-              decodedPayload[
-                "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
-              ] || "User";
+            const roles = decodedPayload["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || "User";
             setRole(roles);
           } catch (error) {
             setError("Error decoding token.");
@@ -54,15 +47,12 @@ const Staff = () => {
       if (!token) return;
 
       try {
-        const response = await fetch(
-          "https://localhost:7151/api/RoleRequest/status",
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await fetch("https://localhost:7151/api/RoleRequest/status", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         if (!response.ok) {
           throw new Error("Failed to fetch request status.");
@@ -79,10 +69,10 @@ const Staff = () => {
     fetchRequestStatus();
   }, []);
 
-  const token = localStorage.getItem("jwtToken");
-  if (!token) return;
-
   const fetchRoleRequests = async () => {
+    const token = localStorage.getItem("jwtToken");
+    if (!token) return;
+
     try {
       const response = await fetch("https://localhost:7151/api/RoleRequest/all", {
         method: "GET",
@@ -103,6 +93,9 @@ const Staff = () => {
   };
 
   const handleRequestAction = async (requestId, action) => {
+    const token = localStorage.getItem("jwtToken");
+    if (!token) return;
+
     try {
       const response = await fetch(
         `https://localhost:7151/api/RoleRequest/${action}/${requestId}`,
@@ -118,10 +111,34 @@ const Staff = () => {
         throw new Error("Failed to update request status.");
       }
 
-      alert(`Zahtev je ${action === "approve" ? "odobren" : "odbijen"}.`);
+      alert(`Request has been ${action === "approve" ? "approved" : "rejected"}.`);
       fetchRoleRequests();
     } catch (err) {
-      alert("Greška prilikom ažuriranja statusa zahteva: " + err.message);
+      alert("Error updating request status: " + err.message);
+    }
+  };
+
+  const handleFormSubmit = async (formData) => {
+    const token = localStorage.getItem("jwtToken");
+    if (!token) return;
+
+    try {
+      const response = await fetch("https://localhost:7151/api/RoleRequest/submit", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit role request.");
+      }
+
+      alert("Request submitted successfully.");
+      setShowForm(false);
+    } catch (err) {
+      alert("Error submitting request: " + err.message);
     }
   };
 
@@ -138,7 +155,7 @@ const Staff = () => {
             <button
               onClick={() => {
                 if (requestStatus === "Pending") {
-                  alert("Već ste poslali zahtev. Molimo sačekajte odobrenje.");
+                  alert("You already have a pending request. Please wait for approval.");
                 } else {
                   setShowForm(!showForm);
                 }
@@ -156,7 +173,7 @@ const Staff = () => {
               }}
               className="view-requests-btn"
             >
-              Pregledaj zahteve
+              Vidi zahteve
             </button>
           )}
         </div>
@@ -164,26 +181,42 @@ const Staff = () => {
         <div className="cards-grid">
           {users.map((user) => (
             <div key={user.id} className="staff-card">
+              <img
+                src={user.profileImagePath || "https://apotekasombor.rs/wp-content/uploads/2020/12/izabrani-lekar-730x365.jpg"}
+                alt={`${user.firstName} ${user.lastName}`}
+                className="staff-image"
+              />
               <h3 className="staff-name">
                 {user.firstName} {user.lastName}
               </h3>
               <p className="staff-email">{user.email}</p>
+              <p className="staff-biography">{user.biography}</p>
             </div>
           ))}
         </div>
 
         {showForm && (
           <div className="modal" onClick={() => setShowForm(false)}>
-            <RoleRequestForm
-              onSubmit={handleFormSubmit}
-              onClose={() => setShowForm(false)}
-              isOpen={showForm}
-            />
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <RoleRequestForm
+                onSubmit={handleFormSubmit}
+                onClose={() => setShowForm(false)}
+                isOpen={showForm}
+              />
+            </div>
           </div>
         )}
 
         {showRequests && (
-          <RoleRequests requests={requests} onAction={handleRequestAction} />
+          <div className="modal" onClick={() => setShowRequests(false)}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              {requests.length === 0 ? (
+                <p className="no-requests-message">Nema pristiglih zahteva</p>
+              ) : (
+                <RoleRequests requests={requests} onAction={handleRequestAction} />
+              )}
+            </div>
+          </div>
         )}
       </div>
     </div>
