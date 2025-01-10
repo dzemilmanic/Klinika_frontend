@@ -5,7 +5,8 @@ import "./Navbar.css";
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchActive, setIsSearchActive] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Dodajemo state za prijavu
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userRole, setUserRole] = useState("User");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -13,6 +14,7 @@ export default function Navbar() {
     const token = localStorage.getItem("jwtToken");
     if (token) {
       setIsLoggedIn(true);
+      checkUserRole(token);
     } else {
       setIsLoggedIn(false);
     }
@@ -31,6 +33,20 @@ export default function Navbar() {
     localStorage.removeItem("jwtToken");
     setIsLoggedIn(false); // Osveži stanje
     navigate("/pocetna"); // Preusmeri korisnika na pocetna stranicu
+    window.location.reload()
+  };
+
+  const checkUserRole = (token) => {
+    if (token) {
+      try {
+        const payload = token.split(".")[1];
+        const decodedPayload = JSON.parse(atob(payload));
+        const roles = decodedPayload["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || "User";
+        setUserRole(roles);
+      } catch (error) {
+        setError("Error decoding token.");
+      }
+    }
   };
 
   return (
@@ -60,6 +76,13 @@ export default function Navbar() {
               Vesti
             </NavLink>
           </li>
+          {userRole === "Admin" && (
+            <li>
+              <NavLink to="/korisnici" onClick={() => setIsMenuOpen(false)}>
+                Korisnici
+              </NavLink>
+            </li>
+          )}
           {!isLoggedIn ? (
             <li>
               <NavLink to="/login" onClick={() => setIsMenuOpen(false)}>

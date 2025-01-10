@@ -1,117 +1,338 @@
-/* Home Slider CSS */
-
-/* Slider zauzima ceo ekran i nije prekriven navbar-om */
-.slider {
-  position: relative;
-  width: 100vw; /* Širina slidera je 100% širine ekrana */
-  height: calc(100vh - 60px); /* Visina slidera je 100% visine ekrana minus visina navbar-a */
-  overflow: hidden;
-  margin-top: 60px; /* Razmak da bi slider bio ispod navbar-a */
+:root {
+  --primary-blue: #0066FF;
+  --primary-dark: #0047B3;
+  --primary-light: #4D94FF;
+  --accent-blue: #00C6FF;
+  --neutral-light: #F5F9FF;
+  --neutral-dark: #1A1A1A;
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Slajd zauzima celu površinu slidera */
+/* Slider Base */
+.slider {
+  position: relative;
+  width: 100vw;
+  height: calc(100vh - 60px);
+  overflow: hidden;
+  margin-top: 60px;
+  background: var(--neutral-dark);
+}
+
 .slide {
-  filter: blur(5px); /* Dodaj zamućenje za sve slajdove */
   width: 100%;
   height: 100%;
-  border-radius: 10px;
+  position: absolute;
   background-size: cover;
   background-position: center;
   opacity: 0;
-  transition: opacity 1s ease-in-out, transform 1s ease-in-out; /* Tranzicija za opacity i transform */
-  position: absolute;
+  transition: var(--transition-smooth);
+  filter: brightness(0.7) saturate(1.2);
+  transform: scale(1.05);
 }
 
-/* Aktivni slajd sa punom opacitetom */
 .slide-active {
   opacity: 1;
-  transform: translateX(0); /* Pomeranje slajda */
+  transform: scale(1);
 }
 
+/* Modern Text Styles */
 .welcome-text {
   position: absolute;
-  top: 50%; /* Postavlja centrirano vertikalno */
-  left: 50%; /* Postavlja centrirano horizontalno */
-  transform: translate(-50%, -50%); /* Poravnava centrirano */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
-  flex-direction: column; /* Postavlja elemente jedno ispod drugog */
-  align-items: center; /* Poravnava elemente horizontalno na sredini */
-  font-size: 2.3rem;
+  flex-direction: column;
+  align-items: center;
+  font-size: 3rem;
   color: white;
-  font-weight: bold;
-  z-index: 10; /* Da tekst bude iznad slajdova */
+  font-weight: 800;
+  z-index: 10;
   text-align: center;
-  gap: 1rem; /* Razmak između teksta i dugmeta */
+  gap: 1.5rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
-.reserve-appointment{
+
+.reserve-appointment {
   position: absolute;
-  top: 60%; /* Postavlja centrirano vertikalno */
-  left: 50%; /* Postavlja centrirano horizontalno */
-  transform: translate(-50%, -50%); /* Poravnava centrirano */
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
-  flex-direction: column; /* Postavlja elemente jedno ispod drugog */
-  align-items: center; /* Poravnava elemente horizontalno na sredini */
+  flex-direction: column;
+  align-items: center;
   font-size: 2rem;
   color: white;
-  font-weight: bold;
-  z-index: 10; /* Da tekst bude iznad slajdova */
+  font-weight: 700;
+  z-index: 10;
   text-align: center;
-  gap: 1rem; /* Razmak između teksta i dugmeta */
+  gap: 1.5rem;
 }
+
+/* Modern Button Styles */
 .reserve-button {
-  background-color: #024790; /* Plava boja */
+  background: var(--primary-blue);
   color: white;
-  font-size: 1.3rem;
-  padding: 10px 20px;
+  font-size: 1.25rem;
+  padding: 1rem 2.5rem;
   border: none;
-  border-radius: 5px;
+  border-radius: 9999px;
   cursor: pointer;
-  transition: background-color 0.3s ease-in-out;
+  transition: var(--transition-smooth);
+  font-weight: 600;
+  box-shadow: 0 4px 6px rgba(0, 102, 255, 0.2);
 }
 
 .reserve-button:hover {
-  background-color: #0056b3; /* Tamnija plava pri hoveru */
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 102, 255, 0.3);
 }
 
-/* Strelice za navigaciju, postavljene na ivice */
+/* Navigation Elements */
 .arrow {
   position: absolute;
   top: 50%;
-  transform: translate(0, -50%);
-  font-size: 45px;
-  color: #fff;
+  transform: translateY(-50%);
+  font-size: 2.5rem;
+  color: white;
   z-index: 1;
   cursor: pointer;
+  padding: 1rem;
+  background: rgba(0, 102, 255, 0.2);
+  backdrop-filter: blur(4px);
+  border-radius: 50%;
+  transition: var(--transition-smooth);
+}
+
+.arrow:hover {
+  background: rgba(0, 102, 255, 0.4);
 }
 
 .arrow-left {
-  left: 32px;
+  left: 2rem;
 }
 
 .arrow-right {
-  right: 32px;
+  right: 2rem;
 }
 
-/* Pozicioniranje tačaka ispod slajdova */
 .dots-container {
   position: absolute;
-  bottom: 20px;
+  bottom: 2rem;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  justify-content: center;
+  gap: 0.5rem;
   z-index: 1;
 }
 
 .dot {
-  margin: 0 3px;
+  width: 0.75rem;
+  height: 0.75rem;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
   cursor: pointer;
-  font-size: 20px;
+  transition: var(--transition-smooth);
 }
 
-/* Dodajte marginu za telo stranice da ne bi bilo preklapanja sa footer-om */
-body {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+.dot.active {
+  background: var(--primary-blue);
+  transform: scale(1.2);
+}
+
+/* Section Styles */
+.section-content {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 5rem 2rem;
+}
+
+section h2 {
+  text-align: center;
+  font-size: 2.75rem;
+  color: var(--neutral-dark);
+  margin-bottom: 3rem;
+  font-weight: 800;
+}
+
+/* Mission Section */
+.mission-section {
+  background: white;
+}
+
+.mission-points {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2.5rem;
+  margin-top: 3rem;
+}
+
+.mission-point {
+  text-align: center;
+  padding: 2.5rem;
+  background: var(--neutral-light);
+  border-radius: 1.5rem;
+  transition: var(--transition-smooth);
+  border: 1px solid rgba(0, 102, 255, 0.1);
+}
+
+.mission-point:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 25px -5px rgba(0, 102, 255, 0.1);
+}
+
+/* Services Section */
+.services-section {
+  background: var(--neutral-light);
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.service-card {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 2rem;
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 102, 255, 0.1);
+  transition: var(--transition-smooth);
+}
+
+.service-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 20px rgba(0, 102, 255, 0.15);
+}
+
+/* Working Hours Section */
+.working-hours-section {
+  background: white;
+}
+
+.working-hours-container {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.hours-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.hours-item {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: var(--neutral-light);
+  border-radius: 1rem;
+  transition: var(--transition-smooth);
+}
+
+.hours-item:hover {
+  transform: translateX(8px);
+  background: rgba(0, 102, 255, 0.05);
+}
+
+/* Contact Section */
+.contact-section {
+  background: var(--neutral-light);
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2.5rem;
+}
+
+.contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  padding: 2.5rem;
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 102, 255, 0.1);
+  transition: var(--transition-smooth);
+}
+
+.contact-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 20px rgba(0, 102, 255, 0.15);
+}
+
+.appointment-button {
+  margin-top: 1.5rem;
+  padding: 1rem 2rem;
+  background: var(--primary-blue);
+  color: white;
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  font-weight: 600;
+  box-shadow: 0 4px 6px rgba(0, 102, 255, 0.2);
+}
+
+.appointment-button:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 102, 255, 0.3);
+}
+
+/* Icon styles */
+.icon {
+  width: 28px;
+  height: 28px;
+  color: var(--primary-blue);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .welcome-text {
+    font-size: 2.25rem;
+    width: 90%;
+  }
+
+  .reserve-button {
+    font-size: 1.125rem;
+    padding: 0.875rem 2rem;
+  }
+
+  .arrow {
+    font-size: 2rem;
+    padding: 0.875rem;
+  }
+
+  .section-content {
+    padding: 4rem 1.5rem;
+  }
+
+  section h2 {
+    font-size: 2.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .welcome-text {
+    font-size: 1.75rem;
+  }
+
+  .arrow-left {
+    left: 1rem;
+  }
+
+  .arrow-right {
+    right: 1rem;
+  }
+
+  .section-content {
+    padding: 3rem 1rem;
+  }
 }

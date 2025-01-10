@@ -1,203 +1,221 @@
-/* Kontejner za korisnike */
+/* Staff Page Layout */
 .staff-page {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-width: 100vw;
-    min-height: 100vh; /* Visina celog ekrana */
-    background-color: #f8f9fa;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 100vw;
+  min-height: 100vh;
+  background: var(--neutral-light);
+  padding: 2rem;
 }
 
 .staff-container {
-    margin: 20px auto;
-    max-width: 900px;
-    font-family: Arial, sans-serif;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
 }
 
-.header-section{
-  margin-top: 50px;
+.header-section {
+  margin-top: 5rem;
 }
 
-/* Grid za kartice */
+/* Modern Grid Layout */
 .cards-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Tri kartice u redu na velikim ekranima */
-    gap: 20px;
-    padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  padding: 2rem 0;
 }
 
-/* Kartica korisnika */
+/* Staff Card Design */
 .staff-card {
-    padding: 15px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    text-align: center;
+  background: white;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 102, 255, 0.1);
+  transition: var(--transition-smooth);
+  text-align: center;
+  border: 1px solid rgba(0, 102, 255, 0.1);
 }
 
-/* Stil za ime korisnika */
-.staff-name {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    color: #333;
-}
-
-/* Stil za email korisnika */
-.staff-email {
-    font-size: 20px;
-    color: #555;
-}
-
-/* Hover efekat na karticama */
 .staff-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-.staff-container h2 {
-    color: #1a1a1a;
-    margin-bottom: 2rem;
-    font-size: 2.5rem;
-    font-weight: 700;
-    text-align: center;
-    position: relative;
-    padding-bottom: 0.5rem;
-  }
-  .staff-container h2::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 4px;
-    background: #180069;
-    border-radius: 2px;
-  }
-/* Stil za greške */
-.error {
-    color: red;
-    text-align: center;
-    font-size: 18px;
+  transform: translateY(-8px);
+  box-shadow: 0 20px 25px -5px rgba(0, 102, 255, 0.1);
 }
 
-@media (max-width: 768px) {
-    .cards-grid {
-        grid-template-columns: 1fr; /* Jedna kartica u redu na malim ekranima */
-    }
+.staff-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--neutral-dark);
+  margin: 1rem 0 0.5rem;
 }
-.be-member-btn, .view-requests-btn {
-    background: linear-gradient(45deg, #5080da, #08216f);
-    color: white;
-    padding: 0.75rem 2rem;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    display: block;
-    margin: 0 auto 2rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  .be-member-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    background: linear-gradient(45deg, #3415b1, #0e2674);
-  }
-  .view-requests-btn:hover{
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    background: linear-gradient(45deg, #3415b1, #0e2674);
-  
-  }
 
-  /* Stil za slike u kartici */
+.staff-email {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+
+/* Staff Image Styling */
 .staff-image {
-    width: 100%; /* Širina slike da zauzme celu širinu kartice */
-    height: 200px; /* Fiksna visina slike */
-    object-fit: cover; /* Prilagođavanje slike unutar dimenzija */
-    border-radius: 8px; /* Zaobljeni uglovi slike */
-    margin-bottom: 10px; /* Razmak ispod slike */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Blaga senka za sliku */
-    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Glatka tranzicija */
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  transition: var(--transition-smooth);
 }
 
-/* Hover efekat za slike */
 .staff-card:hover .staff-image {
-    transform: scale(1.05); /* Blago povećanje slike na hover */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Naglašena senka na hover */
+  transform: scale(1.05);
 }
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Tamna pozadina */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
+
+/* Section Headers */
+.staff-container h2 {
+  color: var(--neutral-dark);
+  font-size: 2.75rem;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 3rem;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.staff-container h2::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: var(--primary-blue);
+  border-radius: 2px;
+}
+
+/* Action Buttons */
+.be-member-btn,
+.view-requests-btn {
+  background: var(--primary-blue);
+  color: white;
+  padding: 1rem 2.5rem;
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: var(--transition-smooth);
+  display: block;
+  margin: 0 auto 2rem;
+  box-shadow: 0 4px 6px rgba(0, 102, 255, 0.2);
+}
+
+.be-member-btn:hover,
+.view-requests-btn:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 102, 255, 0.3);
+}
+
+/* Modal Styling */
+.modal-staff {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 1.5rem;
+}
+
+.modal-staff-content {
+  background: white;
+  border-radius: 1.5rem;
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: modalFade 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(0, 102, 255, 0.1);
+  padding: 2rem;
+}
+
+.no-requests-message {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+
+@keyframes modalFade {
+  from {
+    opacity: 0;
+    transform: translateY(-1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom Scrollbar */
+.modal-staff-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-staff-content::-webkit-scrollbar-track {
+  background: var(--neutral-light);
+  border-radius: 4px;
+}
+
+.modal-staff-content::-webkit-scrollbar-thumb {
+  background: var(--primary-light);
+  border-radius: 4px;
+}
+
+.modal-staff-content::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-blue);
+}
+
+/* Error States */
+.error {
+  color: #EF4444;
+  text-align: center;
+  font-size: 1rem;
+  padding: 1rem;
+  background: #FEE2E2;
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .staff-container h2 {
+    font-size: 2.25rem;
   }
   
-  .modal-content {
-    background: white;
-    border-radius: 12px;
-    width: 100%;
-    max-width: 700px;
-    max-height: 90vh;
-    overflow-y: auto;
-    position: relative;
-    animation: modalFade 0.3s ease-out;
+  .cards-grid {
+    gap: 1.5rem;
   }
   
-  .no-requests-message {
-    text-align: center;
-    padding: 2rem;
-    color: #6b7280;
-    font-size: 1.125rem;
+  .staff-image {
+    height: 240px;
+  }
+}
+
+@media (max-width: 640px) {
+  .modal-staff {
+    padding: 1rem;
   }
   
-  @keyframes modalFade {
-    from {
-      opacity: 0;
-      transform: translateY(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  .modal-staff-content {
+    padding: 1.5rem;
   }
   
-  /* Custom scrollbar for modal content */
-  .modal-content::-webkit-scrollbar {
-    width: 8px;
+  .staff-container h2 {
+    font-size: 2rem;
   }
-  
-  .modal-content::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
-  }
-  
-  .modal-content::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
-    border-radius: 4px;
-  }
-  
-  .modal-content::-webkit-scrollbar-thumb:hover {
-    background: #a1a1a1;
-  }
-  
-  @media (max-width: 640px) {
-    .modal {
-      padding: 0.5rem;
-    }
-    
-    .modal-content {
-      max-height: 95vh;
-    }
-  }
+}

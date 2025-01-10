@@ -9,6 +9,7 @@ import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';
 import Footer from './components/Footer/Footer';
 import Profile from './pages/Profile/Profile';
+import Users from './pages/Users/Users';
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
                 <Route path="/osoblje" element={<Staff />} />
                 <Route path="/vesti" element={<News />} />
                 <Route path="/profil" element={<Profile />} />
+                <Route path="/korisnici" element={<Users />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
             </Routes>

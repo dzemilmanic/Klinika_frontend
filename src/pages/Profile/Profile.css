@@ -1,139 +1,240 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-/* Kontejner stranice */
+/* Modern Profile Page Styles */
 .profile-page {
   display: flex;
   justify-content: center;
   align-items: center;
   min-width: 100vw;
-  min-height: 100vh; /* Visina celog ekrana */
-  background-color: #f8f9fa;
+  min-height: 100vh;
+  background: var(--neutral-light);
+  padding: 2rem;
 }
 
-/* Stil za profil formu */
 .profile-container {
   width: 100%;
-  max-width: 400px; /* Maksimalna širina */
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  background-color: #fff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  padding: 2.5rem;
+  background: white;
+  border-radius: 1.5rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 102, 255, 0.1);
+  border: 1px solid rgba(0, 102, 255, 0.1);
+  margin-top: 60px;
 }
 
 .profile-title {
+  color: var(--neutral-dark);
+  font-size: 2rem;
+  font-weight: 800;
   text-align: center;
-  margin-bottom: 20px;
-  font-size: 24px;
-  color: #333;
+  margin-bottom: 2.5rem;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.profile-title::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 4px;
+  background: var(--primary-blue);
+  border-radius: 2px;
+}
+
+.profile-image {
+  display: block;
+  margin: 0 auto 2rem;
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 4px solid white;
+  box-shadow: 0 8px 16px rgba(0, 102, 255, 0.15);
+  transition: var(--transition-smooth);
+}
+
+.profile-image:hover {
+  transform: scale(1.05);
+  box-shadow: 0 12px 20px rgba(0, 102, 255, 0.2);
 }
 
 .profile-field {
-  margin-bottom: 20px;
+  margin-bottom: 1.5rem;
 }
 
 .profile-field label {
   display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
-.profile-field input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: var(--neutral-dark);
+  font-size: 0.875rem;
 }
 
 .input-container {
   display: flex;
   align-items: center;
   position: relative;
+  gap: 0.75rem;
+}
+
+.profile-field input {
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid rgba(0, 102, 255, 0.1);
+  border-radius: 1rem;
+  font-size: 1rem;
+  transition: var(--transition-smooth);
+  background: var(--neutral-light);
+}
+
+.profile-field input:focus {
+  outline: none;
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 4px rgba(0, 102, 255, 0.1);
 }
 
 .edit-icon {
-  font-size: 18px;
+  font-size: 1.25rem;
   cursor: pointer;
-  margin-left: 10px;
-  color: #007bff;
+  color: var(--primary-blue);
+  transition: var(--transition-smooth);
 }
 
 .edit-icon:hover {
-  color: #0056b3;
+  color: var(--primary-dark);
+  transform: scale(1.1);
 }
 
 .save-button {
-  padding: 10px 20px;
-  background-color: #007bff;
+  width: 100%;
+  padding: 1rem 2rem;
+  background: var(--primary-blue);
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 9999px;
   cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: var(--transition-smooth);
+  margin-top: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 102, 255, 0.2);
 }
 
 .save-button:hover {
-  background-color: #0056b3;
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 102, 255, 0.3);
 }
 
-/* Modal stilovi */
+/* Modal Styles */
 .modal {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
+  padding: 1.5rem;
 }
 
 .modal-content {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 300px;
+  background: white;
+  padding: 2.5rem;
+  border-radius: 1.5rem;
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+  animation: modalFade 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(0, 102, 255, 0.1);
+}
+
+.modal-content h3 {
+  color: var(--neutral-dark);
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1.5rem;
 }
 
 .modal-buttons {
   display: flex;
-  justify-content: space-evenly; /* Razmak između dugmadi */
-  margin-top: 10px;
-}
-
-.modal-content h3 {
-  margin-bottom: 20px;
-  text-align: center;
+  gap: 1rem;
+  margin-top: 2rem;
 }
 
 .modal-content button {
-  margin-top: 10px;
-  padding: 10px 20px;
-  background-color: #1f3b6d;
-  color: white;
+  flex: 1;
+  padding: 1rem;
   border: none;
-  border-radius: 4px;
+  border-radius: 9999px;
   cursor: pointer;
+  font-weight: 600;
+  transition: var(--transition-smooth);
+  font-size: 1rem;
 }
 
-.modal-content button:hover {
-  background-color: #0056b3;
+.modal-content button:first-child {
+  background: var(--primary-blue);
+  color: white;
+  box-shadow: 0 4px 6px rgba(0, 102, 255, 0.2);
 }
-.modal-content button:nth-child(2) {
-  margin-top: 10px; /* Razmak između dugmadi */
-  margin-left: 10px; /* Razmak između dugmadi */
+
+.modal-content button:first-child:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 102, 255, 0.3);
 }
-.profile-image {
-  display: block;
-  margin: 0 auto; /* Centriranje horizontalno */
-  width: 150px; /* Širina slike */
-  height: 150px; /* Visina slike */
-  object-fit: cover; /* Obrezivanje slike da popuni kvadrat */
-  border-radius: 50%; /* Za okrugli prikaz slike */
-  border: 2px solid #ccc; /* Opcionalno: okvir oko slike */
+
+.modal-content button:last-child {
+  background: #EF4444;
+  color: white;
+}
+
+.modal-content button:last-child:hover {
+  background: #DC2626;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(239, 68, 68, 0.2);
+}
+
+@keyframes modalFade {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .profile-page {
+    padding: 1rem;
+  }
+
+  .profile-container {
+    padding: 2rem;
+  }
+
+  .profile-title {
+    font-size: 1.75rem;
+  }
+
+  .profile-image {
+    width: 120px;
+    height: 120px;
+  }
+
+  .modal-buttons {
+    flex-direction: column;
+  }
+
+  .modal-content button {
+    width: 100%;
+  }
 }

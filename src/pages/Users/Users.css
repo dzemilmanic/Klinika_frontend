@@ -1,0 +1,337 @@
+/* Users Page Layout */
+.users-page {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-width: 100vw;
+  min-height: 100vh;
+  background: var(--neutral-light);
+  padding: 2rem;
+}
+
+.users-container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 60px auto 0;
+  padding: 3rem 2rem;
+  background: var(--neutral-light);
+}
+
+.content-wrapper {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Section Headers */
+.users-container h2 {
+  color: var(--neutral-dark);
+  font-size: 2.75rem;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 3rem;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.users-container h2::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: var(--primary-blue);
+  border-radius: 2px;
+}
+
+/* Action Button */
+.add-user-btn {
+  background: var(--primary-blue);
+  color: white;
+  padding: 1rem 2.5rem;
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: var(--transition-smooth);
+  display: block;
+  margin: 0 auto 2rem;
+  box-shadow: 0 4px 6px rgba(0, 102, 255, 0.2);
+}
+
+.add-user-btn:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 102, 255, 0.3);
+}
+
+/* Card Container */
+.card-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* User Card Design */
+.card {
+  background: white;
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 102, 255, 0.1);
+  transition: var(--transition-smooth);
+  border: 1px solid rgba(0, 102, 255, 0.1);
+  overflow: hidden;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 102, 255, 0.1);
+}
+
+.card-content {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.avatar-container {
+  flex-shrink: 0;
+  width: 4rem;
+  height: 4rem;
+  background: var(--primary-light);
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 6px rgba(0, 102, 255, 0.1);
+  border: 2px solid rgba(0, 102, 255, 0.1);
+}
+
+.user-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.user-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--neutral-dark);
+  margin-bottom: 0.5rem;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #666;
+  font-size: 0.875rem;
+}
+
+/* Loading State */
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+}
+
+.loader-spinner {
+  width: 3rem;
+  height: 3rem;
+  border: 3px solid var(--primary-light);
+  border-top-color: var(--primary-blue);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Error State */
+.error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+  padding: 2rem;
+}
+
+.error-content {
+  background: #FEE2E2;
+  border: 1px solid #EF4444;
+  color: #B91C1C;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  text-align: center;
+  max-width: 400px;
+}
+
+/* Action Buttons */
+.delete-button {
+  background: #EF4444;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: var(--transition-smooth);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.delete-button:hover {
+  background: #DC2626;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(239, 68, 68, 0.2);
+}
+
+/* Modal Design */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 1.5rem;
+}
+
+.modal-users {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 1.5rem;
+  width: 100%;
+  max-width: 500px;
+  position: relative;
+  animation: modalFade 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(0, 102, 255, 0.1);
+}
+
+.modal-users-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.modal-users-form input {
+  width: 100%;
+  padding: 1rem;
+  margin: 0.75rem 0;
+  border: 2px solid rgba(0, 102, 255, 0.1);
+  border-radius: 1rem;
+  font-size: 1rem;
+  transition: var(--transition-smooth);
+  background: var(--neutral-light);
+}
+
+.modal-users-form input:focus {
+  outline: none;
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 4px rgba(0, 102, 255, 0.1);
+}
+
+.confirm-button,
+.cancel-button {
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: var(--transition-smooth);
+  font-size: 1rem;
+}
+
+.confirm-button {
+  background: var(--primary-blue);
+  color: white;
+  box-shadow: 0 4px 6px rgba(0, 102, 255, 0.2);
+}
+
+.confirm-button:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 102, 255, 0.3);
+}
+
+.cancel-button {
+  background: #EF4444;
+  color: white;
+}
+
+.cancel-button:hover {
+  background: #DC2626;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(239, 68, 68, 0.2);
+}
+
+@keyframes modalFade {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .users-container {
+    padding: 2rem 1.5rem;
+  }
+
+  .users-container h2 {
+    font-size: 2.25rem;
+  }
+
+  .card {
+    padding: 1.5rem;
+  }
+
+  .modal-users {
+    padding: 2rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .users-page {
+    padding: 1rem;
+  }
+
+  .users-container h2 {
+    font-size: 2rem;
+  }
+
+  .card-content {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .user-info {
+    align-items: center;
+  }
+
+  .modal-users-actions {
+    flex-direction: column;
+  }
+
+  .confirm-button,
+  .cancel-button {
+    width: 100%;
+  }
+}

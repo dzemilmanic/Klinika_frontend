@@ -225,8 +225,8 @@ const Staff = () => {
         )}
 
         {showRequests && (
-          <div className="modal" onClick={() => setShowRequests(false)}>
-            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-staff" onClick={() => setShowRequests(false)}>
+            <div className="modal-staff-content" onClick={(e) => e.stopPropagation()}>
               {requests.length === 0 ? (
                 <p className="no-requests-message">Nema pristiglih zahteva</p>
               ) : (
