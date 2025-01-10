@@ -29,16 +29,48 @@
 }
 
 .welcome-text {
-  position: fixed;
-  top: 50%; /* Postavljanje na sredinu ekrana vertikalno */
-  left: 50%; /* Postavljanje na sredinu ekrana horizontalno */
-  transform: translate(-50%, -50%); /* Pomeri element za 50% njegove širine i visine */
+  position: absolute;
+  top: 50%; /* Postavlja centrirano vertikalno */
+  left: 50%; /* Postavlja centrirano horizontalno */
+  transform: translate(-50%, -50%); /* Poravnava centrirano */
+  display: flex;
+  flex-direction: column; /* Postavlja elemente jedno ispod drugog */
+  align-items: center; /* Poravnava elemente horizontalno na sredini */
+  font-size: 2.3rem;
+  color: white;
+  font-weight: bold;
+  z-index: 10; /* Da tekst bude iznad slajdova */
+  text-align: center;
+  gap: 1rem; /* Razmak između teksta i dugmeta */
+}
+.reserve-appointment{
+  position: absolute;
+  top: 60%; /* Postavlja centrirano vertikalno */
+  left: 50%; /* Postavlja centrirano horizontalno */
+  transform: translate(-50%, -50%); /* Poravnava centrirano */
+  display: flex;
+  flex-direction: column; /* Postavlja elemente jedno ispod drugog */
+  align-items: center; /* Poravnava elemente horizontalno na sredini */
   font-size: 2rem;
   color: white;
   font-weight: bold;
   z-index: 10; /* Da tekst bude iznad slajdova */
-  padding: 10px;
   text-align: center;
+  gap: 1rem; /* Razmak između teksta i dugmeta */
+}
+.reserve-button {
+  background-color: #024790; /* Plava boja */
+  color: white;
+  font-size: 1.3rem;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.reserve-button:hover {
+  background-color: #0056b3; /* Tamnija plava pri hoveru */
 }
 
 /* Strelice za navigaciju, postavljene na ivice */

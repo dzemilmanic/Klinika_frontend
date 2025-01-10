@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
-import "./Home.css"; // Importuj CSS fajl
+import { useNavigate } from "react-router-dom";
+import "./Home.css"; 
 
 const Home = () => {
+  const navigate = useNavigate();
+
   const slides = [
     { url: "https://apolonocnaklinika.com/wp-content/uploads/2023/12/onama3-min.png", title: "beach" },
     { url: "https://apolonocnaklinika.com/wp-content/uploads/2023/12/zasto6-min.png", title: "boat" },
@@ -43,7 +46,15 @@ const Home = () => {
   return (
     <div>
       <div className="slider">
-        <div className="welcome-text">Dobrodošli u Oculus</div> {/* Tekst iznad slajdova */}
+        <div className="welcome-text">Dobrodošli u Oculus</div>
+        <div className="reserve-appointment">
+        <button
+          className="reserve-button"
+          onClick={() => navigate("/usluge")}
+        >
+          Rezerviši svoj termin na vreme!
+        </button>
+      </div>
         <div>
           <div className="arrow arrow-left" onClick={goToPrevious}>
             ❰

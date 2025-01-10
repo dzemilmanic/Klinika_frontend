@@ -128,3 +128,12 @@
   margin-top: 10px; /* Razmak između dugmadi */
   margin-left: 10px; /* Razmak između dugmadi */
 }
+.profile-image {
+  display: block;
+  margin: 0 auto; /* Centriranje horizontalno */
+  width: 150px; /* Širina slike */
+  height: 150px; /* Visina slike */
+  object-fit: cover; /* Obrezivanje slike da popuni kvadrat */
+  border-radius: 50%; /* Za okrugli prikaz slike */
+  border: 2px solid #ccc; /* Opcionalno: okvir oko slike */
+}

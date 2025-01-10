@@ -10,6 +10,7 @@ const Staff = () => {
   const [requestStatus, setRequestStatus] = useState("");
   const [requests, setRequests] = useState([]);
   const [showRequests, setShowRequests] = useState(false);
+  const [expandedCard, setExpandedCard] = useState(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -20,7 +21,7 @@ const Staff = () => {
         });
 
         if (!response.ok) {
-          throw new Error("Failed to fetch users.");
+          throw new Error("Greška prilikom fetchovanja lekara.");
         }
 
         const data = await response.json();
@@ -34,7 +35,7 @@ const Staff = () => {
             const roles = decodedPayload["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || "User";
             setRole(roles);
           } catch (error) {
-            setError("Error decoding token.");
+            setError("Greška prilikom dekodovanja tokena.");
           }
         }
       } catch (err) {
@@ -108,13 +109,13 @@ const Staff = () => {
       );
 
       if (!response.ok) {
-        throw new Error("Failed to update request status.");
+        throw new Error("Ažuriranje statusa zahteva nije uspelo.");
       }
 
-      alert(`Request has been ${action === "approve" ? "approved" : "rejected"}.`);
+      alert(`Zahtev je ${action === "approve" ? "odobren" : "odbijen"}.`);
       fetchRoleRequests();
     } catch (err) {
-      alert("Error updating request status: " + err.message);
+      alert("Greška pri ažuriranju statusa zahteva: " + err.message);
     }
   };
 
@@ -135,11 +136,15 @@ const Staff = () => {
         throw new Error("Failed to submit role request.");
       }
 
-      alert("Request submitted successfully.");
+      alert("Zahtev je uspešno poslan.");
       setShowForm(false);
     } catch (err) {
-      alert("Error submitting request: " + err.message);
+      alert("Greška pri slanju zahteva: " + err.message);
     }
+  };
+
+  const handleCardClick = (userId) => {
+    setExpandedCard(expandedCard === userId ? null : userId); // Prebacujemo stanje između otvorenog i zatvorenog
   };
 
   if (error) {
@@ -155,7 +160,7 @@ const Staff = () => {
             <button
               onClick={() => {
                 if (requestStatus === "Pending") {
-                  alert("You already have a pending request. Please wait for approval.");
+                  alert("Već imate zahtev na čekanju. Molimo pričekajte rezultat.");
                 } else {
                   setShowForm(!showForm);
                 }
@@ -180,17 +185,29 @@ const Staff = () => {
 
         <div className="cards-grid">
           {users.map((user) => (
-            <div key={user.id} className="staff-card">
+            <div
+              key={user.id}
+              className="staff-card"
+              onClick={() => handleCardClick(user.id)} // Dodajemo funkciju na klik
+            >
               <img
-                src={user.profileImagePath || "https://apotekasombor.rs/wp-content/uploads/2020/12/izabrani-lekar-730x365.jpg"}
+                src={
+                  user.profileImagePath ||
+                  "https://apotekasombor.rs/wp-content/uploads/2020/12/izabrani-lekar-730x365.jpg"
+                }
                 alt={`${user.firstName} ${user.lastName}`}
                 className="staff-image"
               />
               <h3 className="staff-name">
                 {user.firstName} {user.lastName}
               </h3>
-              <p className="staff-email">{user.email}</p>
-              <p className="staff-biography">{user.biography}</p>
+
+              {expandedCard === user.id && (
+                <div className="staff-details">
+                  <p className="staff-email">{user.email}</p>
+                  <p className="staff-biography">{user.biography}</p>
+                </div>
+              )}
             </div>
           ))}
         </div>

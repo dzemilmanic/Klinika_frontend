@@ -14,7 +14,9 @@
     font-family: Arial, sans-serif;
 }
 
-
+.header-section{
+  margin-top: 50px;
+}
 
 /* Grid za kartice */
 .cards-grid {
