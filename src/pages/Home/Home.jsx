@@ -153,7 +153,7 @@ const Home = () => {
       if (!response.ok) {
         throw new Error("Greška prilikom dodavanja recenzije");
       }
-
+      setReviews((prevReviews) => [...prevReviews, newReview]);
       // Refresh reviews after successful addition
       fetchReviews();
     } catch (error) {
@@ -165,6 +165,11 @@ const Home = () => {
     fetchReviews();
   }, []);
 
+
+
+  const handleDeleteReview = (reviewId) => {
+    setReviews((prevReviews) => prevReviews.filter((review) => review.id !== reviewId));
+  };
   const workingHours = [
     { day: "Ponedeljak - Petak", hours: " 08:00 - 16:00" },
     { day: "Subota", hours: " 09:00 - 12:00" },
@@ -320,13 +325,14 @@ const Home = () => {
           </div>
         </div>
       </section>
-      <section className="reviews-section">
+      
         <ReviewSection
           reviews={reviews}
           onAddReview={handleAddReview}
+          onDeleteReview={handleDeleteReview}
           role={userRole}
         />
-      </section>
+      
     </div>
   );
 };

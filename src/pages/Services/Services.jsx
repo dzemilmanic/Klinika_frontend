@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Services.css";
 import AddServiceModal from "../../components/AddServiceModal";
+import AppointmentModal from "../../components/AppointmentModal";
 import { Pencil, Trash2 } from "lucide-react";
 
 const Services = () => {
@@ -19,7 +20,8 @@ const Services = () => {
   const [selectedServiceId, setSelectedServiceId] = useState(null);
   const [newPrice, setNewPrice] = useState("");
   const [showPriceModal, setShowPriceModal] = useState(false);
-
+  const [selectedService, setSelectedService] = useState(null);
+  const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false);
   useEffect(() => {
     const fetchServices = async () => {
       setLoading(true);
@@ -125,6 +127,10 @@ const Services = () => {
   const cancelDelete = () => {
     setSelectedServiceId(null);
     setShowDeleteModal(false);
+  };
+  const handleReserveClick = (service) => {
+    setSelectedService(service);
+    setIsAppointmentModalOpen(true);
   };
 
   const handlePriceChangeClick = (id) => {
@@ -260,11 +266,16 @@ const Services = () => {
                 <p>{service.description}</p>
                 <p>Price: {service.price} RSD</p>
                 {/* {service.category && <p>Category: {service.category.name}</p>} */}
-                <button className="reserve-button">Rezerviši termin</button>
+                <button className="reserve-button" onClick={() => handleReserveClick(service)}>Rezerviši termin</button>
               </div>
             ))}
           </div>
         )}
+        <AppointmentModal
+          isOpen={isAppointmentModalOpen}
+          onClose={() => setIsAppointmentModalOpen(false)}
+          service={selectedService}
+        />
       </div>
 
       {showDeleteModal && (
