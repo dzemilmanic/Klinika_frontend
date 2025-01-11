@@ -141,10 +141,11 @@ const Home = () => {
 
   const handleAddReview = async (newReview) => {
     try {
-      const response = await fetch("https://localhost:7151/api/Reviews", {
+      const response = await fetch("https://localhost:7151/api/Review", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
         },
         body: JSON.stringify(newReview),
       });
@@ -319,11 +320,13 @@ const Home = () => {
           </div>
         </div>
       </section>
-      <ReviewSection
-        reviews={reviews}
-        onAddReview={handleAddReview}
-        role={userRole}
-      />
+      <section className="reviews-section">
+        <ReviewSection
+          reviews={reviews}
+          onAddReview={handleAddReview}
+          role={userRole}
+        />
+      </section>
     </div>
   );
 };

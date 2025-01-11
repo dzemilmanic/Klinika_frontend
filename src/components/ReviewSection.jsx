@@ -1,10 +1,13 @@
 import React, { useState } from "react";
+import { jwtDecode } from "jwt-decode";
+import "./ReviewSection.css";
 
 const ReviewSection = ({ reviews, onAddReview, role }) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [isAddReviewModalOpen, setAddReviewModalOpen] = useState(false);
   const [newReview, setNewReview] = useState({ rating: "", content: "" });
-
+  const [errorMessage, setErrorMessage] = useState("");
+  
   const handleShowAllReviews = () => {
     setModalOpen(true);
   };
@@ -24,11 +27,37 @@ const ReviewSection = ({ reviews, onAddReview, role }) => {
 
   const handleSubmitReview = (e) => {
     e.preventDefault();
-    onAddReview(newReview);
-    handleCloseAddReviewModal();
+    const token = localStorage.getItem("jwtToken");
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        const authorName = `${decodedToken.FirstName || "nepoznato"} ${decodedToken.LastName || "nepoznato"}`;
+  
+        // Dodaj authorName u telo recenzije
+        const reviewWithAuthor = { ...newReview, authorName };
+  
+        // Pozivanje funkcije za dodavanje recenzije
+        onAddReview(reviewWithAuthor)
+          .then(() => {
+            handleCloseAddReviewModal();
+            setNewReview({ rating: "", content: "" });
+            setErrorMessage("");
+          })
+          .catch((error) => {
+            setErrorMessage("Došlo je do greške pri slanju recenzije.");
+          });
+      } catch (error) {
+        console.error("Nevalidan JWT token:", error);
+        setErrorMessage("Došlo je do greške pri dekodiranju tokena.");
+      }
+    } else {
+      setErrorMessage("Korisnik nije prijavljen.");
+    }
   };
+  
 
   return (
+    
     <section className="reviews-section">
       <div className="section-content">
         <h2>Recenzije</h2>
@@ -38,7 +67,8 @@ const ReviewSection = ({ reviews, onAddReview, role }) => {
               <div className="review-rating">⭐ {review.rating}/5</div>
               <p className="review-content">{review.content}</p>
               <p className="review-author">
-                Autor: {review.author || "Nepoznato"}
+                Autor: {review.authorName}
+                
               </p>
               <p className="review-date">
                 Datum: {new Date(review.createdOn).toLocaleDateString()}
@@ -109,9 +139,12 @@ const ReviewSection = ({ reviews, onAddReview, role }) => {
                       min="1"
                       max="5"
                       value={newReview.rating}
-                      onChange={(e) =>
-                        setNewReview({ ...newReview, rating: e.target.value })
-                      }
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (value >= 1 && value <= 5) {
+                          setNewReview({ ...newReview, rating: value });
+                        }
+                      }}
                       required
                     />
                   </div>
@@ -129,6 +162,7 @@ const ReviewSection = ({ reviews, onAddReview, role }) => {
                     Pošalji
                   </button>
                 </form>
+                {errorMessage && <p className="error-message">{errorMessage}</p>}
               </div>
             </div>
           </div>
