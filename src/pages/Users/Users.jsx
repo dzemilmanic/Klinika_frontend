@@ -9,14 +9,13 @@ const Users = () => {
   const [showModal, setShowModal] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-const [newUser, setNewUser] = useState({
-  firstName: "",
-  lastName: "",
-  email: "",
-  password: "",
-  roles: ["User"], // Podrazumevana uloga
-});
-
+  const [newUser, setNewUser] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    roles: ["User"], // Podrazumevana uloga
+  });
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -27,7 +26,7 @@ const [newUser, setNewUser] = useState({
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
             },
           }
         );
@@ -68,7 +67,9 @@ const [newUser, setNewUser] = useState({
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.Message || "Greška prilikom brisanja korisnika.");
+        throw new Error(
+          errorData.Message || "Greška prilikom brisanja korisnika."
+        );
       }
 
       // Ažuriraj stanje korisnika
@@ -93,48 +94,59 @@ const [newUser, setNewUser] = useState({
     const { name, value } = e.target;
     setNewUser((prev) => ({ ...prev, [name]: value }));
   };
-  
+
   const handleAddUser = async () => {
     try {
       const response = await fetch("https://localhost:7151/api/Auth/Register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
         },
         body: JSON.stringify(newUser),
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.Message || "Greška prilikom dodavanja korisnika.");
+        throw new Error(
+          errorData.Message || "Greška prilikom dodavanja korisnika."
+        );
       }
-  
+
       const addedUser = await response.json();
       setUsers((prevUsers) => [...prevUsers, addedUser]);
       alert("Korisnik je uspešno dodat!");
       setIsModalOpen(false);
-      setNewUser({ firstName: "", lastName: "", email: "", password: "", roles: ["User"] });
+      setNewUser({
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+        roles: ["User"],
+      });
     } catch (err) {
       alert(err.message);
     }
   };
-  
 
   if (loading) {
     return (
-      <div className="loader">
-        <div className="loader-spinner"></div>
+      <div className="users-page">
+        <div className="loader">
+          <div className="loader-spinner"></div>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="error">
-        <div className="error-content">
-          <strong>Error: </strong>
-          <span>{error}</span>
+      <div className="users-page">
+        <div className="error">
+          <div className="error-content">
+            <strong>Error: </strong>
+            <span>{error}</span>
+          </div>
         </div>
       </div>
     );
@@ -145,8 +157,8 @@ const [newUser, setNewUser] = useState({
       <div className="users-container">
         <h2>Registrovani korisnici</h2>
         <button className="add-user-btn" onClick={() => setIsModalOpen(true)}>
-            Dodaj novog korisnika
-          </button>
+          Dodaj novog korisnika
+        </button>
         <div className="card-container">
           {users.map((user) => (
             <div key={user.id} className="card">
@@ -194,50 +206,52 @@ const [newUser, setNewUser] = useState({
         </div>
       )}
 
-{isModalOpen && (
-  <div className="modal-overlay">
-    <div className="modal-users">
-      <h3>Dodaj novog korisnika</h3>
-      <div className="modal-users-form">
-        <input
-          type="text"
-          name="firstName"
-          placeholder="Ime"
-          value={newUser.firstName}
-          onChange={handleInputChange}
-        />
-        <input
-          type="text"
-          name="lastName"
-          placeholder="Prezime"
-          value={newUser.lastName}
-          onChange={handleInputChange}
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={newUser.email}
-          onChange={handleInputChange}
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Lozinka"
-          value={newUser.password}
-          onChange={handleInputChange}
-        />
-        <button className="confirm-button" onClick={handleAddUser}>
-          Dodaj
-        </button>
-        <button className="cancel-button" onClick={() => setIsModalOpen(false)}>
-          Otkaži
-        </button>
-      </div>
-    </div>
-  </div>
-)}
-
+      {isModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal-users">
+            <h3>Dodaj novog korisnika</h3>
+            <div className="modal-users-form">
+              <input
+                type="text"
+                name="firstName"
+                placeholder="Ime"
+                value={newUser.firstName}
+                onChange={handleInputChange}
+              />
+              <input
+                type="text"
+                name="lastName"
+                placeholder="Prezime"
+                value={newUser.lastName}
+                onChange={handleInputChange}
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={newUser.email}
+                onChange={handleInputChange}
+              />
+              <input
+                type="password"
+                name="password"
+                placeholder="Lozinka"
+                value={newUser.password}
+                onChange={handleInputChange}
+              />
+              <button className="confirm-button" onClick={handleAddUser}>
+                Dodaj
+              </button>
+              <button
+                className="cancel-button"
+                onClick={() => setIsModalOpen(false)}
+              >
+                Otkaži
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

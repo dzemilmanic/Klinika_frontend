@@ -131,41 +131,6 @@
   font-size: 0.875rem;
 }
 
-/* Loading State */
-.loader {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 50vh;
-}
-
-.loader-spinner {
-  width: 3rem;
-  height: 3rem;
-  border: 3px solid var(--primary-light);
-  border-top-color: var(--primary-blue);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-/* Error State */
-.error {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 50vh;
-  padding: 2rem;
-}
-
-.error-content {
-  background: #FEE2E2;
-  border: 1px solid #EF4444;
-  color: #B91C1C;
-  padding: 1.5rem;
-  border-radius: 1rem;
-  text-align: center;
-  max-width: 400px;
-}
 
 /* Action Buttons */
 .delete-button {
@@ -282,11 +247,6 @@
   }
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
 
 /* Responsive Design */
 @media (max-width: 768px) {

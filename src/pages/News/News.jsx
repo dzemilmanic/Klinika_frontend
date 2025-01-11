@@ -153,8 +153,27 @@ const News = () => {
     setErrorMessage("");
   };
 
-  if (loading) return <h2>Loading...</h2>;
-  if (error) return <h2>{error}</h2>;
+  if (loading) {
+    return (
+      <div className="news-page">
+      <div className="loader">
+        <div className="loader-spinner"></div>
+      </div>
+      </div>
+    );
+  }
+  if (error) {
+    return (
+      <div className="users-page">
+      <div className="error">
+        <div className="error-content">
+          <strong>Error: </strong>
+          <span>{error}</span>
+        </div>
+        </div>
+      </div>
+    );
+  }
 
   const isAdmin = userRole === "Admin";
 

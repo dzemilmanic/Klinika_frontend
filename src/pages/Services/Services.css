@@ -1,0 +1,70 @@
+.services-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 100vw;
+    min-height: 100vh;
+    background: var(--neutral-light);
+    padding: 2rem;
+  }
+  .services-container {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  
+  .header-section {
+    margin-top: 5rem;
+  }
+  /* Section Headers */
+.services-container h2 {
+  color: var(--neutral-dark);
+  font-size: 2.75rem;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 3rem;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.services-container h2::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: var(--primary-blue);
+  border-radius: 2px;
+}
+.add-service-btn {
+  background: var(--primary-blue);
+  color: white;
+  padding: 1rem 2.5rem;
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: var(--transition-smooth);
+  display: block;
+  margin: 0 auto 2rem;
+  box-shadow: 0 4px 6px rgba(0, 102, 255, 0.2);
+}
+
+.add-service-btn:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 102, 255, 0.3);
+}
+.no-services{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold; /* Podebljan tekst */
+    font-size: 1.5rem; /* Veća veličina fonta */
+    color: #555; /* Neutralna siva boja */
+    text-align: center; /* Centriran tekst */
+
+}

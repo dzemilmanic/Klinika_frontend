@@ -6,6 +6,7 @@ const Staff = () => {
   const [users, setUsers] = useState([]);
   const [error, setError] = useState("");
   const [role, setRole] = useState("");
+  const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [requestStatus, setRequestStatus] = useState("");
   const [requests, setRequests] = useState([]);
@@ -14,6 +15,7 @@ const Staff = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
+      setLoading(true);
       try {
         const response = await fetch("https://localhost:7151/api/Roles/doctors", {
           method: "GET",
@@ -40,6 +42,8 @@ const Staff = () => {
         }
       } catch (err) {
         setError(err.message);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -63,6 +67,8 @@ const Staff = () => {
         setRequestStatus(data.status);
       } catch (err) {
         setError(err.message);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -147,8 +153,26 @@ const Staff = () => {
     setExpandedCard(expandedCard === userId ? null : userId); // Prebacujemo stanje između otvorenog i zatvorenog
   };
 
+  if (loading) {
+    return (
+      <div className="news-page">
+      <div className="loader">
+        <div className="loader-spinner"></div>
+      </div>
+      </div>
+    );
+  }
   if (error) {
-    return <p className="error">{error}</p>;
+    return (
+      <div className="users-page">
+      <div className="error">
+        <div className="error-content">
+          <strong>Error: </strong>
+          <span>{error}</span>
+        </div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -183,12 +207,16 @@ const Staff = () => {
           )}
         </div>
 
+
+        {users.length === 0 ? (
+          <p className="no-users">Nema dodatih lekara.</p>
+        ) : (
         <div className="cards-grid">
           {users.map((user) => (
             <div
               key={user.id}
               className="staff-card"
-              onClick={() => handleCardClick(user.id)} // Dodajemo funkciju na klik
+              onClick={() => handleCardClick(user.id)} 
             >
               <img
                 src={
@@ -211,7 +239,7 @@ const Staff = () => {
             </div>
           ))}
         </div>
-
+)}
         {showForm && (
           <div className="modal" onClick={() => setShowForm(false)}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>

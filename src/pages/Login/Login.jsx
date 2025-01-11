@@ -67,7 +67,7 @@ export default function Login() {
             Prijavi se
           </button>
         </form>
-        {error && <p className="error-message">{error}</p>}
+        {error && <p className="error-message-login">{error}</p>}
         {successMessage && <p className="success-message">{successMessage}</p>}
         <div className="register-link">
           Nemate registrovan nalog? <a href="/register">Registrujte se</a>

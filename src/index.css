@@ -76,3 +76,45 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+}
+
+.loader-spinner {
+  width: 3rem;
+  height: 3rem;
+  border: 3px solid var(--primary-light);
+  border-top-color: var(--primary-blue);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+/* Error State */
+.error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  padding: 2rem;
+  margin-top: 80px;
+}
+
+.error-content {
+  background: #FEE2E2;
+  border: 1px solid #EF4444;
+  color: #B91C1C;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  text-align: center;
+  max-width: 400px;
+}
