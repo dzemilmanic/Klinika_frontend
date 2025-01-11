@@ -28,11 +28,21 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+}
+:root {
+  --primary-blue: #0652c5;
+  --primary-dark: #0047B3;
+  --primary-light: #4D94FF;
+  --accent-blue: #00C6FF;
+  --neutral-light: #F5F9FF;
+  --neutral-dark: #1A1A1A;
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 button {

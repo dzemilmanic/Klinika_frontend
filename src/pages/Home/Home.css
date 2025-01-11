@@ -1,13 +1,3 @@
-:root {
-  --primary-blue: #0066FF;
-  --primary-dark: #0047B3;
-  --primary-light: #4D94FF;
-  --accent-blue: #00C6FF;
-  --neutral-light: #F5F9FF;
-  --neutral-dark: #1A1A1A;
-  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
 /* Slider Base */
 .slider {
   position: relative;

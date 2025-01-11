@@ -1,92 +1,111 @@
-/* Resetovanje margina i paddinga */
+/* Global Reset */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    overflow-x: hidden;
-}
-
-/* Kontejner stranice */
-.register-page {
-    margin-top: 50px;
+  }
+  
+  /* Shared Form Styles */
+  .form-group {
+    margin-bottom: 1.25rem;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--neutral-dark);
+    font-size: 0.875rem;
+  }
+  
+  .form-group input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: var(--transition-smooth);
+    outline: none;
+  }
+  
+  .form-group input:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.12);
+  }
+  
+  /* Register Page Styles */
+  .register-page {
     display: flex;
     justify-content: center;
     align-items: center;
     min-width: 100vw;
-    margin:auto;
-    min-height: 100vh; /* Visina celog ekrana */
-    background-color: #f8f9fa;
-}
-
-/* Stil za registracionu formu */
-.register-container {
-    margin-top: 100px;
+    min-height: 100vh;
+    background-color: var(--neutral-light);
+    padding: 6rem 1rem 1rem;
+  }
+  
+  .register-container {
     width: 100%;
-    max-width: 400px; /* Maksimalna širina */
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    background-color: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Naslov forme */
-.register-title {
+    max-width: 400px;
+    padding: 2rem;
+    border-radius: 1rem;
+    background-color: white;
+    box-shadow: 0 8px 24px rgba(0, 102, 255, 0.12);
+    transition: var(--transition-smooth);
+    margin-bottom: 2rem;
+  }
+  
+  .register-container:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(0, 102, 255, 0.16);
+  }
+  
+  .register-title {
     text-align: center;
-    margin-bottom: 20px;
-    font-size: 24px;
-    color: #333;
-}
-
-/* Grupe za unos podataka */
-.form-group {
-    margin-bottom: 15px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #555;
-}
-
-.form-group input {
+    margin-bottom: 1.5rem;
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--neutral-dark);
+  }
+  
+  .register-button {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-}
-
-/* Dugme za registraciju */
-.register-button {
-    width: 100%;
-    padding: 10px;
+    padding: 0.875rem;
     border: none;
-    border-radius: 5px;
-    background-color: #1f3b6d;
+    border-radius: 0.5rem;
+    background-color: var(--primary-blue);
     color: white;
-    font-size: 16px;
+    font-size: 1rem;
+    font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.register-button:hover {
-    background-color: #574dbf;
-}
-
-/* Link za login */
-.register-link {
+    transition: var(--transition-smooth);
+  }
+  
+  .register-button:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-1px);
+  }
+  
+  .register-button:active {
+    transform: translateY(0);
+  }
+  
+  .login-link {
     text-align: center;
-    margin-top: 15px;
-    font-size: 14px;
-}
-
-.register-link a {
-    color: #6c63ff;
+    margin-top: 1.25rem;
+    font-size: 0.875rem;
+    color: var(--neutral-dark);
+  }
+  
+  .login-link a {
+    color: var(--primary-blue);
     text-decoration: none;
-}
-
-.register-link a:hover {
+    font-weight: 500;
+    margin-left: 0.25rem;
+    transition: var(--transition-smooth);
+  }
+  
+  .login-link a:hover {
+    color: var(--primary-dark);
     text-decoration: underline;
-}
+  }
