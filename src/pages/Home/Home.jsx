@@ -1,16 +1,45 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Clock, MapPin, Phone, Heart, Users, Calendar, CheckCircle2 } from "lucide-react";
+import {
+  Clock,
+  MapPin,
+  Phone,
+  Heart,
+  Users,
+  Calendar,
+  CheckCircle2,
+} from "lucide-react";
 import "./Home.css";
+import ReviewSection from "../../components/ReviewSection";
 
 const Home = () => {
   const navigate = useNavigate();
+  const [services, setServices] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [reviews, setReviews] = useState([]);
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [isAddReviewModalOpen, setAddReviewModalOpen] = useState(false);
+  const [newReview, setNewReview] = useState({ rating: "", content: "" });
+  const [userRole, setUserRole] = useState("");
 
   const slides = [
-    { url: "https://apolonocnaklinika.com/wp-content/uploads/2023/12/onama3-min.png", title: "beach" },
-    { url: "https://apolonocnaklinika.com/wp-content/uploads/2023/12/zasto6-min.png", title: "boat" },
-    { url: "https://apolonocnaklinika.com/wp-content/uploads/2023/12/zasto3-min.png", title: "boat" },
-    { url: "https://apolonocnaklinika.com/wp-content/uploads/2023/12/zasto7-min.png", title: "boat" },
+    {
+      url: "https://apolonocnaklinika.com/wp-content/uploads/2023/12/onama3-min.png",
+      title: "beach",
+    },
+    {
+      url: "https://apolonocnaklinika.com/wp-content/uploads/2023/12/zasto6-min.png",
+      title: "boat",
+    },
+    {
+      url: "https://apolonocnaklinika.com/wp-content/uploads/2023/12/zasto3-min.png",
+      title: "boat",
+    },
+    {
+      url: "https://apolonocnaklinika.com/wp-content/uploads/2023/12/zasto7-min.png",
+      title: "boat",
+    },
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -39,19 +68,106 @@ const Home = () => {
     return () => clearInterval(interval);
   }, [currentIndex]);
 
+  const checkUserRole = () => {
+    const token = localStorage.getItem("jwtToken");
+    if (token) {
+      try {
+        const payload = token.split(".")[1];
+        const decodedPayload = JSON.parse(atob(payload));
+        const roles =
+          decodedPayload[
+            "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+          ] || "";
+        setUserRole(roles);
+      } catch (error) {
+        setError("Error decoding token.");
+      }
+    }
+  };
+  useEffect(() => {
+    const fetchServices = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch("https://localhost:7151/api/Service", {
+          method: "GET",
+          credentials: "include",
+        });
+
+        if (!response.ok) {
+          throw new Error("Greška prilikom fetchovanja usluga.");
+        }
+
+        const data = await response.json();
+        setServices(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    checkUserRole();
+    fetchServices();
+  }, []);
+
+  const fetchReviews = async () => {
+    try {
+      const response = await fetch("https://localhost:7151/api/Review");
+      if (!response.ok) {
+        throw new Error("Greška prilikom dohvatanja recenzija");
+      }
+      const data = await response.json();
+      setReviews(data);
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
+  const handleShowAllReviews = () => {
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
+
+  const handleShowAddReviewModal = () => {
+    setAddReviewModalOpen(true);
+  };
+
+  const handleCloseAddReviewModal = () => {
+    setAddReviewModalOpen(false);
+    setNewReview({ rating: "", content: "" }); // Resetuj formu
+  };
+
+  const handleAddReview = async (newReview) => {
+    try {
+      const response = await fetch("https://localhost:7151/api/Reviews", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newReview),
+      });
+
+      if (!response.ok) {
+        throw new Error("Greška prilikom dodavanja recenzije");
+      }
+
+      // Refresh reviews after successful addition
+      fetchReviews();
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchReviews();
+  }, []);
+
   const workingHours = [
     { day: "Ponedeljak - Petak", hours: " 08:00 - 16:00" },
     { day: "Subota", hours: " 09:00 - 12:00" },
-    { day: "Nedelja", hours: " Zatvoreno" }
-  ];
-
-  const services = [
-    "Kompletan oftalmološki pregled",
-    "Laserske intervencije",
-    "Operacija katarakte",
-    "Dijagnostika očnih bolesti",
-    "Korekcija vida",
-    "Dečija oftalmologija"
+    { day: "Nedelja", hours: " Zatvoreno" },
   ];
 
   return (
@@ -77,7 +193,9 @@ const Home = () => {
         {slides.map((slide, slideIndex) => (
           <div
             key={slideIndex}
-            className={`slide ${currentIndex === slideIndex ? "slide-active" : ""}`}
+            className={`slide ${
+              currentIndex === slideIndex ? "slide-active" : ""
+            }`}
             style={{ backgroundImage: `url(${slide.url})` }}
           ></div>
         ))}
@@ -99,10 +217,11 @@ const Home = () => {
         <div className="section-content">
           <h2>Naša Misija</h2>
           <p>
-            U Oculus očnoj klinici, naša misija je da pružimo vrhunsku oftalmološku negu 
-            koristeći najsavremeniju tehnologiju i stručnost našeg medicinskog tima. 
-            Posvećeni smo očuvanju i poboljšanju vida naših pacijenata kroz personalizovani 
-            pristup i kontinuiranu edukaciju.
+            U Oculus očnoj klinici, naša misija je da pružimo vrhunsku
+            oftalmološku negu koristeći najsavremeniju tehnologiju i stručnost
+            našeg medicinskog tima. Posvećeni smo očuvanju i poboljšanju vida
+            naših pacijenata kroz personalizovani pristup i kontinuiranu
+            edukaciju.
           </p>
           <div className="mission-points">
             <div className="mission-point">
@@ -128,14 +247,20 @@ const Home = () => {
       <section className="services-section">
         <div className="section-content">
           <h2>Naše Usluge</h2>
-          <div className="services-grid">
-            {services.map((service, index) => (
-              <div key={index} className="service-card">
-                <CheckCircle2 className="icon" />
-                <p>{service}</p>
-              </div>
-            ))}
-          </div>
+          {loading ? (
+            <p>Učitavanje usluga...</p>
+          ) : error ? (
+            <p className="error">{error}</p>
+          ) : (
+            <div className="services-grid">
+              {services.map((service, index) => (
+                <div key={index} className="service-card">
+                  <CheckCircle2 className="icon" />
+                  <p>{service.name}</p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -175,7 +300,7 @@ const Home = () => {
               <Phone className="icon" />
               <div>
                 <h3>Telefon</h3>
-                <p>021/123-456</p>
+                <p>020/123-456</p>
                 <p>060/123-4567</p>
               </div>
             </div>
@@ -183,7 +308,7 @@ const Home = () => {
               <Calendar className="icon" />
               <div>
                 <h3>Zakazivanje</h3>
-                <button 
+                <button
                   className="appointment-button"
                   onClick={() => navigate("/usluge")}
                 >
@@ -194,6 +319,11 @@ const Home = () => {
           </div>
         </div>
       </section>
+      <ReviewSection
+        reviews={reviews}
+        onAddReview={handleAddReview}
+        role={userRole}
+      />
     </div>
   );
 };

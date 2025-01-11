@@ -54,7 +54,7 @@ const AddNewsModal = ({
           {errorMessage && content.length < 10 && (
             <p className="error-message">Sadržaj mora imati najmanje 10 slova.</p>
           )}
-          <div className="button-group">
+          <div className="modal-users-actions">
             <button type="submit" className="submit-btn">
               {editNews ? "Spremi" : "Dodaj"}
             </button>

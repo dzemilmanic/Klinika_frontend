@@ -1,0 +1,57 @@
+.service-category {
+    margin: 1rem 0;
+  }
+  
+  .service-category label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  
+  .service-category select {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    font-size: 1rem;
+    color: #333;
+    transition: border-color 0.3s, background-color 0.3s;
+    box-sizing: border-box; /* Osigurava da padding i border ne utiču na širinu */
+  }
+  
+  /* Fokusiranje na select polje */
+  .service-category select:focus {
+    border-color: #0066cc;
+    background-color: #f1faff;
+    outline: none;
+  }
+  
+  .service-category select option {
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+  }
+  
+  /* Styling for the "Nema dostupnih kategorija" option */
+  .service-category select option:disabled {
+    color: #888;
+    background-color: #f4f4f4;
+  }
+  
+  /* Responzivnost za male ekrane */
+  @media (max-width: 768px) {
+    .service-category select {
+      padding: 0.6rem 0.8rem; /* Manje paddinga za manje ekrane */
+      font-size: 0.9rem; /* Manji font */
+    }
+  }
+  
+  /* Još manji uređaji (mobilni telefoni) */
+  @media (max-width: 480px) {
+    .service-category select {
+      padding: 0.5rem 0.7rem; /* Manje paddinga */
+      font-size: 0.8rem; /* Manji font */
+    }
+  }
+  

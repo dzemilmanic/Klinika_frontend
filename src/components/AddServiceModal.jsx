@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-
+import './AddServiceModal.css';
 const AddServiceModal = ({
   newService,
   setNewService,
@@ -79,7 +79,7 @@ const AddServiceModal = ({
       }
 
       const data = await response.json();
-      console.log("Uspešno dodata usluga:", data);
+      //console.log("Uspešno dodata usluga:", data);
       setShowModal(false); // Zatvaranje modala
       setNewService({
         name: "",
@@ -87,7 +87,9 @@ const AddServiceModal = ({
         price: "",
         categoryId: "",
       }); // Resetovanje forme
-      setSelectedCategory(null); // Resetovanje selektovane kategorije
+      setSelectedCategory(null);
+      alert("Usluga je uspešno dodata!");
+      window.location.reload()
     } catch (err) {
       console.error("Greška:", err.message);
     }
@@ -130,7 +132,7 @@ const AddServiceModal = ({
               required
             />
           </div>
-          <div>
+          <div className="service-category">
             <label>Kategorija:</label>
             <select
               value={newService.categoryId}

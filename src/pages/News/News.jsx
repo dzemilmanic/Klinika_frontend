@@ -10,6 +10,9 @@ const News = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [editNews, setEditNews] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [newsToDeleteId, setNewsToDeleteId] = useState(null);
+
   const [userRole, setUserRole] = useState("User");
 
   useEffect(() => {
@@ -38,7 +41,10 @@ const News = () => {
       try {
         const payload = token.split(".")[1];
         const decodedPayload = JSON.parse(atob(payload));
-        const roles = decodedPayload["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || "User";
+        const roles =
+          decodedPayload[
+            "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+          ] || "User";
         setUserRole(roles);
       } catch (error) {
         setError("Error decoding token.");
@@ -48,7 +54,9 @@ const News = () => {
 
   const handleAddNews = async (title, content) => {
     if (title.length < 2 || content.length < 10) {
-      setErrorMessage("Title must have at least 2 characters and content at least 10 characters.");
+      setErrorMessage(
+        "Title must have at least 2 characters and content at least 10 characters."
+      );
       return;
     }
 
@@ -88,63 +96,88 @@ const News = () => {
 
   const handleEditNewsSubmit = async (title, content) => {
     if (title.length < 2 || content.length < 10) {
-      setErrorMessage("Title must have at least 2 characters and content at least 10 characters.");
+      setErrorMessage(
+        "Title must have at least 2 characters and content at least 10 characters."
+      );
       return;
     }
 
     const token = localStorage.getItem("jwtToken");
     try {
-      const response = await fetch(`https://localhost:7151/api/News/${editNews.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          id: editNews.id,
-          title,
-          content,
-          publishedDate: new Date().toISOString(),
-        }),
-      });
+      const response = await fetch(
+        `https://localhost:7151/api/News/${editNews.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            id: editNews.id,
+            title,
+            content,
+            publishedDate: new Date().toISOString(),
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Error updating news.");
       }
 
       const updatedNewsData = await response.json();
-      setNews(news.map((item) => (item.id === updatedNewsData.id ? updatedNewsData : item)));
+      setNews(
+        news.map((item) =>
+          item.id === updatedNewsData.id ? updatedNewsData : item
+        )
+      );
       setTitle("");
-    setContent("");
-    setEditNews(null);
-    setIsModalOpen(false);
-    setErrorMessage("");
+      setContent("");
+      setEditNews(null);
+      setIsModalOpen(false);
+      setErrorMessage("");
 
-    console.log("News updated successfully!");
+      //console.log("News updated successfully!");
       //window.location.reload();
     } catch (error) {
       setErrorMessage(error.message);
     }
   };
 
-  const handleDeleteNews = async (id) => {
+  const handleDeleteNewsIconClick = (id) => {
+    setNewsToDeleteId(id);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
     const token = localStorage.getItem("jwtToken");
     try {
-      const response = await fetch(`https://localhost:7151/api/News/${id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `https://localhost:7151/api/News/${newsToDeleteId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Error deleting news.");
       }
 
-      setNews(news.filter((item) => item.id !== id));
+      setNews(news.filter((item) => item.id !== newsToDeleteId));
+      setShowDeleteModal(false);
+      setNewsToDeleteId(null);
     } catch (error) {
       setError(error.message);
+      setShowDeleteModal(false);
+      setNewsToDeleteId(null);
     }
+  };
+  const cancelDelete = () => {
+    setShowDeleteModal(false);
+    setNewsToDeleteId(null);
   };
 
   const handleCloseModal = () => {
@@ -156,20 +189,20 @@ const News = () => {
   if (loading) {
     return (
       <div className="news-page">
-      <div className="loader">
-        <div className="loader-spinner"></div>
-      </div>
+        <div className="loader">
+          <div className="loader-spinner"></div>
+        </div>
       </div>
     );
   }
   if (error) {
     return (
       <div className="users-page">
-      <div className="error">
-        <div className="error-content">
-          <strong>Error: </strong>
-          <span>{error}</span>
-        </div>
+        <div className="error">
+          <div className="error-content">
+            <strong>Error: </strong>
+            <span>{error}</span>
+          </div>
         </div>
       </div>
     );
@@ -198,7 +231,7 @@ const News = () => {
                 {...newsItem}
                 isAdmin={isAdmin}
                 onEdit={handleEditNews}
-                onDelete={handleDeleteNews}
+                onDelete={() => handleDeleteNewsIconClick(newsItem.id)}
               />
             ))
           )}
@@ -213,6 +246,21 @@ const News = () => {
           editNews={editNews}
         />
       </div>
+      {showDeleteModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3>Da li ste sigurni da želite da obrišete ovu vest?</h3>
+            <div className="modal-users-actions">
+              <button className="confirm-button" onClick={confirmDelete}>
+                Da
+              </button>
+              <button className="cancel-button" onClick={cancelDelete}>
+                Ne
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

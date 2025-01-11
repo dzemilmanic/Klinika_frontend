@@ -47,11 +47,6 @@
     margin-top: 5px;
   }
   
-  .button-group {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-  }
   
   button {
     padding: 10px 15px;

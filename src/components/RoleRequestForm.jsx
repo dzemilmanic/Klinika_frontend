@@ -52,7 +52,7 @@ const RoleRequestForm = ({ onSubmit, onClose, isOpen }) => {
             <p className="error-message">{errorMessage}</p>
           )}
         </div>
-        <div className="button-group">
+        <div className="modal-users-actions">
           <button type="submit" className="submit-btn">
             Pošalji
           </button>

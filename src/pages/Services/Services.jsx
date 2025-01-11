@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Services.css";
 import AddServiceModal from "../../components/AddServiceModal";
+import { Pencil, Trash2 } from "lucide-react";
 
 const Services = () => {
   const [services, setServices] = useState([]);
@@ -14,6 +15,10 @@ const Services = () => {
   const [role, setRole] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedServiceId, setSelectedServiceId] = useState(null);
+  const [newPrice, setNewPrice] = useState("");
+  const [showPriceModal, setShowPriceModal] = useState(false);
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -25,7 +30,7 @@ const Services = () => {
         });
 
         if (!response.ok) {
-          throw new Error("Greška prilikom fetchovanja usluga.");
+          throw new Error("Greška prilikom fethovanja usluga.");
         }
 
         const data = await response.json();
@@ -61,14 +66,11 @@ const Services = () => {
           Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
         },
         body: JSON.stringify({
-            name: newService.name,
-            price: parseFloat(newService.price),
-            description: newService.description,
-            categoryId: newService.categoryId,
-            category: {
-                id: newService.categoryId, // Dodavanje celog objekta kategorije
-              },
-          }),
+          name: newService.name,
+          price: parseFloat(newService.price),
+          description: newService.description,
+          categoryId: newService.categoryId,
+        }),
       });
 
       if (!response.ok) {
@@ -76,7 +78,7 @@ const Services = () => {
         throw new Error(
           errorData?.errors
             ? Object.values(errorData.errors).flat().join(", ")
-            : "Greška prilikom dodavanja usluge."
+            : "Greška pri dodavanju usluge."
         );
       }
 
@@ -89,8 +91,89 @@ const Services = () => {
         price: "",
         categoryId: "",
       });
+      alert("Usluga uspešno dodata!");
     } catch (err) {
-        alert(`Greška: ${err.message}`);
+      alert(`Error: ${err.message}`);
+    }
+  };
+
+  const handleDeleteClick = (id) => {
+    setSelectedServiceId(id);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      const response = await fetch(`https://localhost:7151/api/Service/${selectedServiceId}`, {
+        method: "DELETE",
+      });
+      if (response.ok) {
+        setServices((prevServices) =>
+          prevServices.filter((service) => service.id !== selectedServiceId)
+        );
+        setShowDeleteModal(false);
+        alert("Usluga uspešno izbrisana!")
+      } else {
+        throw new Error("Greška pri brisanju usluge.");
+      }
+    } catch (err) {
+      //console.error("Greška pri brisanju usluge:", err.message);
+      alert("Greška pri brisanju usluge.");
+    }
+  };
+
+  const cancelDelete = () => {
+    setSelectedServiceId(null);
+    setShowDeleteModal(false);
+  };
+
+  const handlePriceChangeClick = (id) => {
+    setSelectedServiceId(id);
+    setShowPriceModal(true);
+  };
+
+  const handleUpdatePrice = async () => {
+    if (!newPrice || isNaN(newPrice)) {
+      alert("Unesite validnu cenu.");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `https://localhost:7151/api/Service/${selectedServiceId}/price`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+          },
+          body: JSON.stringify({ 
+            id: selectedServiceId, 
+            price: parseFloat(newPrice)  
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Greška pri ažuriranju cene usluge.");
+      }
+
+      // Update the local service list
+      setServices((prevServices) =>
+        prevServices.map((service) =>
+          service.id === selectedServiceId
+            ? { ...service, price: parseFloat(newPrice) }
+            : service
+        )
+      );
+
+      alert("Cena uspešno ažurirana!");
+      setShowPriceModal(false);
+      setNewPrice("");
+      setSelectedServiceId(null);
+    } catch (err) {
+      //console.error(err.message);
+      alert("Greška prilikom ažuriranja cene.");
     }
   };
 
@@ -142,20 +225,87 @@ const Services = () => {
         )}
 
         {services.length === 0 ? (
-          <p className="no-services">Nema dodatih usluga.</p>
+          <p className="no-services">Još nema dodatih usluga.</p>
         ) : (
           <div className="services-grid">
             {services.map((service) => (
               <div key={service.id} className="service-card">
-                <h3>{service.name}</h3>
+                <div className="service-card-header">
+                  <h3>{service.name}</h3>
+                  {role === "Admin" && (
+                    <div className="service-card-actions">
+                      <button
+                        className="icon-button"
+                        title="Promeni cenu"
+                        onClick={() => handlePriceChangeClick(service.id)}
+                      >
+                        <Pencil
+                          size={18}
+                          className="text-blue-500 hover:text-blue-700"
+                        />
+                      </button>
+                      <button
+                        className="icon-button"
+                        title="Obriši uslugu"
+                        onClick={() => handleDeleteClick(service.id)}
+                      >
+                        <Trash2
+                          size={18}
+                          className="text-red-500 hover:text-red-700"
+                        />
+                      </button>
+                    </div>
+                  )}
+                </div>
                 <p>{service.description}</p>
-                <p>Cena: {service.price} RSD</p>
-                {service.category && <p>Kategorija: {service.category.name}</p>}
+                <p>Price: {service.price} RSD</p>
+                {/* {service.category && <p>Category: {service.category.name}</p>} */}
+                <button className="reserve-button">Rezerviši termin</button>
               </div>
             ))}
           </div>
         )}
       </div>
+
+      {showDeleteModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3>Da li ste sigurni da želite da obrišete ovu uslugu?</h3>
+            <div className="modal-users-actions">
+              <button className="confirm-button" onClick={confirmDelete}>
+                Da
+              </button>
+              <button className="cancel-button" onClick={cancelDelete}>
+                Ne
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showPriceModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3>Ažuriraj cenu</h3>
+            <input
+              type="number"
+              value={newPrice}
+              onChange={(e) => setNewPrice(e.target.value)}
+              placeholder="Unesite novu cenu"
+            />
+            <div className="modal-actions">
+              <button className="confirm-button" onClick={handleUpdatePrice}>
+                Sačuvaj
+              </button>
+              <button
+                className="cancel-button"
+                onClick={() => setShowPriceModal(false)}
+              >
+                Otkaži
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
