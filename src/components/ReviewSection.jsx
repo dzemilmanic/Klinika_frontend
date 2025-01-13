@@ -159,9 +159,9 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
         </div>
 
         {isModalOpen && (
-        <div className="modal">
-          <div ref={modalRef} className="modal-content modal-content-wide">
-            <div className="modal-header">
+        <div className="modal-review">
+          <div ref={modalRef} className="modal-review-content modal-content-wide">
+            <div className="modal-review-header">
               <h3>Sve recenzije</h3>
               <button className="close-button" onClick={handleCloseModal}>
                 ×
@@ -188,9 +188,9 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
       )}
 
         {isAddReviewModalOpen && (
-          <div className="modal">
-            <div className="modal-content">
-              <div className="modal-header">
+          <div className="modal-review">
+            <div className="modal-review-content">
+              <div className="modal-review-header">
                 <h3>Dodaj recenziju</h3>
                 <button
                   className="close-button"

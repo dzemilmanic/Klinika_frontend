@@ -238,3 +238,146 @@
     width: 100%;
   }
 }
+
+.modal-appoints {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+  transition: var(--transition-smooth);
+}
+
+.modal-appoints-content {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+              0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  max-width: 500px;
+  width: 90%;
+  position: relative;
+  transform: translateY(0);
+  transition: var(--transition-smooth);
+}
+
+.modal-appoints-content h3 {
+  color: var(--primary-dark);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid var(--primary-light);
+  padding-bottom: 0.5rem;
+}
+
+.modal-appoints-content ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.modal-appoints-content li {
+  background-color: var(--neutral-light);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(6, 82, 197, 0.1);
+  transition: var(--transition-smooth);
+}
+
+.modal-appoints-content li:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.modal-appoints-content strong {
+  color: var(--primary-blue);
+  display: inline-block;
+  width: 80px;
+}
+
+.modal-appoints-content button {
+  background-color: var(--primary-blue);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 500;
+  margin-top: 1.5rem;
+  transition: var(--transition-smooth);
+}
+
+.modal-appoints-content button:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+.modal-appoints-content button:active {
+  transform: translateY(0);
+}
+
+.modal-appoints-content p {
+  color: var(--neutral-dark);
+  text-align: center;
+  padding: 2rem;
+  background-color: var(--neutral-light);
+  border-radius: 0.5rem;
+  font-style: italic;
+}
+.appointments-button {
+  background: linear-gradient(135deg, var(--primary-blue), var(--accent-blue));
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  width: 100%;
+  max-width: 300px;
+  margin: 1.5rem auto;
+  display: block;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 102, 255, 0.1),
+              0 2px 4px -1px rgba(0, 102, 255, 0.06);
+}
+
+.appointments-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 15px -3px rgba(0, 102, 255, 0.1),
+              0 4px 6px -2px rgba(0, 102, 255, 0.05);
+}
+
+.appointments-button:active {
+  transform: translateY(0);
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary-blue));
+}
+
+.appointments-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: var(--transition-smooth);
+}
+
+.appointments-button:hover::before {
+  left: 100%;
+}

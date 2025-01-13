@@ -129,6 +129,14 @@ const Services = () => {
     setShowDeleteModal(false);
   };
   const handleReserveClick = (service) => {
+    if (role === ""){ 
+      alert("Morate biti prijavljeni da biste rezervisali termin.");
+      return;
+    }
+    if (!service) {
+      console.error("Service is null or undefined");
+      return;
+    }
     setSelectedService(service);
     setIsAppointmentModalOpen(true);
   };

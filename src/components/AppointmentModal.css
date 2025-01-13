@@ -1,164 +1,290 @@
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
+.modal-appointment {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.modal-appointment-content {
+  background-color: white;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  animation: modal-slide-up 0.3s ease-out;
+}
+
+@keyframes modal-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-  
-  .appointment-modal {
-    background: var(--neutral-light);
-    border-radius: 12px;
-    width: 90%;
-    max-width: 600px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  .modal-header {
-    padding: 1.5rem;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+}
+
+.modal-appointment-header {
+  padding: 1.5rem;
+  background-color: var(--neutral-light);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-appointment-header h3 {
+  margin: 0;
+  color: var(--primary-dark);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--neutral-dark);
+  cursor: pointer;
+  padding: 0.25rem;
+  transition: var(--transition-smooth);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: var(--primary-dark);
+}
+
+.modal-appointment-body {
+  padding: 1.5rem;
+}
+
+.appointment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.service-info {
+  background-color: var(--neutral-light);
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(6, 82, 197, 0.1);
+}
+
+.service-info h4 {
+  margin: 0;
+  color: var(--primary-dark);
+  font-weight: 600;
+}
+
+.price {
+  margin: 0.5rem 0 0;
+  color: var(--primary-blue);
+  font-weight: 500;
+}
+
+.calendar-header,
+.time-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.calendar-header h4,
+.time-header h4 {
+  margin: 0;
+  color: var(--neutral-dark);
+  font-weight: 500;
+}
+
+.icon {
+  color: var(--primary-blue);
+}
+
+.date-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: var(--transition-smooth);
+  color: var(--neutral-dark);
+}
+
+.date-input:focus {
+  outline: none;
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 3px rgba(6, 82, 197, 0.1);
+}
+
+.time-slots {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 0.5rem;
+}
+
+.time-slot {
+  padding: 0.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  font-size: 0.875rem;
+  color: var(--neutral-dark);
+}
+
+.time-slot:hover {
+  background-color: var(--neutral-light);
+  border-color: var(--primary-light);
+}
+
+.time-slot.selected {
+  background-color: var(--primary-blue);
+  color: white;
+  border-color: var(--primary-blue);
+}
+
+.submit-button {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: var(--primary-blue);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.submit-button:hover:not(:disabled) {
+  background-color: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+.submit-button:disabled {
+  background-color: rgba(0, 0, 0, 0.1);
+  cursor: not-allowed;
+}
+
+@media (max-width: 480px) {
+  .modal-appointment-content {
+    width: 95%;
+    margin: 1rem;
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
   }
-  
-  .modal-header h3 {
-    color: var(--primary-dark);
-    margin: 0;
-    font-size: 1.5rem;
-  }
-  
-  .close-button {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    color: var(--neutral-dark);
-    cursor: pointer;
-    padding: 0.5rem;
-    transition: var(--transition-smooth);
-  }
-  
-  .close-button:hover {
-    color: var(--primary-dark);
-  }
-  
-  .appointment-form {
-    padding: 1.5rem;
-  }
-  
-  .service-info {
-    margin-bottom: 1.5rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  }
-  
-  .service-info h4 {
-    color: var(--primary-dark);
-    margin: 0 0 0.5rem 0;
-    font-size: 1.2rem;
-  }
-  
-  .price {
-    color: var(--primary-blue);
-    font-weight: 600;
-    font-size: 1.1rem;
-  }
-  
-  .calendar-header,
-  .time-header {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-  }
-  
-  .icon {
-    color: var(--primary-blue);
-  }
-  
-  .date-input {
-    width: 100%;
-    padding: 0.75rem;
-    border: 2px solid var(--primary-light);
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: var(--transition-smooth);
-  }
-  
-  .date-input:focus {
-    border-color: var(--primary-blue);
-    outline: none;
-  }
-  
-  .time-slots {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-    gap: 0.5rem;
-    margin-top: 1rem;
-  }
-  
-  .time-slot {
-    padding: 0.5rem;
-    border: 2px solid var(--primary-light);
-    border-radius: 6px;
-    background: white;
-    cursor: pointer;
-    transition: var(--transition-smooth);
-  }
-  
-  .time-slot:hover {
-    border-color: var(--primary-blue);
-    background: var(--neutral-light);
-  }
-  
-  .time-slot.selected {
-    background: var(--primary-blue);
-    color: white;
-    border-color: var(--primary-blue);
-  }
-  
-  .submit-button {
-    width: 100%;
-    padding: 1rem;
-    margin-top: 1.5rem;
-    background: var(--primary-blue);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition-smooth);
-  }
-  
-  .submit-button:hover {
-    background: var(--primary-dark);
-  }
-  
-  .submit-button:disabled {
-    background: #ccc;
-    cursor: not-allowed;
-  }
-  
-  .date-picker,
-  .time-picker {
-    margin-bottom: 1.5rem;
-  }
-  
-  @media (max-width: 768px) {
-    .appointment-modal {
-      width: 95%;
-      margin: 1rem;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-  
-    .time-slots {
-      grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-    }
-  }
+}
+.date-picker {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--neutral-light);
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  color: var(--neutral-dark);
+  background-color: white;
+  transition: var(--transition-smooth);
+  cursor: pointer;
+}
+
+.date-picker:hover {
+  border-color: var(--primary-light);
+}
+
+.date-picker:focus {
+  outline: none;
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 3px rgba(6, 82, 197, 0.15);
+}
+
+/* Calendar container */
+.date-picker .react-datepicker {
+  border: none;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 1rem;
+  font-family: inherit;
+}
+
+/* Header styles */
+.date-picker .react-datepicker__header {
+  background-color: var(--neutral-light);
+  border-bottom: none;
+  padding-top: 1rem;
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+}
+
+.date-picker .react-datepicker__current-month {
+  color: var(--neutral-dark);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+/* Navigation buttons */
+.date-picker .react-datepicker__navigation {
+  top: 1rem;
+}
+
+/* Day styles */
+.date-picker .react-datepicker__day {
+  margin: 0.2rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  line-height: 2.5rem;
+  border-radius: 50%;
+  color: var(--neutral-dark);
+  transition: var(--transition-smooth);
+}
+
+.date-picker .react-datepicker__day:hover {
+  background-color: var(--neutral-light);
+}
+
+.date-picker .react-datepicker__day--selected {
+  background-color: var(--primary-blue);
+  color: white;
+}
+
+.date-picker .react-datepicker__day--keyboard-selected {
+  background-color: var(--primary-light);
+  color: white;
+}
+
+.date-picker .react-datepicker__day--disabled {
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Week day names */
+.date-picker .react-datepicker__day-name {
+  margin: 0.2rem;
+  width: 2.5rem;
+  color: var(--neutral-dark);
+  font-weight: 500;
+}
+
+/* Today's date */
+.date-picker .react-datepicker__day--today {
+  font-weight: bold;
+  border: 2px solid var(--primary-light);
+}
+.time-slot.booked {
+  background-color: red;
+  color: white;
+  cursor: not-allowed;
+}
