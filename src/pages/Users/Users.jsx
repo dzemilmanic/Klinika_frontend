@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { UserCircle2, Mail, Trash } from "lucide-react";
+import { UserCircle2, Mail, Trash, Search } from "lucide-react";
 import "./Users.css";
 
 const Users = () => {
@@ -9,12 +9,13 @@ const Users = () => {
   const [showModal, setShowModal] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [newUser, setNewUser] = useState({
     firstName: "",
     lastName: "",
     email: "",
     password: "",
-    roles: ["User"], // Podrazumevana uloga
+    roles: ["User"],
   });
 
   useEffect(() => {
@@ -72,7 +73,6 @@ const Users = () => {
         );
       }
 
-      // Ažuriraj stanje korisnika
       setUsers((prevUsers) =>
         prevUsers.filter((user) => user.id !== userToDelete)
       );
@@ -129,6 +129,14 @@ const Users = () => {
     }
   };
 
+  const filteredUsers = users.filter((user) => {
+    const searchTerm = searchQuery.toLowerCase();
+    const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
+    const email = user.email.toLowerCase();
+    
+    return fullName.includes(searchTerm) || email.includes(searchTerm);
+  });
+
   if (loading) {
     return (
       <div className="users-page">
@@ -156,37 +164,57 @@ const Users = () => {
     <div className="users-page">
       <div className="users-container">
         <h2>Registrovani korisnici</h2>
-        <button className="add-user-btn" onClick={() => setIsModalOpen(true)}>
-          Dodaj novog korisnika
-        </button>
+        
+        <div className="users-header">
+          <div className="search-container">
+            <Search className="search-icon" size={20} />
+            <input
+              type="text"
+              placeholder="Pretraži korisnike..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="search-input"
+            />
+          </div>
+          <button className="add-user-btn" onClick={() => setIsModalOpen(true)}>
+            Dodaj novog korisnika
+          </button>
+        </div>
+
         <div className="card-container">
-          {users.map((user) => (
-            <div key={user.id} className="card">
-              <div className="card-content">
-                <div className="avatar-container">
-                  <UserCircle2 size={24} />
-                </div>
-                <div className="user-info">
-                  <h3 className="user-name">
-                    {user.firstName} {user.lastName}
-                  </h3>
-                  <div className="user-details">
-                    <div className="detail-item">
-                      <Mail size={16} />
-                      <span>{user.email}</span>
+          {filteredUsers.length === 0 ? (
+            <div className="no-results">
+              <p>Nema pronađenih korisnika</p>
+            </div>
+          ) : (
+            filteredUsers.map((user) => (
+              <div key={user.id} className="card">
+                <div className="card-content">
+                  <div className="avatar-container">
+                    <UserCircle2 size={24} />
+                  </div>
+                  <div className="user-info">
+                    <h3 className="user-name">
+                      {user.firstName} {user.lastName}
+                    </h3>
+                    <div className="user-details">
+                      <div className="detail-item">
+                        <Mail size={16} />
+                        <span>{user.email}</span>
+                      </div>
                     </div>
                   </div>
+                  <button
+                    className="delete-button"
+                    onClick={() => handleDelete(user.id)}
+                  >
+                    <Trash size={16} />
+                    Izbriši
+                  </button>
                 </div>
-                <button
-                  className="delete-button"
-                  onClick={() => handleDelete(user.id)}
-                >
-                  <Trash size={16} />
-                  Izbriši
-                </button>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
 

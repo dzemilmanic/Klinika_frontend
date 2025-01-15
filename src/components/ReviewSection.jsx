@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
-import { Trash2 } from "lucide-react";
+import { Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 import "./ReviewSection.css";
 
 const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
@@ -10,6 +10,7 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [reviewToDelete, setReviewToDelete] = useState(null);
+  const [activeIndex, setActiveIndex] = useState(0);
   
   const modalRef = useRef(null);
 
@@ -28,6 +29,25 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isModalOpen]);
+
+  const handlePrevSlide = () => {
+    setActiveIndex((prevIndex) => 
+      prevIndex === 0 ? reviews.length - 1 : prevIndex - 1
+    );
+  };
+
+  const handleNextSlide = () => {
+    setActiveIndex((prevIndex) => 
+      prevIndex === reviews.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
+  const getSlideClassName = (index) => {
+    if (index === activeIndex) return "review-item active";
+    if (index === (activeIndex - 1 + reviews.length) % reviews.length) return "review-item prev";
+    if (index === (activeIndex + 1) % reviews.length) return "review-item next";
+    return "review-item";
+  };
 
   const handleShowAllReviews = () => {
     setModalOpen(true);
@@ -53,11 +73,8 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
       try {
         const decodedToken = jwtDecode(token);
         const authorName = `${decodedToken.FirstName || "nepoznato"} ${decodedToken.LastName || "nepoznato"}`;
-  
-        // Dodaj authorName u telo recenzije
         const reviewWithAuthor = { ...newReview, authorName };
   
-        // Pozivanje funkcije za dodavanje recenzije
         onAddReview(reviewWithAuthor)
           .then(() => {
             handleCloseAddReviewModal();
@@ -75,6 +92,7 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
       setErrorMessage("Korisnik nije prijavljen.");
     }
   };
+
   const handleShowDeleteModal = (reviewId) => {
     setReviewToDelete(reviewId);
     setDeleteModalOpen(true);
@@ -97,7 +115,7 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
         });
 
         if (response.ok) {
-          onDeleteReview(reviewToDelete); // Ažuriraj prikaz recenzija nakon brisanja
+          onDeleteReview(reviewToDelete);
           setDeleteModalOpen(false);
           setReviewToDelete(null);
         } else {
@@ -111,19 +129,36 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
     }
   };
 
+  const StarRating = ({ rating }) => {
+    const stars = [];
+    for (let i = 0; i < 5; i++) {
+      stars.push(
+        <span key={i} className="star">
+          {i < rating ? '★' : '☆'}
+        </span>
+      );
+    }
+    return <div className="stars-container">{stars}</div>;
+  };
+
   return (
-    
     <section className="reviews-section">
       <div className="section-content">
         <h2>Recenzije</h2>
-        <div className="reviews-grid">
-          {reviews.slice(0, 3).map((review) => (
-            <div key={review.id} className="review-item">
-              <div className="review-rating">⭐ {review.rating}/5</div>
+        
+        <div className="reviews-carousel">
+          <button className="carousel-button prev" onClick={handlePrevSlide}>
+            <ChevronLeft size={24} />
+          </button>
+          
+          {reviews.map((review, index) => (
+            <div key={review.id} className={getSlideClassName(index)}>
+              <div className="review-rating">
+                <StarRating rating={review.rating} />
+              </div>
               <p className="review-content">{review.content}</p>
               <p className="review-author">
                 Autor: {review.authorName}
-                
               </p>
               <p className="review-date">
                 Datum: {new Date(review.createdOn).toLocaleDateString()}
@@ -132,72 +167,65 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
                 <button
                   className="delete-button"
                   title="Obriši recenziju"
-                  onClick={() => {
-                    setReviewToDelete(review.id);
-                    setDeleteModalOpen(true);
-                  }}
+                  onClick={() => handleShowDeleteModal(review.id)}
                 >
                   <Trash2 size={18} className="text-red-500 hover:text-red-700" />
                 </button>
               )}
             </div>
           ))}
+
+          <button className="carousel-button next" onClick={handleNextSlide}>
+            <ChevronRight size={24} />
+          </button>
         </div>
 
         <div className="review-actions">
-          <button className="show-all-button" onClick={handleShowAllReviews}>
+          {/* <button className="show-all-button" onClick={handleShowAllReviews}>
             Prikaži sve recenzije
-          </button>
+          </button> */}
           {role === "User" && (
-            <button
-              className="add-review-button"
-              onClick={handleShowAddReviewModal}
-            >
+            <button className="add-review-button" onClick={handleShowAddReviewModal}>
               Napiši recenziju
             </button>
           )}
         </div>
 
         {isModalOpen && (
-        <div className="modal-review">
-          <div ref={modalRef} className="modal-review-content modal-content-wide">
-            <div className="modal-review-header">
-              <h3>Sve recenzije</h3>
-              <button className="close-button" onClick={handleCloseModal}>
-                ×
-              </button>
-            </div>
-            <div className="modal-body">
-              <div className="reviews-grid-modal">
-                {reviews.map((review) => (
-                  <div key={review.id} className="review-item">
-                    <div className="review-rating">⭐ {review.rating}/5</div>
-                    <p className="review-content">{review.content}</p>
-                    <p className="review-author">
-                      Autor: {review.authorName || "Nepoznato"}
-                    </p>
-                    <p className="review-date">
-                      Datum: {new Date(review.createdOn).toLocaleDateString()}
-                    </p>
-                  </div>
-                ))}
+          <div className="modal-review">
+            <div ref={modalRef} className="modal-review-content modal-content-wide">
+              <div className="modal-review-header">
+                <h3>Sve recenzije</h3>
+                <button className="close-button" onClick={handleCloseModal}>×</button>
+              </div>
+              <div className="modal-body">
+                <div className="reviews-grid-modal">
+                  {reviews.map((review) => (
+                    <div key={review.id} className="review-item">
+                      <div className="review-rating">
+                        <StarRating rating={review.rating} />
+                      </div>
+                      <p className="review-content">{review.content}</p>
+                      <p className="review-author">
+                        Autor: {review.authorName || "Nepoznato"}
+                      </p>
+                      <p className="review-date">
+                        Datum: {new Date(review.createdOn).toLocaleDateString()}
+                      </p>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
         {isAddReviewModalOpen && (
           <div className="modal-review">
             <div className="modal-review-content">
               <div className="modal-review-header">
                 <h3>Dodaj recenziju</h3>
-                <button
-                  className="close-button"
-                  onClick={handleCloseAddReviewModal}
-                >
-                  ×
-                </button>
+                <button className="close-button" onClick={handleCloseAddReviewModal}>×</button>
               </div>
               <div className="modal-body">
                 <form className="review-form" onSubmit={handleSubmitReview}>
@@ -237,22 +265,17 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
           </div>
         )}
 
-{deleteModalOpen && (
+        {deleteModalOpen && (
           <div className="modal">
             <div className="modal-content">
               <div className="modal-header">
                 <h3>Potvrda brisanja</h3>
-                <button className="close-button" onClick={handleCloseDeleteModal}>
-                  ×
-                </button>
+                <button className="close-button" onClick={handleCloseDeleteModal}>×</button>
               </div>
               <div className="modal-body">
                 <p>Da li ste sigurni da želite da obrišete ovu recenziju?</p>
                 <div className="modal-actions">
-                  <button className="cancel-button" onClick={() => {
-              setDeleteModalOpen(false);
-              setReviewToDelete(null);
-            }}>
+                  <button className="cancel-button" onClick={handleCloseDeleteModal}>
                     Odustani
                   </button>
                   <button className="confirm-button" onClick={handleDeleteReview}>
@@ -263,7 +286,6 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
             </div>
           </div>
         )}
-
       </div>
     </section>
   );

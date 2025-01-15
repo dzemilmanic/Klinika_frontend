@@ -33,7 +33,7 @@ export default function Navbar() {
     localStorage.removeItem("jwtToken");
     setIsLoggedIn(false); // Osveži stanje
     navigate("/pocetna"); // Preusmeri korisnika na pocetna stranicu
-    window.location.reload()
+    window.location.reload();
   };
 
   const checkUserRole = (token) => {
@@ -41,7 +41,10 @@ export default function Navbar() {
       try {
         const payload = token.split(".")[1];
         const decodedPayload = JSON.parse(atob(payload));
-        const roles = decodedPayload["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || "User";
+        const roles =
+          decodedPayload[
+            "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+          ] || "User";
         setUserRole(roles);
       } catch (error) {
         setError("Error decoding token.");
@@ -77,11 +80,18 @@ export default function Navbar() {
             </NavLink>
           </li>
           {userRole === "Admin" && (
-            <li>
-              <NavLink to="/korisnici" onClick={() => setIsMenuOpen(false)}>
-                Korisnici
-              </NavLink>
-            </li>
+            <>
+              <li>
+                <NavLink to="/korisnici" onClick={() => setIsMenuOpen(false)}>
+                  Korisnici
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/termini" onClick={() => setIsMenuOpen(false)}>
+                  Termini
+                </NavLink>
+              </li>
+            </>
           )}
           {!isLoggedIn ? (
             <li>
@@ -104,16 +114,7 @@ export default function Navbar() {
             </>
           )}
         </ul>
-        <div className="search-container">
-          {isSearchActive && (
-            <input
-              type="text"
-              placeholder="Pretraži..."
-              className="search-bar"
-            />
-          )}
-          <i className="fas fa-search search-icon" onClick={toggleSearch}></i>
-        </div>
+        
       </nav>
     </header>
   );

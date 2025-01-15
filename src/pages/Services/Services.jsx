@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./Services.css";
 import AddServiceModal from "../../components/AddServiceModal";
 import AppointmentModal from "../../components/AppointmentModal";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, Search, ArrowUpDown } from "lucide-react";
 
 const Services = () => {
   const [services, setServices] = useState([]);
@@ -22,6 +22,9 @@ const Services = () => {
   const [showPriceModal, setShowPriceModal] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
   const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortType, setSortType] = useState("none"); // none, priceAsc, priceDesc, nameAsc, nameDesc
+
   useEffect(() => {
     const fetchServices = async () => {
       setLoading(true);
@@ -119,7 +122,6 @@ const Services = () => {
         throw new Error("Greška pri brisanju usluge.");
       }
     } catch (err) {
-      //console.error("Greška pri brisanju usluge:", err.message);
       alert("Greška pri brisanju usluge.");
     }
   };
@@ -128,6 +130,7 @@ const Services = () => {
     setSelectedServiceId(null);
     setShowDeleteModal(false);
   };
+
   const handleReserveClick = (service) => {
     if (role === ""){ 
       alert("Morate biti prijavljeni da biste rezervisali termin.");
@@ -172,7 +175,6 @@ const Services = () => {
         throw new Error("Greška pri ažuriranju cene usluge.");
       }
 
-      // Update the local service list
       setServices((prevServices) =>
         prevServices.map((service) =>
           service.id === selectedServiceId
@@ -186,10 +188,36 @@ const Services = () => {
       setNewPrice("");
       setSelectedServiceId(null);
     } catch (err) {
-      //console.error(err.message);
       alert("Greška prilikom ažuriranja cene.");
     }
   };
+
+  const handleSortChange = (newSortType) => {
+    setSortType(newSortType);
+  };
+
+  const filteredAndSortedServices = services
+    .filter((service) => {
+      const searchTerm = searchQuery.toLowerCase();
+      return (
+        service.name.toLowerCase().includes(searchTerm) ||
+        service.description.toLowerCase().includes(searchTerm)
+      );
+    })
+    .sort((a, b) => {
+      switch (sortType) {
+        case "priceAsc":
+          return a.price - b.price;
+        case "priceDesc":
+          return b.price - a.price;
+        case "nameAsc":
+          return a.name.localeCompare(b.name);
+        case "nameDesc":
+          return b.name.localeCompare(a.name);
+        default:
+          return 0;
+      }
+    });
 
   if (loading) {
     return (
@@ -219,6 +247,32 @@ const Services = () => {
       <div className="services-container">
         <div className="header-section">
           <h2>Naše usluge</h2>
+          <div className="filters-section">
+            <div className="search-container">
+              <Search className="search-icon" size={20} />
+              <input
+                type="text"
+                placeholder="Pretraži usluge..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="search-input"
+              />
+            </div>
+            <div className="sort-container">
+              <select
+                value={sortType}
+                onChange={(e) => handleSortChange(e.target.value)}
+                className="sort-select"
+              >
+                <option value="none">Sortiraj po...</option>
+                <option value="priceAsc">Cena (rastuće)</option>
+                <option value="priceDesc">Cena (opadajuće)</option>
+                <option value="nameAsc">Naziv (A-Z)</option>
+                <option value="nameDesc">Naziv (Z-A)</option>
+              </select>
+              <ArrowUpDown className="sort-icon" size={20} />
+            </div>
+          </div>
           {role === "Admin" && (
             <button
               onClick={() => setShowModal(true)}
@@ -238,11 +292,11 @@ const Services = () => {
           />
         )}
 
-        {services.length === 0 ? (
-          <p className="no-services">Još nema dodatih usluga.</p>
+        {filteredAndSortedServices.length === 0 ? (
+          <p className="no-services">Nema pronađenih usluga.</p>
         ) : (
           <div className="services-grid">
-            {services.map((service) => (
+            {filteredAndSortedServices.map((service) => (
               <div key={service.id} className="service-card">
                 <div className="service-card-header">
                   <h3>{service.name}</h3>
@@ -273,8 +327,9 @@ const Services = () => {
                 </div>
                 <p>{service.description}</p>
                 <p>Price: {service.price} RSD</p>
-                {/* {service.category && <p>Category: {service.category.name}</p>} */}
-                <button className="reserve-button" onClick={() => handleReserveClick(service)}>Rezerviši termin</button>
+                <button className="reserve-button" onClick={() => handleReserveClick(service)}>
+                  Rezerviši termin
+                </button>
               </div>
             ))}
           </div>

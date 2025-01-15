@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
+import AllAppointmentsModal from "../../components/AllAppointmentsModal";
 import "./Profile.css";
 
 export default function Profile() {
@@ -18,6 +19,8 @@ export default function Profile() {
   const [newBiography, setNewBiography] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [appointments, setAppointments] = useState([]);
+  const [role, setRole] = useState("");
+  const [doctorId, setDoctorId] = useState("");
   const [appointmentsModalOpen, setAppointmentsModalOpen] = useState(false);
 
   useEffect(() => {
@@ -46,6 +49,23 @@ export default function Profile() {
         } else {
           console.error("Greška prilikom učitavanja podataka o korisniku");
         }
+        if (token) {
+          const payload = token.split(".")[1];
+          const decodedPayload = JSON.parse(atob(payload));
+          const roles =
+            decodedPayload[
+              "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+            ];
+          setRole(roles);
+          //console.log(roles);
+          if (roles.includes("Doctor")) {
+            const doctorId =
+              decodedPayload[
+                "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+              ];
+            setDoctorId(doctorId);
+          }
+        }
       } catch (error) {
         console.error("Greška prilikom poziva API-ja:", error);
       }
@@ -65,18 +85,34 @@ export default function Profile() {
             "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
           ];
 
-        const response = await fetch(
-          `https://localhost:7151/api/Appointment/user/${patientId}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        let response;
+        if (role.includes("Doctor") && doctorId) {
+          // Ako je korisnik doktor, pozovi endpoint za doktora
+          response = await fetch(
+            `https://localhost:7151/api/Appointment/doctor/${doctorId}/appointments`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+        } else {
+          // Ako je korisnik pacijent, pozovi endpoint za pacijenta
+          response = await fetch(
+            `https://localhost:7151/api/Appointment/user/${patientId}`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+        }
 
         if (response.ok) {
           const data = await response.json();
+          console.log(data);
           setAppointments(data);
         } else {
           console.error("Greška prilikom dohvatanja termina.");
@@ -225,12 +261,14 @@ export default function Profile() {
             </div>
           </div>
         )}
-        <button
-          className="appointments-button"
-          onClick={handleOpenAppointmentsModal}
-        >
-          Vaši termini
-        </button>
+        {!role.includes("Admin") && (
+          <button
+            className="appointments-button"
+            onClick={handleOpenAppointmentsModal}
+          >
+            Vaši termini
+          </button>
+        )}
       </div>
 
       {isModalOpen && (
@@ -278,41 +316,11 @@ export default function Profile() {
           </div>
         </div>
       )}
-      {appointmentsModalOpen && (
-  <div className="modal-appoints">
-    <div className="modal-appoints-content">
-      <h3>Vaši termini</h3>
-      {appointments.length > 0 ? (
-        <ul>
-          {appointments.map((appointment) => {
-            const date = new Date(appointment.appointmentDate);
-            const formattedDate = date.toLocaleDateString('sr-RS', {
-              day: '2-digit',
-              month: '2-digit',
-              year: 'numeric',
-            });
-            const formattedTime = date.toLocaleTimeString('sr-RS', {
-              hour: '2-digit',
-              minute: '2-digit',
-            });
-
-            return (
-              <li key={appointment.id}>
-                <strong>Datum:</strong> {formattedDate} <br />
-                <strong>Vreme:</strong> {formattedTime} <br />
-                <strong>Usluga:</strong> {appointment.serviceName} <br />
-              </li>
-            );
-          })}
-        </ul>
-      ) : (
-        <p>Nemate zakazane termine.</p>
-      )}
-      <button onClick={handleCloseAppointmentsModal}>Zatvori</button>
-    </div>
-  </div>
-)}
-
+      <AllAppointmentsModal
+        isOpen={appointmentsModalOpen}
+        onClose={handleCloseAppointmentsModal}
+        appointments={appointments}
+      />
     </div>
   );
 }

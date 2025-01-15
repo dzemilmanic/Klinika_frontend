@@ -1,4 +1,3 @@
-
 /* Staff Page Layout */
 .staff-page {
   display: flex;
@@ -26,6 +25,31 @@
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
   padding: 2rem 0;
+  justify-items: center;
+  justify-content: center;
+}
+
+/* Ensure cards don't stretch full width when less than 3 cards */
+.cards-grid .staff-card {
+  width: 100%;
+  max-width: 380px;
+}
+
+/* Center cards when 2 or 1 in a row */
+@media (min-width: 901px) {
+  .cards-grid {
+    grid-template-columns: repeat(3, minmax(300px, 1fr));
+  }
+  
+  .cards-grid:has(.staff-card:last-child:nth-child(2)),
+  .cards-grid:has(.staff-card:last-child:nth-child(1)) {
+    grid-template-columns: repeat(2, minmax(300px, 380px));
+    justify-content: center;
+  }
+  
+  .cards-grid:has(.staff-card:last-child:nth-child(1)) {
+    grid-template-columns: minmax(300px, 380px);
+  }
 }
 
 /* Staff Card Design */
@@ -141,7 +165,7 @@
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   border: 1px solid rgba(0, 102, 255, 0.1);
   padding: 2rem;
-} 
+}
 
 .no-requests-message {
   text-align: center;
@@ -181,24 +205,43 @@
   background: var(--primary-blue);
 }
 
-
-
 /* Responsive Design */
-@media (max-width: 768px) {
+@media (max-width: 900px) {
+  .cards-grid {
+    grid-template-columns: repeat(2, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  
   .staff-container h2 {
     font-size: 2.25rem;
   }
-  
-  .cards-grid {
-    gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .staff-container {
+    padding: 0 1rem;
   }
   
   .staff-image {
     height: 240px;
   }
+  
+  .staff-container h2 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  .staff-container h2::after {
+    width: 60px;
+  }
 }
 
 @media (max-width: 640px) {
+  .cards-grid {
+    grid-template-columns: minmax(280px, 1fr);
+    padding: 1rem 0;
+  }
+  
   .modal-staff {
     padding: 1rem;
   }
@@ -207,7 +250,36 @@
     padding: 1.5rem;
   }
   
-  .staff-container h2 {
-    font-size: 2rem;
+  .staff-page {
+    padding: 1rem;
+  }
+  
+  .header-section {
+    margin-top: 3rem;
+  }
+  
+  .be-member-btn,
+  .view-requests-btn {
+    padding: 0.875rem 2rem;
+    font-size: 0.9375rem;
+  }
+}
+
+/* Print styles */
+@media print {
+  .staff-page {
+    background: white;
+    padding: 0;
+  }
+  
+  .staff-card {
+    break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #eee;
+  }
+  
+  .be-member-btn,
+  .view-requests-btn {
+    display: none;
   }
 }
