@@ -12,7 +12,11 @@ const Services = () => {
     price: "",
     categoryId: "",
   });
+  const [categories, setCategories] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [showModal2, setShowModal2] = useState(false);
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
   const [role, setRole] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -60,6 +64,26 @@ const Services = () => {
 
     fetchServices();
   }, []);
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch("https://localhost:7151/api/ServiceCategory", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+        },
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        setCategories(data);
+      } else {
+        throw new Error("Greška prilikom učitavanja kategorija.");
+      }
+    } catch (error) {
+      console.error("Greška:", error);
+    }
+  };
+  
 
   const handleAddService = async (e) => {
     e.preventDefault();
@@ -192,6 +216,64 @@ const Services = () => {
     }
   };
 
+  const handleAddCategory = async () => {
+    if (!name || !description) {
+      alert("Molimo popunite sva polja.");
+      return;
+    }
+  
+    try {
+      const checkResponse = await fetch(`https://localhost:7151/api/ServiceCategory/exists?name=${encodeURIComponent(name)}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+        },
+      });
+  
+      if (!checkResponse.ok) {
+        throw new Error("Greška prilikom provere postojanja kategorije.");
+      }
+  
+      const categoryExists = await checkResponse.json();
+      if (categoryExists) {
+        alert("Kategorija sa ovim imenom već postoji.");
+        return;
+      }
+  
+      const response = await fetch("https://localhost:7151/api/ServiceCategory", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+        },
+        body: JSON.stringify({ name, description }),
+      });
+  
+      if (response.ok) {
+        const newCategory = await response.json();
+        onAddCategory(newCategory);
+        setShowModal2(false);
+        setName("");
+        setDescription("");
+        alert("Kategorija uspešno dodata!");
+      } else {
+        alert("Greška prilikom dodavanja kategorije.");
+      }
+    } catch (error) {
+      console.error("Greška:", error);
+    }
+  };
+  
+
+  const onAddCategory = (newCategory) => {
+    setCategories((prevCategories) => [...prevCategories, newCategory]);
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+
   const handleSortChange = (newSortType) => {
     setSortType(newSortType);
   };
@@ -281,6 +363,14 @@ const Services = () => {
               Dodaj novu uslugu
             </button>
           )}
+          {role === "Admin" && (
+        <button
+          onClick={() => setShowModal2(true)}
+          className="add-service-btn"
+        >
+          Dodaj novu kategoriju
+        </button>
+      )}
         </div>
 
         {showModal && (
@@ -327,9 +417,11 @@ const Services = () => {
                 </div>
                 <p>{service.description}</p>
                 <p>Price: {service.price} RSD</p>
+                {role !== "Admin" && (
                 <button className="reserve-button" onClick={() => handleReserveClick(service)}>
                   Rezerviši termin
                 </button>
+                )}
               </div>
             ))}
           </div>
@@ -377,6 +469,26 @@ const Services = () => {
                 Otkaži
               </button>
             </div>
+          </div>
+        </div>
+      )}
+      {showModal2 && (
+        <div className="modal">
+          <div className="modal-content">
+            <h2>Dodaj novu kategoriju usluge</h2>
+            <input
+              type="text"
+              placeholder="Naziv"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+            <textarea
+              placeholder="Opis"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+            <button onClick={handleAddCategory}>Dodaj</button>
+            <button onClick={() => setShowModal2(false)}>Zatvori</button>
           </div>
         </div>
       )}

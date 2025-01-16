@@ -10,6 +10,7 @@ const Users = () => {
   const [userToDelete, setUserToDelete] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedRole, setSelectedRole] = useState("all");
   const [newUser, setNewUser] = useState({
     firstName: "",
     lastName: "",
@@ -37,6 +38,7 @@ const Users = () => {
         }
 
         const data = await response.json();
+        console.log(data);
         setUsers(data);
       } catch (err) {
         setError(err.message);
@@ -133,8 +135,14 @@ const Users = () => {
     const searchTerm = searchQuery.toLowerCase();
     const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
     const email = user.email.toLowerCase();
+    const matchesSearch = fullName.includes(searchTerm) || email.includes(searchTerm);
     
-    return fullName.includes(searchTerm) || email.includes(searchTerm);
+    // Filter by role if a specific role is selected
+    if (selectedRole !== "all") {
+      return matchesSearch && user.roles.includes(selectedRole);
+    }
+    
+    return matchesSearch;
   });
 
   if (loading) {
@@ -166,15 +174,27 @@ const Users = () => {
         <h2>Registrovani korisnici</h2>
         
         <div className="users-header">
-          <div className="search-container">
-            <Search className="search-icon" size={20} />
-            <input
-              type="text"
-              placeholder="Pretraži korisnike..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="search-input"
-            />
+          <div className="filters-container">
+            <div className="search-container">
+              <Search className="search-icon" size={20} />
+              <input
+                type="text"
+                placeholder="Pretraži korisnike..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="search-input"
+              />
+            </div>
+            <select
+              value={selectedRole}
+              onChange={(e) => setSelectedRole(e.target.value)}
+              className="role-select"
+            >
+              <option value="all">Svi korisnici</option>
+              <option value="User">Korisnici</option>
+              <option value="Doctor">Lekari</option>
+              <option value="Admin">Administratori</option>
+            </select>
           </div>
           <button className="add-user-btn" onClick={() => setIsModalOpen(true)}>
             Dodaj novog korisnika
@@ -190,9 +210,17 @@ const Users = () => {
             filteredUsers.map((user) => (
               <div key={user.id} className="card">
                 <div className="card-content">
-                  <div className="avatar-container">
-                    <UserCircle2 size={24} />
-                  </div>
+                <div className="avatar-container">
+            {user.profileImagePath ? (
+              <img
+                src={user.profileImagePath}
+                alt={`${user.firstName} ${user.lastName}`}
+                style={{ width: '100%', height: '100%', borderRadius: '50%' }}
+              />
+            ) : (
+              <UserCircle2 size={24} />
+            )}
+          </div>
                   <div className="user-info">
                     <h3 className="user-name">
                       {user.firstName} {user.lastName}
@@ -201,6 +229,13 @@ const Users = () => {
                       <div className="detail-item">
                         <Mail size={16} />
                         <span>{user.email}</span>
+                      </div>
+                      <div className="user-roles">
+                        {user.roles.map((role, index) => (
+                          <span key={index} className={`role-badge ${role.toLowerCase()}`}>
+                            {role}
+                          </span>
+                        ))}
                       </div>
                     </div>
                   </div>
@@ -267,6 +302,16 @@ const Users = () => {
                 value={newUser.password}
                 onChange={handleInputChange}
               />
+              <select
+                name="roles"
+                value={newUser.roles[0]}
+                onChange={(e) => setNewUser(prev => ({ ...prev, roles: [e.target.value] }))}
+                className="role-select"
+              >
+                <option value="User">Korisnik</option>
+                <option value="Doctor">Lekar</option>
+                <option value="Admin">Administrator</option>
+              </select>
               <button className="confirm-button" onClick={handleAddUser}>
                 Dodaj
               </button>

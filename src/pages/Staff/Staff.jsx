@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import RoleRequestForm from "../../components/RoleRequestForm";
 import RoleRequests from "../../components/RoleRequests";
 import "./Staff.css";
+
 const Staff = () => {
   const [users, setUsers] = useState([]);
   const [error, setError] = useState("");
@@ -11,7 +12,7 @@ const Staff = () => {
   const [requestStatus, setRequestStatus] = useState("");
   const [requests, setRequests] = useState([]);
   const [showRequests, setShowRequests] = useState(false);
-  const [expandedCard, setExpandedCard] = useState(null);
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -149,27 +150,24 @@ const Staff = () => {
     }
   };
 
-  const handleCardClick = (userId) => {
-    setExpandedCard(expandedCard === userId ? null : userId); // Prebacujemo stanje između otvorenog i zatvorenog
-  };
-
   if (loading) {
     return (
       <div className="news-page">
-      <div className="loader">
-        <div className="loader-spinner"></div>
-      </div>
+        <div className="loader">
+          <div className="loader-spinner"></div>
+        </div>
       </div>
     );
   }
+
   if (error) {
     return (
       <div className="users-page">
-      <div className="error">
-        <div className="error-content">
-          <strong>Error: </strong>
-          <span>{error}</span>
-        </div>
+        <div className="error">
+          <div className="error-content">
+            <strong>Error: </strong>
+            <span>{error}</span>
+          </div>
         </div>
       </div>
     );
@@ -207,42 +205,35 @@ const Staff = () => {
           )}
         </div>
 
-
         {users.length === 0 ? (
           <p className="no-users">Nema dodatih lekara.</p>
         ) : (
-        <div className="cards-grid">
-          {users.map((user) => (
-            <div
-              key={user.id}
-              className="staff-card"
-              onClick={() => handleCardClick(user.id)} 
-            >
-              <img
-                src={
-                  user.profileImagePath ||
-                  "https://apotekasombor.rs/wp-content/uploads/2020/12/izabrani-lekar-730x365.jpg"
-                }
-                alt={`${user.firstName} ${user.lastName}`}
-                className="staff-image"
-              />
-              <h3 className="staff-name">
-                {user.firstName} {user.lastName}
-              </h3>
+          <div className="cards-grid">
+            {users.map((user) => (
+              <div
+                key={user.id}
+                className="staff-card"
+                onClick={() => setSelectedDoctor(user)}
+              >
+                <img
+                  src={
+                    user.profileImagePath ||
+                    "https://apotekasombor.rs/wp-content/uploads/2020/12/izabrani-lekar-730x365.jpg"
+                  }
+                  alt={`${user.firstName} ${user.lastName}`}
+                  className="staff-image"
+                />
+                <h3 className="staff-name">
+                  {user.firstName} {user.lastName}
+                </h3>
+              </div>
+            ))}
+          </div>
+        )}
 
-              {expandedCard === user.id && (
-                <div className="staff-details">
-                  <p className="staff-email">{user.email}</p>
-                  <p className="staff-biography">{user.biography}</p>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-)}
         {showForm && (
           <div className="modal" onClick={() => setShowForm(false)}>
-            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div onClick={(e) => e.stopPropagation()}>
               <RoleRequestForm
                 onSubmit={handleFormSubmit}
                 onClose={() => setShowForm(false)}
@@ -260,6 +251,39 @@ const Staff = () => {
               ) : (
                 <RoleRequests requests={requests} onAction={handleRequestAction} />
               )}
+            </div>
+          </div>
+        )}
+
+        {selectedDoctor && (
+          <div className="modal" onClick={() => setSelectedDoctor(null)}>
+            <div className="doctor-modal-content" onClick={(e) => e.stopPropagation()}>
+              <div className="doctor-modal-header">
+                <img
+                  src={
+                    selectedDoctor.profileImagePath ||
+                    "https://apotekasombor.rs/wp-content/uploads/2020/12/izabrani-lekar-730x365.jpg"
+                  }
+                  alt={`${selectedDoctor.firstName} ${selectedDoctor.lastName}`}
+                  className="doctor-modal-image"
+                />
+                <div className="doctor-modal-title">
+                  <h3>{selectedDoctor.firstName} {selectedDoctor.lastName}</h3>
+                  <p className="doctor-modal-email">{selectedDoctor.email}</p>
+                </div>
+              </div>
+              <div className="doctor-modal-body">
+                <div className="doctor-modal-biography">
+                  <h4>Biografija</h4>
+                  <p>{selectedDoctor.biography}</p>
+                </div>
+              </div>
+              <button 
+                className="doctor-modal-close"
+                onClick={() => setSelectedDoctor(null)}
+              >
+                Zatvori
+              </button>
             </div>
           </div>
         )}

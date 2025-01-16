@@ -161,3 +161,53 @@
       font-size: 0.9rem;
     }
   }
+  .filter-section {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+  }
+  
+  .filter-group {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  
+  .filter-group label {
+    font-weight: 500;
+    color: #374151;
+  }
+  
+  .sort-container {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .sort-container select {
+    appearance: none;
+    padding: 0.5rem 2.5rem 0.5rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    min-width: 200px;
+    background-color: white;
+    cursor: pointer;
+    font-size: 0.875rem;
+  }
+  
+  .sort-container select:focus {
+    outline: none;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
+  }
+  
+  .sort-icon {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6b7280;
+    pointer-events: none;
+  }

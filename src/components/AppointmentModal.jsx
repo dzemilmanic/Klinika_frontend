@@ -130,7 +130,6 @@ const AppointmentModal = ({ isOpen, onClose, service }) => {
         const decoded = jwtDecode(token); 
         const patientId = decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']; 
         const patientFullName = `${decoded.FirstName} ${decoded.LastName}`;
-
         const appointmentData = {
           serviceId: service.id,
           serviceName: service.name,

@@ -50,6 +50,27 @@ const AddServiceModal = ({
       console.error("Greška:", err.message);
     }
   };
+  const checkIfServiceExists = async (name) => {
+    try {
+      const response = await fetch(`https://localhost:7151/api/Service/exists?name=${encodeURIComponent(name)}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error("Greška prilikom provere postojanja usluge.");
+      }
+  
+      const exists = await response.json();
+      return exists;
+    } catch (err) {
+      console.error("Greška:", err.message);
+      return false;
+    }
+  };
+  
 
   // Učitavanje kategorija prilikom montaže komponente
   useEffect(() => {
@@ -59,6 +80,13 @@ const AddServiceModal = ({
   // Funkcija za dodavanje nove usluge
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+
+    const serviceExists = await checkIfServiceExists(newService.name);
+  if (serviceExists) {
+    alert("Usluga sa tim imenom već postoji.");
+    return;
+  }
+
     try {
       const response = await fetch("https://localhost:7151/api/Service", {
         method: "POST",

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { ArrowUpDown } from "lucide-react";
 import NewsCard from "../../components/NewsCard";
 import AddNewsModal from "../../components/AddNewsModal";
 import "./News.css";
@@ -12,7 +13,7 @@ const News = () => {
   const [editNews, setEditNews] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [newsToDeleteId, setNewsToDeleteId] = useState(null);
-
+  const [sortOrder, setSortOrder] = useState("desc"); // "desc" for newest first, "asc" for oldest first
   const [userRole, setUserRole] = useState("User");
 
   useEffect(() => {
@@ -33,6 +34,17 @@ const News = () => {
       setError(error.message);
       setLoading(false);
     }
+  };
+
+  const toggleSortOrder = () => {
+    const newSortOrder = sortOrder === "desc" ? "asc" : "desc";
+    setSortOrder(newSortOrder);
+    const sortedNews = [...news].sort((a, b) => {
+      const dateA = new Date(a.publishedDate).getTime();
+      const dateB = new Date(b.publishedDate).getTime();
+      return newSortOrder === "desc" ? dateB - dateA : dateA - dateB;
+    });
+    setNews(sortedNews);
   };
 
   const checkUserRole = () => {
@@ -131,14 +143,9 @@ const News = () => {
           item.id === updatedNewsData.id ? updatedNewsData : item
         )
       );
-      setTitle("");
-      setContent("");
       setEditNews(null);
       setIsModalOpen(false);
       setErrorMessage("");
-
-      //console.log("News updated successfully!");
-      //window.location.reload();
     } catch (error) {
       setErrorMessage(error.message);
     }
@@ -175,6 +182,7 @@ const News = () => {
       setNewsToDeleteId(null);
     }
   };
+
   const cancelDelete = () => {
     setShowDeleteModal(false);
     setNewsToDeleteId(null);
@@ -195,6 +203,7 @@ const News = () => {
       </div>
     );
   }
+
   if (error) {
     return (
       <div className="users-page">
@@ -213,13 +222,20 @@ const News = () => {
   return (
     <div className="news-page">
       <div className="news-container">
-        <h2>Vesti</h2>
-
-        {isAdmin && (
-          <button className="add-news-btn" onClick={() => setIsModalOpen(true)}>
-            Dodaj novu vest
-          </button>
-        )}
+        <div className="news-header">
+          <h2>Vesti</h2>
+          <div className="news-controls">
+            <button className="sort-button" onClick={toggleSortOrder}>
+              <ArrowUpDown size={20} />
+              {sortOrder === "desc" ? "Najnovije prvo" : "Najstarije prvo"}
+            </button>
+            {isAdmin && (
+              <button className="add-news-btn" onClick={() => setIsModalOpen(true)}>
+                Dodaj novu vest
+              </button>
+            )}
+          </div>
+        </div>
 
         <div className="news-cards">
           {news.length === 0 ? (

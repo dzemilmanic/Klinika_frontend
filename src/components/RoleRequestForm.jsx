@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import './RoleRequestForm.css';
 
 const RoleRequestForm = ({ onSubmit, onClose, isOpen }) => {
   const [biography, setBiography] = useState("");

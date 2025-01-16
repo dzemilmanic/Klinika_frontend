@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { UserPlus } from 'lucide-react';
-import ApproveAppointmentModal from '../../components/ApproveAppointmentModal';
+import { UserPlus } from "lucide-react";
+import ApproveAppointmentModal from "../../components/ApproveAppointmentModal";
 import "./Appointments.css";
 
 const Appointments = () => {
@@ -35,7 +35,9 @@ const Appointments = () => {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const response = await fetch("https://localhost:7151/api/Roles/doctors");
+        const response = await fetch(
+          "https://localhost:7151/api/Roles/doctors"
+        );
         if (!response.ok) throw new Error("Failed to fetch doctors");
         const data = await response.json();
         setDoctors(data);
@@ -64,7 +66,9 @@ const Appointments = () => {
       const updatedAppointment = await response.json();
       setAppointments((prevAppointments) =>
         prevAppointments.map((appointment) =>
-          appointment.id === selectedAppointment.id ? updatedAppointment : appointment
+          appointment.id === selectedAppointment.id
+            ? updatedAppointment
+            : appointment
         )
       );
       setModalOpen(false);
@@ -136,72 +140,74 @@ const Appointments = () => {
   }
   return (
     <div className="appointments-page">
-    <div className="container">
-      <div className="filter">
-        <label htmlFor="statusFilter">Prikaži po statusu: </label>
-        <select
-          id="statusFilter"
-          value={statusFilter}
-          onChange={handleStatusChange}
-        >
-          <option value="">Svi</option>
-          <option value="0">Za dodelu lekara</option>
-          <option value="1">Odobren</option>
-          <option value="2">Završen</option>
-          <option value="3">Otkazan</option>
-        </select>
-      </div>
+      <div className="container">
+        <div className="filter">
+          <label htmlFor="statusFilter">Prikaži po statusu: </label>
+          <select
+            id="statusFilter"
+            value={statusFilter}
+            onChange={handleStatusChange}
+          >
+            <option value="">Svi</option>
+            <option value="0">Za dodelu lekara</option>
+            <option value="1">Odobren</option>
+            <option value="2">Završen</option>
+            <option value="3">Otkazan</option>
+          </select>
+        </div>
 
-      <div className="appointments-grid">
-        {filteredAppointments.map((appointment) => (
-          <div key={appointment.id} className="card">
-            <h3>{appointment.serviceName}</h3>
-            <p>
-              <strong>Date:</strong>{" "}
-              {new Date(appointment.appointmentDate).toLocaleString()}
-            </p>
-            <div className={getStatusBadgeClass(appointment.status)}>
-              {statusMap[appointment.status] || "Nepoznato"}
-            </div>
-            
-            {appointment.status === 0 && (
-              <button 
-                className="approve-button"
-                onClick={() => openDoctorModal(appointment)}
-              >
-                <UserPlus size={18} style={{ marginRight: '8px' }} />
-                Dodeli lekaru
-              </button>
-            )}
-          </div>
-        ))}
-      </div>
+        <div className="appointments-grid">
+          {filteredAppointments.map((appointment) => (
+            <div key={appointment.id} className="card">
+              <h3>{appointment.serviceName}</h3>
+              <p>
+                <strong>Date:</strong>{" "}
+                {new Date(appointment.appointmentDate).toLocaleString()}
+              </p>
+              <div className={getStatusBadgeClass(appointment.status)}>
+                {statusMap[appointment.status] || "Nepoznato"}
+              </div>
 
-      <ApproveAppointmentModal 
-        isOpen={modalOpen} 
-        onClose={() => setModalOpen(false)}
-        title="Izaberi lekara"
-      >
-        <div className="doctor-list">
-          {doctors.map((doctor) => (
-            <div
-              key={doctor.id}
-              className={`doctor-item ${selectedDoctor?.id === doctor.id ? 'selected' : ''}`}
-              onClick={() => setSelectedDoctor(doctor)}
-            >
-              {doctor.firstName} {doctor.lastName}
+              {appointment.status === 0 && (
+                <button
+                  className="approve-button"
+                  onClick={() => openDoctorModal(appointment)}
+                >
+                  <UserPlus size={18} style={{ marginRight: "8px" }} />
+                  Dodeli lekaru
+                </button>
+              )}
             </div>
           ))}
         </div>
-        <button
-          className="approve-button"
-          onClick={handleAssignDoctor}
-          disabled={!selectedDoctor}
+
+        <ApproveAppointmentModal
+          isOpen={modalOpen}
+          onClose={() => setModalOpen(false)}
+          title="Izaberi lekara"
         >
-          Odobri i dodeli lekara
-        </button>
-      </ApproveAppointmentModal>
-    </div>
+          <div className="doctor-list">
+            {doctors.map((doctor) => (
+              <div
+                key={doctor.id}
+                className={`doctor-item ${
+                  selectedDoctor?.id === doctor.id ? "selected" : ""
+                }`}
+                onClick={() => setSelectedDoctor(doctor)}
+              >
+                {doctor.firstName} {doctor.lastName}
+              </div>
+            ))}
+          </div>
+          <button
+            className="approve-button"
+            onClick={handleAssignDoctor}
+            disabled={!selectedDoctor}
+          >
+            Odobri i dodeli lekara
+          </button>
+        </ApproveAppointmentModal>
+      </div>
     </div>
   );
 };

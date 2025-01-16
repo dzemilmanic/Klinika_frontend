@@ -113,6 +113,24 @@
   font-size: 1.5rem;
   line-height: 1;
 }
+.stars-interactive {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.star-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.star-button:hover {
+  transform: scale(1.1);
+}
+
 
 .review-content {
   color: var(--neutral-dark);

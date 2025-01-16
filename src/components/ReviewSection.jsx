@@ -1,16 +1,17 @@
 import React, { useState, useRef, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
-import { Trash2, ChevronLeft, ChevronRight } from "lucide-react";
+import { Trash2, ChevronLeft, ChevronRight, Star } from "lucide-react";
 import "./ReviewSection.css";
 
 const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [isAddReviewModalOpen, setAddReviewModalOpen] = useState(false);
-  const [newReview, setNewReview] = useState({ rating: "", content: "" });
+  const [newReview, setNewReview] = useState({ rating: 0, content: "" });
   const [errorMessage, setErrorMessage] = useState("");
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [reviewToDelete, setReviewToDelete] = useState(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
   
   const modalRef = useRef(null);
 
@@ -63,7 +64,8 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
 
   const handleCloseAddReviewModal = () => {
     setAddReviewModalOpen(false);
-    setNewReview({ rating: "", content: "" });
+    setNewReview({ rating: 0, content: "" });
+    setHoverRating(0);
   };
 
   const handleSubmitReview = (e) => {
@@ -78,7 +80,7 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
         onAddReview(reviewWithAuthor)
           .then(() => {
             handleCloseAddReviewModal();
-            setNewReview({ rating: "", content: "" });
+            setNewReview({ rating: 0, content: "" });
             setErrorMessage("");
           })
           .catch((error) => {
@@ -181,9 +183,6 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
         </div>
 
         <div className="review-actions">
-          {/* <button className="show-all-button" onClick={handleShowAllReviews}>
-            Prikaži sve recenzije
-          </button> */}
           {role === "User" && (
             <button className="add-review-button" onClick={handleShowAddReviewModal}>
               Napiši recenziju
@@ -230,20 +229,28 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
               <div className="modal-body">
                 <form className="review-form" onSubmit={handleSubmitReview}>
                   <div className="form-group">
-                    <label>Ocena (1-5):</label>
-                    <input
-                      type="number"
-                      min="1"
-                      max="5"
-                      value={newReview.rating}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        if (value >= 1 && value <= 5) {
-                          setNewReview({ ...newReview, rating: value });
-                        }
-                      }}
-                      required
-                    />
+                    <label>Ocena:</label>
+                    <div className="stars-interactive">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button
+                          key={star}
+                          type="button"
+                          className="star-button"
+                          onClick={() => setNewReview({ ...newReview, rating: star })}
+                          onMouseEnter={() => setHoverRating(star)}
+                          onMouseLeave={() => setHoverRating(0)}
+                        >
+                          <Star
+                            size={24}
+                            className={`${
+                              star <= (hoverRating || newReview.rating)
+                                ? "text-yellow-400 fill-yellow-400"
+                                : "text-gray-300"
+                            }`}
+                          />
+                        </button>
+                      ))}
+                    </div>
                   </div>
                   <div className="form-group">
                     <label>Komentar:</label>
@@ -255,7 +262,11 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
                       required
                     />
                   </div>
-                  <button type="submit" className="submit-button">
+                  <button 
+                    type="submit" 
+                    className="submit-button"
+                    disabled={newReview.rating === 0}
+                  >
                     Pošalji
                   </button>
                 </form>

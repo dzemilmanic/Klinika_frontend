@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import AllAppointmentsModal from "../../components/AllAppointmentsModal";
+import MedicalRecordModal from "../../components/MedicalRecordModal";
 import "./Profile.css";
 
 export default function Profile() {
@@ -22,6 +23,7 @@ export default function Profile() {
   const [role, setRole] = useState("");
   const [doctorId, setDoctorId] = useState("");
   const [appointmentsModalOpen, setAppointmentsModalOpen] = useState(false);
+  const [isMedicalRecordModalOpen, setIsMedicalRecordModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -269,6 +271,17 @@ export default function Profile() {
             Vaši termini
           </button>
         )}
+        {role.includes('User') && !role.includes("Doctor") &&(
+        <button
+        onClick={async () => {
+          await fetchAppointments(); 
+          setIsMedicalRecordModalOpen(true);
+        }}
+          className="appointments-button"
+        >
+          Vaš karton
+        </button>
+      )}
       </div>
 
       {isModalOpen && (
@@ -319,6 +332,11 @@ export default function Profile() {
       <AllAppointmentsModal
         isOpen={appointmentsModalOpen}
         onClose={handleCloseAppointmentsModal}
+        appointments={appointments}
+      />
+      <MedicalRecordModal
+        isOpen={isMedicalRecordModalOpen}
+        onClose={() => setIsMedicalRecordModalOpen(false)}
         appointments={appointments}
       />
     </div>

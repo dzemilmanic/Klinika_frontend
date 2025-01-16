@@ -1,0 +1,120 @@
+.modal-content {
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 2rem;
+  background-color: white;
+  border-radius: 1rem;
+  box-shadow: 0 10px 30px rgba(6, 82, 197, 0.1);
+  border: 1px solid rgba(6, 82, 197, 0.1);
+}
+
+.title {
+  color: var(--neutral-dark);
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 1rem;
+  border: 2px solid var(--neutral-light);
+  border-radius: 0.75rem;
+  resize: vertical;
+  font-size: 1rem;
+  color: var(--neutral-dark);
+  background-color: var(--neutral-light);
+  transition: var(--transition-smooth);
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: var(--primary-blue);
+  background-color: white;
+  box-shadow: 0 0 0 4px rgba(6, 82, 197, 0.1);
+}
+
+.file-input {
+  width: 100%;
+  padding: 1rem;
+  background-color: var(--neutral-light);
+  border: 2px dashed var(--primary-light);
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.file-input:hover {
+  border-color: var(--primary-blue);
+  background-color: rgba(6, 82, 197, 0.05);
+}
+
+.error-message {
+  color: #dc2626;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.button {
+  flex: 1;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.submit-button {
+  background-color: var(--primary-blue);
+  color: white;
+}
+
+.submit-button:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+.submit-button:active {
+  transform: translateY(0);
+}
+
+.cancel-button {
+  background-color: var(--neutral-light);
+  color: var(--neutral-dark);
+}
+
+.cancel-button:hover {
+  background-color: #e5e7eb;
+}
+
+@media (max-width: 640px) {
+  .modal-content {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .button {
+    width: 100%;
+  }
+}
