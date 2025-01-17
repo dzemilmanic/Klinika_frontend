@@ -1,7 +1,8 @@
-import React, { useState } from "react"; // Popravljen import
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import "./Register.css"; // Importuj CSS datoteku
+import { Check, X } from "lucide-react";
+import "./Register.css";
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -9,10 +10,28 @@ export default function Register() {
     password: "",
     firstName: "",
     lastName: "",
-    roles: ["User"], // Podrazumevana uloga
+    roles: ["User"],
   });
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [passwordFocused, setPasswordFocused] = useState(false);
+
+  // Password validation states
+  const [passwordValidation, setPasswordValidation] = useState({
+    minLength: false,
+    hasUpperCase: false,
+    hasNumber: false,
+  });
+
+  // Check password requirements
+  useEffect(() => {
+    const password = formData.password;
+    setPasswordValidation({
+      minLength: password.length >= 8,
+      hasUpperCase: /[A-Z]/.test(password),
+      hasNumber: /[0-9]/.test(password),
+    });
+  }, [formData.password]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,6 +42,12 @@ export default function Register() {
     e.preventDefault();
     setError("");
     setSuccessMessage("");
+
+    // Check if all password requirements are met
+    if (!Object.values(passwordValidation).every(Boolean)) {
+      setError("Molimo vas da ispunite sve zahteve za lozinku.");
+      return;
+    }
 
     try {
       const response = await axios.post(
@@ -43,6 +68,14 @@ export default function Register() {
           "Došlo je do greške prilikom registracije."
       );
     }
+  };
+
+  const ValidationIcon = ({ isValid }) => {
+    return isValid ? (
+      <Check className="validation-icon valid" size={16} />
+    ) : (
+      <X className="validation-icon invalid" size={16} />
+    );
   };
 
   return (
@@ -94,11 +127,36 @@ export default function Register() {
               name="password"
               value={formData.password}
               onChange={handleChange}
+              onFocus={() => setPasswordFocused(true)}
+              onBlur={() => setPasswordFocused(false)}
               placeholder="Unesite vašu lozinku"
               required
             />
+            {(passwordFocused || formData.password) && (
+              <div className="password-requirements">
+                <h4>Lozinka mora sadržati:</h4>
+                <ul>
+                  <li className={passwordValidation.minLength ? "valid" : "invalid"}>
+                    <ValidationIcon isValid={passwordValidation.minLength} />
+                    Najmanje 8 karaktera
+                  </li>
+                  <li className={passwordValidation.hasUpperCase ? "valid" : "invalid"}>
+                    <ValidationIcon isValid={passwordValidation.hasUpperCase} />
+                    Jedno veliko slovo
+                  </li>
+                  <li className={passwordValidation.hasNumber ? "valid" : "invalid"}>
+                    <ValidationIcon isValid={passwordValidation.hasNumber} />
+                    Jedan broj
+                  </li>
+                </ul>
+              </div>
+            )}
           </div>
-          <button type="submit" className="register-button">
+          <button 
+            type="submit" 
+            className="register-button"
+            disabled={!Object.values(passwordValidation).every(Boolean)}
+          >
             Registruj se
           </button>
         </form>

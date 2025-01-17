@@ -61,7 +61,7 @@ const AppointmentModal = ({ isOpen, onClose, service }) => {
 
   useEffect(() => {
     const fetchBookedSlots = async () => {
-      if (!service) return; // Don't fetch if there's no service
+      if (!service) return;
 
       try {
         const response = await fetch("https://localhost:7151/api/Appointment", {

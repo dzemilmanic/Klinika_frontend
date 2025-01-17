@@ -28,6 +28,7 @@ const Services = () => {
   const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortType, setSortType] = useState("none"); // none, priceAsc, priceDesc, nameAsc, nameDesc
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -218,9 +219,19 @@ const Services = () => {
 
   const handleAddCategory = async () => {
     if (!name || !description) {
-      alert("Molimo popunite sva polja.");
+      setErrorMessage("Molimo popunite sva polja.");
       return;
     }
+    if (name.length < 3) {
+      setErrorMessage("Naziv kategorije mora biti najmanje 3 karaktera.");
+      return;
+    }
+  
+    if (description.length < 3) {
+      setErrorMessage("Opis kategorije mora biti najmanje 3 karaktera.");
+      return;
+    }
+  
   
     try {
       const checkResponse = await fetch(`https://localhost:7151/api/ServiceCategory/exists?name=${encodeURIComponent(name)}`, {
@@ -255,6 +266,7 @@ const Services = () => {
         setShowModal2(false);
         setName("");
         setDescription("");
+        setErrorMessage("");
         alert("Kategorija uspešno dodata!");
       } else {
         alert("Greška prilikom dodavanja kategorije.");
@@ -482,11 +494,17 @@ const Services = () => {
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
+            {errorMessage && name.length < 3 && (
+            <p className="error-message">{errorMessage}</p>
+          )}
             <textarea
               placeholder="Opis"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
+            {errorMessage && description.length < 3 && (
+            <p className="error-message">{errorMessage}</p>
+          )}
             <button onClick={handleAddCategory}>Dodaj</button>
             <button onClick={() => setShowModal2(false)}>Zatvori</button>
           </div>

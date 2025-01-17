@@ -25,8 +25,10 @@ const AddNewsModal = ({
     e.preventDefault();
     if (editNews) {
       onEdit(title, content);
+      alert("Vest uspešno ažurirana");
     } else {
       onAdd(title, content);
+      alert("Vest uspešno dodata!");
     }
   };
 

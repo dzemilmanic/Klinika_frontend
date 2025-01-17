@@ -12,6 +12,8 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
   const [reviewToDelete, setReviewToDelete] = useState(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
+  const [userHasReview, setUserHasReview] = useState(false);
+
   
   const modalRef = useRef(null);
 
@@ -68,7 +70,7 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
     setHoverRating(0);
   };
 
-  const handleSubmitReview = (e) => {
+  const handleSubmitReview = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("jwtToken");
     if (token) {
@@ -76,24 +78,60 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
         const decodedToken = jwtDecode(token);
         const authorName = `${decodedToken.FirstName || "nepoznato"} ${decodedToken.LastName || "nepoznato"}`;
         const reviewWithAuthor = { ...newReview, authorName };
+        try {
+          const response = await onAddReview(reviewWithAuthor);
   
-        onAddReview(reviewWithAuthor)
-          .then(() => {
+          if (response && response.status === 201) {
             handleCloseAddReviewModal();
             setNewReview({ rating: 0, content: "" });
             setErrorMessage("");
-          })
-          .catch((error) => {
-            setErrorMessage("Došlo je do greške pri slanju recenzije.");
-          });
-      } catch (error) {
-        console.error("Nevalidan JWT token:", error);
-        setErrorMessage("Došlo je do greške pri dekodiranju tokena.");
+            alert("Recenzija je uspešno kreirana!");
+          }
+        } catch (error) {
+          if (error.response && error.response.data) {
+            const { error: isError, message } = error.response.data;
+
+          if (isError && message) {
+            alert(message); // Prikazuje poruku sa backend-a
+          } else {
+            alert("Došlo je do greške pri slanju recenzije.");
+          }
+        } else {
+          alert("Došlo je do greške pri slanju recenzije.");
+        }
       }
-    } else {
-      setErrorMessage("Korisnik nije prijavljen.");
+    } catch (error) {
+      console.error("Nevalidan JWT token:", error);
+      alert("Došlo je do greške pri dekodiranju tokena.");
     }
-  };
+  } else {
+    alert("Korisnik nije prijavljen.");
+  }
+};
+
+const checkIfUserHasReview = async () => {
+  try {
+    const response = await fetch("https://localhost:7151/api/Review/user-review", {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem("jwtToken")}`,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      setUserHasReview(data.hasReview); 
+    } else {
+      console.error("Greška pri proveri recenzije.");
+    }
+  } catch (error) {
+    console.error("Greška pri komunikaciji sa serverom:", error);
+  }
+};
+
+useEffect(() => {
+  checkIfUserHasReview();
+}, []);
 
   const handleShowDeleteModal = (reviewId) => {
     setReviewToDelete(reviewId);
@@ -183,7 +221,7 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
         </div>
 
         <div className="review-actions">
-          {role === "User" && (
+          {role === "User" && !userHasReview && (
             <button className="add-review-button" onClick={handleShowAddReviewModal}>
               Napiši recenziju
             </button>

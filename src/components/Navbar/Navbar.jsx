@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { Menu, X, User, LogOut } from "lucide-react";
 import "./Navbar.css";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isSearchActive, setIsSearchActive] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState("User");
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Proveri da li postoji JWT token u localStorage
     const token = localStorage.getItem("jwtToken");
     if (token) {
       setIsLoggedIn(true);
@@ -24,15 +23,10 @@ export default function Navbar() {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const toggleSearch = () => {
-    setIsSearchActive(!isSearchActive);
-  };
-
   const handleLogout = () => {
-    // Briši JWT token iz localStorage
     localStorage.removeItem("jwtToken");
-    setIsLoggedIn(false); // Osveži stanje
-    navigate("/pocetna"); // Preusmeri korisnika na pocetna stranicu
+    setIsLoggedIn(false);
+    navigate("/pocetna");
     window.location.reload();
   };
 
@@ -47,74 +41,116 @@ export default function Navbar() {
           ] || "User";
         setUserRole(roles);
       } catch (error) {
-        setError("Error decoding token.");
+        console.error("Error decoding token.");
       }
     }
   };
 
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
+
   return (
-    <header>
+    <header className="header">
       <nav className="navbar">
-        <div className="menu-icon" onClick={toggleMenu}>
-          <i className={`fas ${isMenuOpen ? "fa-times" : "fa-bars"}`}></i>
-        </div>
-        <ul className={`nav-items ${isMenuOpen ? "active" : ""}`}>
-          <li>
-            <NavLink to="/pocetna" onClick={() => setIsMenuOpen(false)}>
-              Početna
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/usluge" onClick={() => setIsMenuOpen(false)}>
-              Usluge
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/osoblje" onClick={() => setIsMenuOpen(false)}>
-              Osoblje
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/vesti" onClick={() => setIsMenuOpen(false)}>
-              Vesti
-            </NavLink>
-          </li>
-          {userRole === "Admin" && (
-            <>
-              <li>
-                <NavLink to="/korisnici" onClick={() => setIsMenuOpen(false)}>
-                  Korisnici
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to="/termini" onClick={() => setIsMenuOpen(false)}>
-                  Termini
-                </NavLink>
-              </li>
-            </>
+        <button className="menu-toggle" onClick={toggleMenu} aria-label="Toggle menu">
+          {isMenuOpen ? (
+            <X className="menu-icon" size={24} />
+          ) : (
+            <Menu className="menu-icon" size={24} />
           )}
-          {!isLoggedIn ? (
+        </button>
+
+        <div className={`nav-container ${isMenuOpen ? "menu-open" : ""}`}>
+          <ul className="nav-items">
             <li>
-              <NavLink to="/login" onClick={() => setIsMenuOpen(false)}>
-                Prijavi se
+              <NavLink 
+                to="/pocetna" 
+                onClick={closeMenu}
+                className={({ isActive }) => isActive ? "active" : ""}
+              >
+                Početna
               </NavLink>
             </li>
-          ) : (
-            <>
-              <li>
-                <NavLink to="/profil" onClick={() => setIsMenuOpen(false)}>
-                  Profil
+            <li>
+              <NavLink 
+                to="/usluge" 
+                onClick={closeMenu}
+                className={({ isActive }) => isActive ? "active" : ""}
+              >
+                Usluge
+              </NavLink>
+            </li>
+            <li>
+              <NavLink 
+                to="/osoblje" 
+                onClick={closeMenu}
+                className={({ isActive }) => isActive ? "active" : ""}
+              >
+                Osoblje
+              </NavLink>
+            </li>
+            <li>
+              <NavLink 
+                to="/vesti" 
+                onClick={closeMenu}
+                className={({ isActive }) => isActive ? "active" : ""}
+              >
+                Vesti
+              </NavLink>
+            </li>
+            {userRole === "Admin" && (
+              <>
+                <li>
+                  <NavLink 
+                    to="/korisnici" 
+                    onClick={closeMenu}
+                    className={({ isActive }) => isActive ? "active" : ""}
+                  >
+                    Korisnici
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink 
+                    to="/termini" 
+                    onClick={closeMenu}
+                    className={({ isActive }) => isActive ? "active" : ""}
+                  >
+                    Termini
+                  </NavLink>
+                </li>
+              </>
+            )}
+          </ul>
+
+          <div className="auth-buttons">
+            {!isLoggedIn ? (
+              <NavLink 
+                to="/login" 
+                onClick={closeMenu}
+                className="login-button"
+              >
+                <User size={18} />
+                <span>Prijavi se</span>
+              </NavLink>
+            ) : (
+              <div className="user-menu">
+                <NavLink 
+                  to="/profil" 
+                  onClick={closeMenu}
+                  className="profile-button"
+                >
+                  <User size={18} />
+                  <span>Profil</span>
                 </NavLink>
-              </li>
-              <li>
                 <button onClick={handleLogout} className="logout-button">
-                  Odjavi se
+                  <LogOut size={18} />
+                  <span>Odjavi se</span>
                 </button>
-              </li>
-            </>
-          )}
-        </ul>
-        
+              </div>
+            )}
+          </div>
+        </div>
       </nav>
     </header>
   );

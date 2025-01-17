@@ -10,14 +10,14 @@ const NewsCard = ({ id, title, content, publishedDate, isAdmin, onEdit, onDelete
         <div className="news-card-actions">
           <button
             className="icon-button"
-            title="Edit news"
+            title="Ažuriraj vest"
             onClick={() => onEdit(id)}
           >
             <Pencil size={18} className="text-blue-500 hover:text-blue-700" />
           </button>
           <button
             className="icon-button"
-            title="Delete news"
+            title="Izbriši vest"
             onClick={() => onDelete(id)}
           >
             <Trash2 size={18} className="text-red-500 hover:text-red-700" />

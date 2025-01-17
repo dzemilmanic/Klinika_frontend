@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
+import { Lock } from "lucide-react"; // Import Lock icon
 import AllAppointmentsModal from "../../components/AllAppointmentsModal";
 import MedicalRecordModal from "../../components/MedicalRecordModal";
 import "./Profile.css";
@@ -14,10 +15,12 @@ export default function Profile() {
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalField, setModalField] = useState(""); // 'ime', 'prezime', ili 'biography'
+  const [modalField, setModalField] = useState(""); // 'ime', 'prezime', 'biography', or 'password'
   const [newIme, setNewIme] = useState("");
   const [newPrezime, setNewPrezime] = useState("");
   const [newBiography, setNewBiography] = useState("");
+  const [newOldPassword, setNewOldPassword] = useState("");
+  const [newNewPassword, setNewNewPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [appointments, setAppointments] = useState([]);
   const [role, setRole] = useState("");
@@ -59,7 +62,6 @@ export default function Profile() {
               "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
             ];
           setRole(roles);
-          //console.log(roles);
           if (roles.includes("Doctor")) {
             const doctorId =
               decodedPayload[
@@ -81,7 +83,6 @@ export default function Profile() {
     if (token) {
       try {
         const decoded = jwtDecode(token);
-        //console.log(decoded);
         const patientId =
           decoded[
             "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
@@ -89,7 +90,6 @@ export default function Profile() {
 
         let response;
         if (role.includes("Doctor") && doctorId) {
-          // Ako je korisnik doktor, pozovi endpoint za doktora
           response = await fetch(
             `https://localhost:7151/api/Appointment/doctor/${doctorId}/appointments`,
             {
@@ -100,7 +100,6 @@ export default function Profile() {
             }
           );
         } else {
-          // Ako je korisnik pacijent, pozovi endpoint za pacijenta
           response = await fetch(
             `https://localhost:7151/api/Appointment/user/${patientId}`,
             {
@@ -114,7 +113,6 @@ export default function Profile() {
 
         if (response.ok) {
           const data = await response.json();
-          console.log(data);
           setAppointments(data);
         } else {
           console.error("Greška prilikom dohvatanja termina.");
@@ -144,7 +142,26 @@ export default function Profile() {
       setNewPrezime(user.prezime);
     } else if (field === "biography") {
       setNewBiography(user.biography);
+    } else if (field === "password") {
+      setNewOldPassword("");
+      setNewNewPassword("");
     }
+  };
+
+  const validatePasswordChange = () => {
+    if (!newOldPassword) {
+      setErrorMessage("Stara lozinka je obavezna.");
+      return false;
+    }
+    if (!newNewPassword) {
+      setErrorMessage("Nova lozinka je obavezna.");
+      return false;
+    }
+    if (newNewPassword.length < 6) {
+      setErrorMessage("Nova lozinka mora imati najmanje 6 karaktera.");
+      return false;
+    }
+    return true;
   };
 
   const handleSaveModal = async () => {
@@ -158,6 +175,9 @@ export default function Profile() {
     }
     if (modalField === "biography" && newBiography.length < 2) {
       setErrorMessage("Biografija mora imati najmanje 2 karaktera.");
+      return;
+    }
+    if (modalField === "password" && !validatePasswordChange()) {
       return;
     }
 
@@ -182,8 +202,8 @@ export default function Profile() {
             FirstName: updatedUser.ime,
             LastName: updatedUser.prezime,
             Biography: updatedUser.biography,
-            OldPassword: "",
-            NewPassword: "",
+            OldPassword: newOldPassword || "",
+            NewPassword: newNewPassword || "",
           }),
         }
       );
@@ -191,7 +211,14 @@ export default function Profile() {
       if (response.ok) {
         setUser(updatedUser);
         setIsModalOpen(false);
-        alert("Podaci su uspešno ažurirani!");
+        if (modalField === "password") {
+          alert("Lozinka je uspešno promenjena!");
+        } else {
+          alert("Podaci su uspešno ažurirani!");
+        }
+        // Reset password fields
+        setNewOldPassword("");
+        setNewNewPassword("");
       } else {
         const textResponse = await response.text();
         try {
@@ -214,6 +241,8 @@ export default function Profile() {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setErrorMessage("");
+    setNewOldPassword("");
+    setNewNewPassword("");
   };
 
   return (
@@ -254,15 +283,21 @@ export default function Profile() {
             <label>Biografija:</label>
             <div className="input-container">
               <input type="text" value={user.biography} disabled />
-              <span
-                className="edit-icon"
-                onClick={() => handleEdit("biography")}
-              >
+              <span className="edit-icon" onClick={() => handleEdit("biography")}>
                 ✏️
               </span>
             </div>
           </div>
         )}
+        <div className="profile-field">
+          <label>Lozinka:</label>
+          <div className="input-container">
+            <input type="password" value="••••••••" disabled />
+            <span className="edit-icon" onClick={() => handleEdit("password")}>
+              <Lock size={16} />
+            </span>
+          </div>
+        </div>
         {!role.includes("Admin") && (
           <button
             className="appointments-button"
@@ -271,23 +306,27 @@ export default function Profile() {
             Vaši termini
           </button>
         )}
-        {role.includes('User') && !role.includes("Doctor") &&(
-        <button
-        onClick={async () => {
-          await fetchAppointments(); 
-          setIsMedicalRecordModalOpen(true);
-        }}
-          className="appointments-button"
-        >
-          Vaš karton
-        </button>
-      )}
+        {role.includes('User') && !role.includes("Doctor") && (
+          <button
+            onClick={async () => {
+              await fetchAppointments(); 
+              setIsMedicalRecordModalOpen(true);
+            }}
+            className="appointments-button"
+          >
+            Vaš karton
+          </button>
+        )}
       </div>
 
       {isModalOpen && (
         <div className="modal">
           <div className="modal-content">
-            <h3>Ažuriraj podatke</h3>
+            <h3>
+              {modalField === "password"
+                ? "Promena lozinke"
+                : "Ažuriraj podatke"}
+            </h3>
             {modalField === "ime" && (
               <div>
                 <label>Ime:</label>
@@ -318,6 +357,27 @@ export default function Profile() {
                   value={newBiography}
                   onChange={(e) => setNewBiography(e.target.value)}
                 />
+              </div>
+            )}
+
+            {modalField === "password" && (
+              <div>
+                <div className="password-field">
+                  <label>Stara lozinka:</label>
+                  <input
+                    type="password"
+                    value={newOldPassword}
+                    onChange={(e) => setNewOldPassword(e.target.value)}
+                  />
+                </div>
+                <div className="password-field">
+                  <label>Nova lozinka:</label>
+                  <input
+                    type="password"
+                    value={newNewPassword}
+                    onChange={(e) => setNewNewPassword(e.target.value)}
+                  />
+                </div>
               </div>
             )}
 

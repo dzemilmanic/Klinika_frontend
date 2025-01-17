@@ -38,7 +38,6 @@ const Users = () => {
         }
 
         const data = await response.json();
-        console.log(data);
         setUsers(data);
       } catch (err) {
         setError(err.message);
@@ -133,15 +132,18 @@ const Users = () => {
 
   const filteredUsers = users.filter((user) => {
     const searchTerm = searchQuery.toLowerCase();
-    const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
-    const email = user.email.toLowerCase();
-    const matchesSearch = fullName.includes(searchTerm) || email.includes(searchTerm);
-    
+    const fullName = `${user.firstName || ""} ${
+      user.lastName || ""
+    }`.toLowerCase();
+    const email = (user.email || "").toLowerCase();
+    const matchesSearch =
+      fullName.includes(searchTerm) || email.includes(searchTerm);
+
     // Filter by role if a specific role is selected
     if (selectedRole !== "all") {
       return matchesSearch && user.roles.includes(selectedRole);
     }
-    
+
     return matchesSearch;
   });
 
@@ -167,12 +169,12 @@ const Users = () => {
       </div>
     );
   }
-
+ 
   return (
     <div className="users-page">
       <div className="users-container">
         <h2>Registrovani korisnici</h2>
-        
+
         <div className="users-header">
           <div className="filters-container">
             <div className="search-container">
@@ -202,7 +204,7 @@ const Users = () => {
         </div>
 
         <div className="card-container">
-          {filteredUsers.length === 0 ? (
+          {Array.isArray(filteredUsers) && filteredUsers.length === 0 ? (
             <div className="no-results">
               <p>Nema pronađenih korisnika</p>
             </div>
@@ -210,17 +212,21 @@ const Users = () => {
             filteredUsers.map((user) => (
               <div key={user.id} className="card">
                 <div className="card-content">
-                <div className="avatar-container">
-            {user.profileImagePath ? (
-              <img
-                src={user.profileImagePath}
-                alt={`${user.firstName} ${user.lastName}`}
-                style={{ width: '100%', height: '100%', borderRadius: '50%' }}
-              />
-            ) : (
-              <UserCircle2 size={24} />
-            )}
-          </div>
+                  <div className="avatar-container">
+                    {user.profileImagePath ? (
+                      <img
+                        src={user.profileImagePath}
+                        alt={`${user.firstName} ${user.lastName}`}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          borderRadius: "50%",
+                        }}
+                      />
+                    ) : (
+                      <UserCircle2 size={24} />
+                    )}
+                  </div>
                   <div className="user-info">
                     <h3 className="user-name">
                       {user.firstName} {user.lastName}
@@ -231,11 +237,18 @@ const Users = () => {
                         <span>{user.email}</span>
                       </div>
                       <div className="user-roles">
-                        {user.roles.map((role, index) => (
-                          <span key={index} className={`role-badge ${role.toLowerCase()}`}>
-                            {role}
-                          </span>
-                        ))}
+                        {Array.isArray(user.roles) && user.roles.length > 0 ? (
+                          user.roles.map((role, index) => (
+                            <span
+                              key={index}
+                              className={`role-badge ${role.toLowerCase()}`}
+                            >
+                              {role}
+                            </span>
+                          ))
+                        ) : (
+                          <span>Nema dodeljenih uloga</span>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -305,7 +318,9 @@ const Users = () => {
               <select
                 name="roles"
                 value={newUser.roles[0]}
-                onChange={(e) => setNewUser(prev => ({ ...prev, roles: [e.target.value] }))}
+                onChange={(e) =>
+                  setNewUser((prev) => ({ ...prev, roles: [e.target.value] }))
+                }
                 className="role-select"
               >
                 <option value="User">Korisnik</option>

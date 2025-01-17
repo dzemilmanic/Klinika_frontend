@@ -174,6 +174,7 @@ const News = () => {
       }
 
       setNews(news.filter((item) => item.id !== newsToDeleteId));
+      alert("Vest uspešno izbrisana!");
       setShowDeleteModal(false);
       setNewsToDeleteId(null);
     } catch (error) {

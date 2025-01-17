@@ -151,13 +151,22 @@ const Home = () => {
       });
 
       if (!response.ok) {
-        throw new Error("Greška prilikom dodavanja recenzije");
+        const errorData = await response.json();
+        if (errorData && errorData.message) {
+          alert(`${errorData.message}`); // Prikazuje poruku greške sa servera
+        } else {
+          alert("Došlo je do greške prilikom dodavanja recenzije.");
+        }
+        return; 
       }
+  
+      // Ako je uspešno, dodajte recenziju i osvežite listu
       setReviews((prevReviews) => [...prevReviews, newReview]);
-      // Refresh reviews after successful addition
-      fetchReviews();
+      fetchReviews(); // Osvežavanje liste recenzija
+      alert("Recenzija je uspešno dodata!");
     } catch (error) {
-      console.error(error.message);
+      console.error("Greška prilikom dodavanja recenzije:", error);
+      alert("Došlo je do greške prilikom povezivanja sa serverom.");
     }
   };
 

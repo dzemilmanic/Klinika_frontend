@@ -9,7 +9,7 @@ const AddServiceModal = ({
 }) => {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
-
+  const [errorMessage, setErrorMessage] = useState("");
   // Funkcija za preuzimanje kategorija sa API-ja
   const fetchCategories = async () => {
     try {
@@ -80,7 +80,20 @@ const AddServiceModal = ({
   // Funkcija za dodavanje nove usluge
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+    if (newService.name.length < 5) {
+      setErrorMessage("Naziv usluge mora imati najmanje 5 karaktera.");
+      return;
+    }
+  
+    if (newService.description.length < 5) {
+      setErrorMessage("Opis usluge mora imati najmanje 5 karaktera.");
+      return;
+    }
 
+    if (parseFloat(newService.price) < 500) {
+      setErrorMessage("Cena usluge mora biti najmanje 500.");
+      return;
+    }
     const serviceExists = await checkIfServiceExists(newService.name);
   if (serviceExists) {
     alert("Usluga sa tim imenom već postoji.");
@@ -139,6 +152,9 @@ const AddServiceModal = ({
               }
               required
             />
+            {errorMessage && newService.name.length < 5 && (
+            <p className="error-message">{errorMessage}</p>
+          )}
           </div>
           <div>
             <label>Opis:</label>
@@ -148,7 +164,10 @@ const AddServiceModal = ({
                 setNewService({ ...newService, description: e.target.value })
               }
               required
-            ></textarea>
+            />
+            {errorMessage && newService.description.length < 5 && (
+            <p className="error-message">{errorMessage}</p>
+          )}
           </div>
           <div>
             <label>Cena:</label>
