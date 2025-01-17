@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { UserCircle2, Mail, Trash, Search } from "lucide-react";
 import "./Users.css";
+import { toast } from 'react-toastify';
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -77,9 +78,9 @@ const Users = () => {
       setUsers((prevUsers) =>
         prevUsers.filter((user) => user.id !== userToDelete)
       );
-      alert("Korisnik je uspešno obrisan.");
+      toast.success("Korisnik je uspešno obrisan.");
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message);
     } finally {
       setShowModal(false);
       setUserToDelete(null);
@@ -116,7 +117,7 @@ const Users = () => {
 
       const addedUser = await response.json();
       setUsers((prevUsers) => [...prevUsers, addedUser]);
-      alert("Korisnik je uspešno dodat!");
+      toast.success("Korisnik je uspešno dodat!");
       setIsModalOpen(false);
       setNewUser({
         firstName: "",
@@ -126,7 +127,7 @@ const Users = () => {
         roles: ["User"],
       });
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message);
     }
   };
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import RoleRequestForm from "../../components/RoleRequestForm";
 import RoleRequests from "../../components/RoleRequests";
 import "./Staff.css";
+import { toast } from 'react-toastify';
 
 const Staff = () => {
   const [users, setUsers] = useState([]);
@@ -119,10 +120,10 @@ const Staff = () => {
         throw new Error("Ažuriranje statusa zahteva nije uspelo.");
       }
 
-      alert(`Zahtev je ${action === "approve" ? "odobren" : "odbijen"}.`);
+      toast.success(`Zahtev je ${action === "approve" ? "odobren" : "odbijen"}.`);
       fetchRoleRequests();
     } catch (err) {
-      alert("Greška pri ažuriranju statusa zahteva: " + err.message);
+      toast.error("Greška pri ažuriranju statusa zahteva: " + err.message);
     }
   };
 
@@ -143,10 +144,10 @@ const Staff = () => {
         throw new Error("Failed to submit role request.");
       }
 
-      alert("Zahtev je uspešno poslan.");
+      toast.success("Zahtev je uspešno poslan.");
       setShowForm(false);
     } catch (err) {
-      alert("Greška pri slanju zahteva: " + err.message);
+      toast.error("Greška pri slanju zahteva: " + err.message);
     }
   };
 
@@ -182,7 +183,7 @@ const Staff = () => {
             <button
               onClick={() => {
                 if (requestStatus === "Pending") {
-                  alert("Već imate zahtev na čekanju. Molimo pričekajte rezultat.");
+                  toast.success("Već imate zahtev na čekanju. Molimo pričekajte rezultat.");
                 } else {
                   setShowForm(!showForm);
                 }

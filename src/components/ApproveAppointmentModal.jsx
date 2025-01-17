@@ -1,6 +1,7 @@
 import React from 'react';
 import { X } from 'lucide-react';
 import './ApproveAppointmentModal.css';
+import { toast } from 'react-toastify';
 
 const ApproveAppointmentModal = ({ isOpen, onClose, children, title }) => {
   if (!isOpen) return null;

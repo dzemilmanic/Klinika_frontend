@@ -4,6 +4,8 @@ import { Lock } from "lucide-react"; // Import Lock icon
 import AllAppointmentsModal from "../../components/AllAppointmentsModal";
 import MedicalRecordModal from "../../components/MedicalRecordModal";
 import "./Profile.css";
+import { toast } from 'react-toastify';
+
 
 export default function Profile() {
   const [user, setUser] = useState({
@@ -212,9 +214,9 @@ export default function Profile() {
         setUser(updatedUser);
         setIsModalOpen(false);
         if (modalField === "password") {
-          alert("Lozinka je uspešno promenjena!");
+          toast.success("Lozinka je uspešno promenjena!");
         } else {
-          alert("Podaci su uspešno ažurirani!");
+          toast.success("Podaci su uspešno ažurirani!");
         }
         // Reset password fields
         setNewOldPassword("");

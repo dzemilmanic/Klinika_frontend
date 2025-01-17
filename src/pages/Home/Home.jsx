@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import "./Home.css";
 import ReviewSection from "../../components/ReviewSection";
+import { toast } from 'react-toastify';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -153,9 +154,9 @@ const Home = () => {
       if (!response.ok) {
         const errorData = await response.json();
         if (errorData && errorData.message) {
-          alert(`${errorData.message}`); // Prikazuje poruku greške sa servera
+          toast.error(`${errorData.message}`); // Prikazuje poruku greške sa servera
         } else {
-          alert("Došlo je do greške prilikom dodavanja recenzije.");
+          toast.error("Došlo je do greške prilikom dodavanja recenzije.");
         }
         return; 
       }
@@ -163,10 +164,10 @@ const Home = () => {
       // Ako je uspešno, dodajte recenziju i osvežite listu
       setReviews((prevReviews) => [...prevReviews, newReview]);
       fetchReviews(); // Osvežavanje liste recenzija
-      alert("Recenzija je uspešno dodata!");
+      toast.success("Recenzija je uspešno dodata!");
     } catch (error) {
       console.error("Greška prilikom dodavanja recenzije:", error);
-      alert("Došlo je do greške prilikom povezivanja sa serverom.");
+      toast.error("Došlo je do greške prilikom povezivanja sa serverom.");
     }
   };
 

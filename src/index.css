@@ -118,3 +118,12 @@ button:focus-visible {
   text-align: center;
   max-width: 400px;
 }
+.Toastify__toast-container {
+  width: 90%; /* Postavlja širinu toasta na 90% ekrana */
+  max-width: 500px; /* Maksimalna širina za veće ekrane */
+}
+
+.Toastify__toast {
+  font-size: 1rem; /* Prilagodite veličinu teksta */
+  word-wrap: break-word; /* Omogućava prelamanje teksta na manjim ekranima */
+}

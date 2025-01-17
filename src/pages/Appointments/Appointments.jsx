@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { UserPlus } from "lucide-react";
 import ApproveAppointmentModal from "../../components/ApproveAppointmentModal";
 import "./Appointments.css";
+import { toast } from 'react-toastify';
+
 
 const Appointments = () => {
   const [appointments, setAppointments] = useState([]);
@@ -13,6 +15,7 @@ const Appointments = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
+  const [doctorAppointments, setDoctorAppointments] = useState([]);
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -38,7 +41,8 @@ const Appointments = () => {
         const response = await fetch(
           "https://localhost:7151/api/Roles/doctors"
         );
-        if (!response.ok) throw new Error("Failed to fetch doctors");
+        if (!response.ok)
+          throw new Error("Greška prilikom fetchovanja lekara.");
         const data = await response.json();
         setDoctors(data);
       } catch (err) {
@@ -49,9 +53,53 @@ const Appointments = () => {
     fetchDoctors();
   }, []);
 
+  useEffect(() => {
+    const fetchDoctorAppointments = async () => {
+      if (selectedDoctor) {
+        try {
+          const response = await fetch(
+            `https://localhost:7151/api/Appointment/doctor/${selectedDoctor.id}/appointments`
+          );
+          if (!response.ok)
+            throw new Error("Failed to fetch doctor's appointments");
+          const data = await response.json();
+          setDoctorAppointments(data);
+        } catch (err) {
+          setError(err.message);
+        }
+      }
+    };
+
+    fetchDoctorAppointments();
+  }, [selectedDoctor]);
+
+  const checkTimeConflict = (appointmentDate) => {
+    const appointmentTime = new Date(appointmentDate);
+    const appointmentEnd = new Date(appointmentTime.getTime() + 30 * 60000); // Assuming 30-minute appointments
+
+    return doctorAppointments.some((existingAppointment) => {
+      const existingTime = new Date(existingAppointment.appointmentDate);
+      const existingEnd = new Date(existingTime.getTime() + 30 * 60000);
+
+      return (
+        (appointmentTime >= existingTime && appointmentTime < existingEnd) ||
+        (appointmentEnd > existingTime && appointmentEnd <= existingEnd) ||
+        (appointmentTime <= existingTime && appointmentEnd >= existingEnd)
+      );
+    });
+  };
+
   const handleAssignDoctor = async () => {
     if (!selectedDoctor || !selectedAppointment) {
-      alert("Please select a doctor.");
+      toast.error("Molimo izaberite lekara.");
+      return;
+    }
+
+    // Check for time conflicts
+    if (checkTimeConflict(selectedAppointment.appointmentDate)) {
+      toast.error(
+        "Lekar već ima zakazan termin u ovo vreme. Molimo izaberite drugog lekara."
+      );
       return;
     }
 
@@ -61,7 +109,7 @@ const Appointments = () => {
         { method: "PUT" }
       );
 
-      if (!response.ok) throw new Error("Failed to assign doctor");
+      if (!response.ok) throw new Error("Greška prilikom dodele lekara.");
 
       const updatedAppointment = await response.json();
       setAppointments((prevAppointments) =>
@@ -74,7 +122,7 @@ const Appointments = () => {
       setModalOpen(false);
       setSelectedDoctor(null);
       setSelectedAppointment(null);
-      alert("Doctor assigned successfully!");
+      toast.success("Lekar uspešno dodeljen!");
     } catch (err) {
       setError(err.message);
     }
@@ -97,6 +145,7 @@ const Appointments = () => {
   const openDoctorModal = (appointment) => {
     setSelectedAppointment(appointment);
     setSelectedDoctor(null);
+    setDoctorAppointments([]); // Reset doctor appointments when opening modal
     setModalOpen(true);
   };
 
@@ -126,6 +175,7 @@ const Appointments = () => {
       </div>
     );
   }
+
   if (error) {
     return (
       <div className="users-page">
@@ -138,10 +188,11 @@ const Appointments = () => {
       </div>
     );
   }
+
   return (
     <div className="appointments-page">
       <div className="container">
-      <h2>Registrovani korisnici</h2>
+        <h2>Registrovani korisnici</h2>
         <div className="filter">
           <label htmlFor="statusFilter">Prikaži po statusu: </label>
           <select
@@ -197,16 +248,31 @@ const Appointments = () => {
                 onClick={() => setSelectedDoctor(doctor)}
               >
                 {doctor.firstName} {doctor.lastName}
+                {selectedDoctor?.id === doctor.id &&
+                  checkTimeConflict(selectedAppointment?.appointmentDate) && (
+                    <div className="conflict-warning">
+                      ⚠️ Ima zakazan termin u ovo vreme
+                    </div>
+                  )}
               </div>
             ))}
           </div>
-          <button
-            className="approve-button"
-            onClick={handleAssignDoctor}
-            disabled={!selectedDoctor}
-          >
-            Odobri i dodeli lekara
-          </button>
+
+          <div className="modal-actions">
+            <button
+              className="cancel-button"
+              onClick={() => setModalOpen(false)}
+            >
+              Otkaži
+            </button>
+            <button
+              className="assign-button"
+              onClick={handleAssignDoctor}
+              disabled={!selectedDoctor}
+            >
+              Dodeli lekara
+            </button>
+          </div>
         </ApproveAppointmentModal>
       </div>
     </div>

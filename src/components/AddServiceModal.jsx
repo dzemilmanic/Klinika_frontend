@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import './AddServiceModal.css';
+import { toast } from 'react-toastify';
+
 
 const AddServiceModal = ({
   newService,
@@ -96,7 +98,7 @@ const AddServiceModal = ({
     }
     const serviceExists = await checkIfServiceExists(newService.name);
   if (serviceExists) {
-    alert("Usluga sa tim imenom već postoji.");
+    toast.error("Usluga sa tim imenom već postoji.");
     return;
   }
 
@@ -130,7 +132,7 @@ const AddServiceModal = ({
         categoryId: "",
       }); // Resetovanje forme
       setSelectedCategory(null);
-      alert("Usluga je uspešno dodata!");
+      toast.success("Usluga je uspešno dodata!");
       window.location.reload()
     } catch (err) {
       console.error("Greška:", err.message);

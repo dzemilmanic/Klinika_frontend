@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './AllAppointmentsModal.css';
 import { ArrowUpDown } from "lucide-react";
+import { toast } from 'react-toastify';
 
 
 const AllAppointmentsModal = ({ isOpen, onClose, appointments }) => {
@@ -77,7 +78,7 @@ const AllAppointmentsModal = ({ isOpen, onClose, appointments }) => {
 
   const handleSaveNotes = async () => {
     if (!note.trim()) {
-      alert('Napomena ne može biti prazna');
+      toast.error('Napomena ne može biti prazna');
       return;
     }
     setLoading(true);
@@ -91,13 +92,13 @@ const AllAppointmentsModal = ({ isOpen, onClose, appointments }) => {
       });
 
       if (response.ok) {
-        alert('Notes successfully updated');
+        toast.success('Beleška uspešno dodata!');
         handleCloseAddNotesModal();
       } else {
-        alert('Failed to update notes');
+        toast.error('Greška prilikom dodavanja beleške!');
       }
     } catch (error) {
-      alert('Error: ' + error.message);
+      toast.error('Error: ' + error.message);
     } finally {
       setLoading(false);
     }
@@ -172,12 +173,12 @@ const AllAppointmentsModal = ({ isOpen, onClose, appointments }) => {
                     <strong>Vreme:</strong> {formattedTime} <br />
                     <strong>Usluga:</strong> {appointment.serviceName} <br />
                     <strong>Status:</strong> {getStatusText(appointment.status)} <br />
-                    {userRole === 'Doctor' && (
+                    {userRole && userRole.includes('Doctor') && (
                       <button 
                         className="add-notes-btn"
                         onClick={() => handleOpenAddNotesModal(appointment.id)}
                       >
-                        Dodaj napomene
+                        Dodaj belešku
                       </button>
                     )}
                   </li>
@@ -195,8 +196,10 @@ const AllAppointmentsModal = ({ isOpen, onClose, appointments }) => {
       </div>
 
       {isAddNotesModalOpen && (
+        <>
+        <div className="modal-overlay" onClick={handleCloseAddNotesModal} />
         <div className="notes-modal">
-          <h3>Dodaj napomene</h3>
+          <h3>Dodaj belešku</h3>
           <textarea
             placeholder="Unesite napomene..."
             value={note}
@@ -209,6 +212,7 @@ const AllAppointmentsModal = ({ isOpen, onClose, appointments }) => {
             </button>
           </div>
         </div>
+        </>
       )}
     </div>
   );

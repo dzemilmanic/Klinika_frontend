@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { toast } from 'react-toastify';
 
 const AddNewsModal = ({
   isOpen,
@@ -25,10 +26,10 @@ const AddNewsModal = ({
     e.preventDefault();
     if (editNews) {
       onEdit(title, content);
-      alert("Vest uspešno ažurirana");
+      toast.success("Vest uspešno ažurirana");
     } else {
       onAdd(title, content);
-      alert("Vest uspešno dodata!");
+      toast.success("Vest uspešno dodata");
     }
   };
 

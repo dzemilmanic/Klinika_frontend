@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import { Trash2, ChevronLeft, ChevronRight, Star } from "lucide-react";
 import "./ReviewSection.css";
+import { toast } from 'react-toastify';
+
 
 const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -85,27 +87,26 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
             handleCloseAddReviewModal();
             setNewReview({ rating: 0, content: "" });
             setErrorMessage("");
-            alert("Recenzija je uspešno kreirana!");
+            toast.success("Recenzija je uspešno kreirana!");
           }
         } catch (error) {
           if (error.response && error.response.data) {
             const { error: isError, message } = error.response.data;
 
           if (isError && message) {
-            alert(message); // Prikazuje poruku sa backend-a
+            toast.error(message); // Prikazuje poruku sa backend-a
           } else {
-            alert("Došlo je do greške pri slanju recenzije.");
+            toast.error("Došlo je do greške pri slanju recenzije.");
           }
         } else {
-          alert("Došlo je do greške pri slanju recenzije.");
+          toast.error("Došlo je do greške pri slanju recenzije.");
         }
       }
     } catch (error) {
-      console.error("Nevalidan JWT token:", error);
-      alert("Došlo je do greške pri dekodiranju tokena.");
+      toast.error("Došlo je do greške pri dekodiranju tokena.");
     }
   } else {
-    alert("Korisnik nije prijavljen.");
+    toast.error("Korisnik nije prijavljen.");
   }
 };
 
@@ -158,13 +159,14 @@ useEffect(() => {
           onDeleteReview(reviewToDelete);
           setDeleteModalOpen(false);
           setReviewToDelete(null);
+          toast.success("Recenzija uspešno izbrisana!");
         } else {
           const errorData = await response.json();
-          alert(errorData.Message || "Došlo je do greške pri brisanju recenzije.");
+          toast.error(errorData.Message || "Došlo je do greške pri brisanju recenzije.");
         }
       } catch (error) {
         console.error("Greška pri brisanju recenzije:", error);
-        alert("Došlo je do greške. Pokušajte ponovo.");
+        toast.error("Došlo je do greške. Pokušajte ponovo.");
       }
     }
   };

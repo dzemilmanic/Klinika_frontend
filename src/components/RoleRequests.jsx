@@ -1,5 +1,5 @@
 import React from "react";
-import "./RoleRequests.css"; // CSS za stilizaciju
+import "./RoleRequests.css";
 
 const RoleRequests = ({ requests, onAction }) => {
   console.log(requests);

@@ -4,6 +4,7 @@ import axios from "axios";
 import { Check, X } from "lucide-react";
 import "./Register.css";
 
+
 export default function Register() {
   const [formData, setFormData] = useState({
     email: "",

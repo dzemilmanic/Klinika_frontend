@@ -3,6 +3,8 @@ import { ArrowUpDown } from "lucide-react";
 import NewsCard from "../../components/NewsCard";
 import AddNewsModal from "../../components/AddNewsModal";
 import "./News.css";
+import { toast } from 'react-toastify';
+
 
 const News = () => {
   const [news, setNews] = useState([]);
@@ -174,7 +176,7 @@ const News = () => {
       }
 
       setNews(news.filter((item) => item.id !== newsToDeleteId));
-      alert("Vest uspešno izbrisana!");
+      toast.success("Vest uspešno izbrisana!");
       setShowDeleteModal(false);
       setNewsToDeleteId(null);
     } catch (error) {

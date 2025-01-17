@@ -3,6 +3,7 @@ import "./Services.css";
 import AddServiceModal from "../../components/AddServiceModal";
 import AppointmentModal from "../../components/AppointmentModal";
 import { Pencil, Trash2, Search, ArrowUpDown } from "lucide-react";
+import { toast } from 'react-toastify';
 
 const Services = () => {
   const [services, setServices] = useState([]);
@@ -121,9 +122,9 @@ const Services = () => {
         price: "",
         categoryId: "",
       });
-      alert("Usluga uspešno dodata!");
+      toast.success("Usluga uspešno dodata!");
     } catch (err) {
-      alert(`Error: ${err.message}`);
+      toast.error(`Error: ${err.message}`);
     }
   };
 
@@ -142,12 +143,12 @@ const Services = () => {
           prevServices.filter((service) => service.id !== selectedServiceId)
         );
         setShowDeleteModal(false);
-        alert("Usluga uspešno izbrisana!")
+        toast.success("Usluga uspešno izbrisana!")
       } else {
         throw new Error("Greška pri brisanju usluge.");
       }
     } catch (err) {
-      alert("Greška pri brisanju usluge.");
+      toast.error("Greška pri brisanju usluge.");
     }
   };
 
@@ -158,11 +159,11 @@ const Services = () => {
 
   const handleReserveClick = (service) => {
     if (role === ""){ 
-      alert("Morate biti prijavljeni da biste rezervisali termin.");
+      toast.error("Morate biti prijavljeni da biste rezervisali termin.");
       return;
     }
     if (!service) {
-      console.error("Service is null or undefined");
+      toast.error("Nepoznata usluga");
       return;
     }
     setSelectedService(service);
@@ -176,7 +177,7 @@ const Services = () => {
 
   const handleUpdatePrice = async () => {
     if (!newPrice || isNaN(newPrice)) {
-      alert("Unesite validnu cenu.");
+      toast.error("Unesite validnu cenu.");
       return;
     }
 
@@ -197,7 +198,7 @@ const Services = () => {
       );
 
       if (!response.ok) {
-        throw new Error("Greška pri ažuriranju cene usluge.");
+        toast.error("Greška pri ažuriranju cene usluge.");
       }
 
       setServices((prevServices) =>
@@ -208,12 +209,12 @@ const Services = () => {
         )
       );
 
-      alert("Cena uspešno ažurirana!");
+      toast.success("Cena uspešno ažurirana!");
       setShowPriceModal(false);
       setNewPrice("");
       setSelectedServiceId(null);
     } catch (err) {
-      alert("Greška prilikom ažuriranja cene.");
+      toast.error("Greška prilikom ažuriranja cene.");
     }
   };
 
@@ -247,7 +248,7 @@ const Services = () => {
   
       const categoryExists = await checkResponse.json();
       if (categoryExists) {
-        alert("Kategorija sa ovim imenom već postoji.");
+        toast.error("Kategorija sa ovim imenom već postoji.");
         return;
       }
   
@@ -267,9 +268,9 @@ const Services = () => {
         setName("");
         setDescription("");
         setErrorMessage("");
-        alert("Kategorija uspešno dodata!");
+        toast.success("Kategorija uspešno dodata!");
       } else {
-        alert("Greška prilikom dodavanja kategorije.");
+        toast.error("Greška prilikom dodavanja kategorije.");
       }
     } catch (error) {
       console.error("Greška:", error);

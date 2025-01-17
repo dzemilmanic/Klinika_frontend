@@ -4,11 +4,14 @@ import { jwtDecode } from "jwt-decode";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./AppointmentModal.css";
+import { toast } from 'react-toastify';
 
 const AppointmentModal = ({ isOpen, onClose, service }) => {
   const [selectedDate, setSelectedDate] = useState(new Date(new Date().setDate(new Date().getDate() + 1)));
   const [selectedTime, setSelectedTime] = useState("");
-  const [bookedSlots, setBookedSlots] = useState([]);
+  const [availableTimes, setAvailableTimes] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const modalRef = useRef(null);
 
@@ -57,45 +60,6 @@ const AppointmentModal = ({ isOpen, onClose, service }) => {
     return slots;
   };
 
-  const availableTimes = generateTimeSlots(selectedDate);
-
-  useEffect(() => {
-    const fetchBookedSlots = async () => {
-      if (!service) return;
-
-      try {
-        const response = await fetch("https://localhost:7151/api/Appointment", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
-          }
-        });
-        if (!response.ok) {
-          throw new Error(`Server error: ${response.status}`);
-        }
-        const data = await response.json();
-        const filteredSlots = data
-          .filter(
-            (appointment) =>
-              appointment.serviceId === service.id &&
-              new Date(appointment.appointmentDate).toDateString() ===
-                selectedDate.toDateString()
-          )
-          .map((appointment) =>
-            new Date(appointment.appointmentDate).toTimeString().slice(0, 5)
-          );
-        setBookedSlots(filteredSlots);
-      } catch (error) {
-        console.error("Error fetching booked slots:", error);
-      }
-    };
-  
-    if (selectedDate && service) {
-      fetchBookedSlots();
-    }
-  }, [selectedDate, service]);
-  
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
@@ -112,63 +76,144 @@ const AppointmentModal = ({ isOpen, onClose, service }) => {
     };
   }, [isOpen, onClose]);
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
+  useEffect(() => {
+    if (selectedDate) {
+      checkAvailableTimes();
+    }
+  }, [selectedDate]);
+
+  const checkAvailableTimes = async () => {
+    if (!selectedDate || !service) return;
+
+    const token = localStorage.getItem("jwtToken");
+    if (!token) {
+      setError("Niste prijavljeni");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const timeSlots = generateTimeSlots(selectedDate);
+      const availableSlots = [];
+
+      for (const time of timeSlots) {
+        const [hours, minutes] = time.split(':');
+        const appointmentDate = new Date(selectedDate);
+        appointmentDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+
+        try {
+          const response = await fetch(
+            `https://localhost:7151/api/Appointment/check-availability`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+              },
+              body: JSON.stringify(appointmentDate.toISOString())
+            }
+          );
+
+          if (response.ok) {
+            availableSlots.push(time);
+          } else if (response.status === 401) {
+            setError("Sesija je istekla. Molimo prijavite se ponovo.");
+            return;
+          }
+        } catch (err) {
+          console.error(`Error checking availability for time ${time}:`, err);
+        }
+      }
+
+      setAvailableTimes(availableSlots);
+    } catch (err) {
+      setError("Greška prilikom provere dostupnih termina");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!service) {
-      console.error("No service selected");
+    if (!service || !selectedDate || !selectedTime) {
+      setError("Molimo izaberite datum i vreme");
       return;
     }
 
     const token = localStorage.getItem("jwtToken");
-    if (token) {
-      try {
-        const decoded = jwtDecode(token); 
-        const patientId = decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']; 
-        const patientFullName = `${decoded.FirstName} ${decoded.LastName}`;
-        const appointmentData = {
-          serviceId: service.id,
-          serviceName: service.name,
-          patientId: patientId,
-          patientFullName: patientFullName,
-          appointmentDate: `${
-            selectedDate.toISOString().split("T")[0]
-          }T${selectedTime}:00Z`,
-          notes: "",
-        };
+    if (!token) {
+      setError("Niste prijavljeni");
+      return;
+    }
 
-        const response = await fetch("https://localhost:7151/api/Appointment", {
-          method: "POST",
+    try {
+      const decoded = jwtDecode(token);
+      const patientId = decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
+      const patientFullName = `${decoded.FirstName} ${decoded.LastName}`;
+
+      // Create appointment date
+      const [hours, minutes] = selectedTime.split(':');
+      const appointmentDate = new Date(selectedDate);
+      appointmentDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+
+      // Final availability check
+      const availabilityResponse = await fetch(
+        `https://localhost:7151/api/Appointment/check-availability`,
+        {
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
           },
-          body: JSON.stringify(appointmentData),
-        });
-
-        if (!response.ok) {
-          throw new Error("Something went wrong");
+          body: JSON.stringify(appointmentDate.toISOString())
         }
+      );
 
-        const data = await response.json();
-        console.log("Appointment scheduled:", data);
-        onClose();
-      } catch (error) {
-        console.error("Error scheduling appointment:", error);
+      if (!availabilityResponse.ok) {
+        if (availabilityResponse.status === 401) {
+          setError("Sesija je istekla. Molimo prijavite se ponovo.");
+        } else {
+          setError("Izabrani termin više nije dostupan");
+        }
+        return;
       }
+
+      const appointmentData = {
+        serviceId: service.id,
+        serviceName: service.name,
+        patientId: patientId,
+        patientFullName: patientFullName,
+        appointmentDate: appointmentDate.toISOString(),
+        notes: "",
+      };
+
+      const response = await fetch("https://localhost:7151/api/Appointment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify(appointmentData),
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error("Sesija je istekla. Molimo prijavite se ponovo.");
+        }
+        throw new Error("Greška prilikom zakazivanja termina");
+      }
+
+      toast.success("Termin uspešno zakazan!");
+      onClose();
+    } catch (err) {
+      setError(err.message || "Greška prilikom zakazivanja termina");
+      console.error(err);
     }
   };
 
-  if (!isOpen) return null;
-
-  // Add early return if no service is provided
-  if (!service) {
-    return null;
-  }
+  if (!isOpen || !service) return null;
 
   return (
     <div className="modal-appointment">
@@ -193,17 +238,16 @@ const AppointmentModal = ({ isOpen, onClose, service }) => {
               </div>
               <DatePicker
                 selected={selectedDate}
-                onChange={handleDateChange}
+                onChange={(date) => setSelectedDate(date)}
                 minDate={new Date(new Date().setDate(new Date().getDate() + 1))}
-                maxDate={
-                  new Date(new Date().setDate(new Date().getDate() + 30))
-                }
+                maxDate={new Date(new Date().setDate(new Date().getDate() + 30))}
                 filterDate={(date) => date.getDay() !== 0}
                 dateFormat="dd/MM/yyyy"
                 className="date-picker"
                 placeholderText="Izaberite datum"
               />
             </div>
+
             {selectedDate && (
               <div className="time-picker">
                 <div className="time-header">
@@ -211,26 +255,32 @@ const AppointmentModal = ({ isOpen, onClose, service }) => {
                   <h4>Izaberite vreme</h4>
                 </div>
                 <div className="time-slots">
-                  {availableTimes.map((time) => (
-                    <button
-                      key={time}
-                      type="button"
-                      className={`time-slot ${
-                        bookedSlots.includes(time) ? "booked" : ""
-                      } ${selectedTime === time ? "selected" : ""}`}
-                      onClick={() => !bookedSlots.includes(time) && setSelectedTime(time)}
-                      disabled={bookedSlots.includes(time)}
-                    >
-                      {time}
-                    </button>
-                  ))}
+                  {loading ? (
+                    <p>Učitavanje dostupnih termina...</p>
+                  ) : availableTimes.length === 0 ? (
+                    <p>Nema dostupnih termina za izabrani datum</p>
+                  ) : (
+                    availableTimes.map((time) => (
+                      <button
+                        key={time}
+                        type="button"
+                        className={`time-slot ${selectedTime === time ? "selected" : ""}`}
+                        onClick={() => setSelectedTime(time)}
+                      >
+                        {time}
+                      </button>
+                    ))
+                  )}
                 </div>
               </div>
             )}
+
+            {error && <div className="error-message">{error}</div>}
+
             <button
               type="submit"
               className="submit-button"
-              disabled={!selectedDate || !selectedTime}
+              disabled={!selectedDate || !selectedTime || loading}
             >
               Potvrdi termin
             </button>

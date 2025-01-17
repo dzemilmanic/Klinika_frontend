@@ -11,6 +11,9 @@ import Footer from './components/Footer/Footer';
 import Profile from './pages/Profile/Profile';
 import Users from './pages/Users/Users';
 import Appointments from './pages/Appointments/Appointments';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 
 function App() {
@@ -31,6 +34,7 @@ function App() {
                 <Route path="/register" element={<Register />} />
             </Routes>
         <Footer/>
+        <ToastContainer />
     </Router>
 );
 };
