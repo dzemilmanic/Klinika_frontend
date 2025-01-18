@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { UserPlus } from "lucide-react";
-import ApproveAppointmentModal from "../../components/ApproveAppointmentModal";
+import ApproveAppointmentModal from "../../components/Appointments/ApproveAppointmentModal";
 import "./Appointments.css";
 import { toast } from 'react-toastify';
-
 
 const Appointments = () => {
   const [appointments, setAppointments] = useState([]);
@@ -17,6 +16,48 @@ const Appointments = () => {
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [doctorAppointments, setDoctorAppointments] = useState([]);
 
+  const checkAndUpdateExpiredAppointments = async (appointments) => {
+    const now = new Date();
+    const expiredAppointments = appointments.filter(appointment => 
+      appointment.status === 0 && new Date(appointment.appointmentDate) < now
+    );
+
+    for (const appointment of expiredAppointments) {
+      try {
+        const response = await fetch(
+          `https://localhost:7151/api/Appointment/${appointment.id}/cancel`,
+          { method: "PUT" }
+        );
+
+        if (!response.ok) {
+          console.error(`Failed to cancel appointment ${appointment.id}`);
+          continue;
+        }
+
+        const updatedAppointment = await response.json();
+        setAppointments(prevAppointments =>
+          prevAppointments.map(app =>
+            app.id === appointment.id ? updatedAppointment : app
+          )
+        );
+      } catch (err) {
+        console.error(`Error canceling appointment ${appointment.id}:`, err);
+      }
+    }
+
+    if (expiredAppointments.length > 0) {
+      setFilteredAppointments(prevFiltered => {
+        const updatedFiltered = prevFiltered.map(app => {
+          if (expiredAppointments.some(expired => expired.id === app.id)) {
+            return { ...app, status: 3 }; // 3 is canceled status
+          }
+          return app;
+        });
+        return updatedFiltered;
+      });
+    }
+  };
+
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
@@ -25,6 +66,7 @@ const Appointments = () => {
         const data = await response.json();
         setAppointments(data);
         setFilteredAppointments(data);
+        await checkAndUpdateExpiredAppointments(data);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -33,6 +75,14 @@ const Appointments = () => {
     };
 
     fetchAppointments();
+
+    // Set up an interval to check for expired appointments every minute
+    const intervalId = setInterval(() => {
+      checkAndUpdateExpiredAppointments(appointments);
+    }, 60000);
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
   }, []);
 
   useEffect(() => {
@@ -220,7 +270,7 @@ const Appointments = () => {
                 {statusMap[appointment.status] || "Nepoznato"}
               </div>
 
-              {appointment.status === 0 && (
+              {appointment.status === 0 && new Date(appointment.appointmentDate) > new Date() && (
                 <button
                   className="approve-button"
                   onClick={() => openDoctorModal(appointment)}

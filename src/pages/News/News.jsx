@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ArrowUpDown } from "lucide-react";
-import NewsCard from "../../components/NewsCard";
-import AddNewsModal from "../../components/AddNewsModal";
+import NewsCard from "../../components/News/NewsCard";
+import AddNewsModal from "../../components/News/AddNewsModal";
 import "./News.css";
 import { toast } from 'react-toastify';
 

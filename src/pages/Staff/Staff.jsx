@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import RoleRequestForm from "../../components/RoleRequestForm";
-import RoleRequests from "../../components/RoleRequests";
+import RoleRequestForm from "../../components/Staff/RoleRequestForm";
+import RoleRequests from "../../components/Staff/RoleRequests";
 import "./Staff.css";
 import { toast } from 'react-toastify';
 

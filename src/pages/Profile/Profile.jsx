@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
-import { Lock } from "lucide-react"; // Import Lock icon
-import AllAppointmentsModal from "../../components/AllAppointmentsModal";
-import MedicalRecordModal from "../../components/MedicalRecordModal";
+import { Lock } from "lucide-react"; 
+import AllAppointmentsModal from "../../components/Profile/AllAppointmentsModal";
+import MedicalRecordModal from "../../components/Profile/MedicalRecordModal";
 import "./Profile.css";
 import { toast } from 'react-toastify';
 

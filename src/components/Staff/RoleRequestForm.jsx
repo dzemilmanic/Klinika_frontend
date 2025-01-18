@@ -18,12 +18,9 @@ const RoleRequestForm = ({ onSubmit, onClose, isOpen }) => {
       return;
     }
 
-    // Create FormData and append only biography and image
     const formData = new FormData();
     formData.append("biography", biography);
     formData.append("image", image);
-
-    // The firstName and lastName will be extracted from the token on the server side
     onSubmit(formData);
   };
 

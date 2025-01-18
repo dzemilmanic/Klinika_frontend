@@ -10,7 +10,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import "./Home.css";
-import ReviewSection from "../../components/ReviewSection";
+import ReviewSection from "../../components/Home/ReviewSection";
 import { toast } from 'react-toastify';
 
 const Home = () => {

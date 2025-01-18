@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Services.css";
-import AddServiceModal from "../../components/AddServiceModal";
-import AppointmentModal from "../../components/AppointmentModal";
+import AddServiceModal from "../../components/Service/AddServiceModal";
+import AppointmentModal from "../../components/Service/AppointmentModal";
 import { Pencil, Trash2, Search, ArrowUpDown } from "lucide-react";
 import { toast } from 'react-toastify';
 
