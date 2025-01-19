@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { Check, X } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import "./Register.css";
-
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -16,15 +16,16 @@ export default function Register() {
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [passwordFocused, setPasswordFocused] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-  // Password validation states
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
+
   const [passwordValidation, setPasswordValidation] = useState({
     minLength: false,
     hasUpperCase: false,
     hasNumber: false,
   });
 
-  // Check password requirements
   useEffect(() => {
     const password = formData.password;
     setPasswordValidation({
@@ -44,7 +45,6 @@ export default function Register() {
     setError("");
     setSuccessMessage("");
 
-    // Check if all password requirements are met
     if (!Object.values(passwordValidation).every(Boolean)) {
       setError("Molimo vas da ispunite sve zahteve za lozinku.");
       return;
@@ -122,30 +122,55 @@ export default function Register() {
           </div>
           <div className="form-group">
             <label htmlFor="password">Lozinka</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              onFocus={() => setPasswordFocused(true)}
-              onBlur={() => setPasswordFocused(false)}
-              placeholder="Unesite vašu lozinku"
-              required
-            />
+            <div className="password-input-container relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                onFocus={() => setPasswordFocused(true)}
+                onBlur={() => setPasswordFocused(false)}
+                placeholder="Unesite vašu lozinku"
+                required
+              />
+              <button
+                type="button"
+                onClick={togglePasswordVisibility}
+                className="password-toggle-button"
+              >
+                {showPassword ? (
+                  <EyeOff className="h-5 w-5 text-gray-500" />
+                ) : (
+                  <Eye className="h-5 w-5 text-gray-500" />
+                )}
+              </button>
+            </div>
             {(passwordFocused || formData.password) && (
               <div className="password-requirements">
                 <h4>Lozinka mora sadržati:</h4>
                 <ul>
-                  <li className={passwordValidation.minLength ? "valid" : "invalid"}>
+                  <li
+                    className={
+                      passwordValidation.minLength ? "valid" : "invalid"
+                    }
+                  >
                     <ValidationIcon isValid={passwordValidation.minLength} />
                     Najmanje 8 karaktera
                   </li>
-                  <li className={passwordValidation.hasUpperCase ? "valid" : "invalid"}>
+                  <li
+                    className={
+                      passwordValidation.hasUpperCase ? "valid" : "invalid"
+                    }
+                  >
                     <ValidationIcon isValid={passwordValidation.hasUpperCase} />
                     Jedno veliko slovo
                   </li>
-                  <li className={passwordValidation.hasNumber ? "valid" : "invalid"}>
+                  <li
+                    className={
+                      passwordValidation.hasNumber ? "valid" : "invalid"
+                    }
+                  >
                     <ValidationIcon isValid={passwordValidation.hasNumber} />
                     Jedan broj
                   </li>
@@ -153,8 +178,8 @@ export default function Register() {
               </div>
             )}
           </div>
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="register-button"
             disabled={!Object.values(passwordValidation).every(Boolean)}
           >
