@@ -53,6 +53,16 @@ export default function Navbar() {
   return (
     <header className="header">
       <nav className="navbar">
+      <div className="navbar-logo">
+          <NavLink to="/pocetna" onClick={closeMenu}>
+            <img
+              src="https://dzemil.blob.core.windows.net/slike/oculus-simple.png"
+              alt="Logo"
+              className="logo-image"
+            />
+          </NavLink>
+        </div>
+
         <button className="menu-toggle" onClick={toggleMenu} aria-label="Toggle menu">
           {isMenuOpen ? (
             <X className="menu-icon" size={24} />

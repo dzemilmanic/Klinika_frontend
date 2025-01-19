@@ -23,23 +23,29 @@ const Home = () => {
   const [isAddReviewModalOpen, setAddReviewModalOpen] = useState(false);
   const [newReview, setNewReview] = useState({ rating: "", content: "" });
   const [userRole, setUserRole] = useState("");
+  const [showSplash, setShowSplash] = useState(true);
+  const [isExiting, setIsExiting] = useState(false);
 
   const slides = [
     {
-      url: "https://apolonocnaklinika.com/wp-content/uploads/2023/12/onama3-min.png",
-      title: "beach",
+      url: "https://dzemil.blob.core.windows.net/slike/klinika1.jpeg",
+      title: "klinika1",
     },
     {
-      url: "https://apolonocnaklinika.com/wp-content/uploads/2023/12/zasto6-min.png",
-      title: "boat",
+      url: "https://dzemil.blob.core.windows.net/slike/klinika2.jpeg",
+      title: "klinika2",
     },
     {
-      url: "https://apolonocnaklinika.com/wp-content/uploads/2023/12/zasto3-min.png",
-      title: "boat",
+      url: "https://dzemil.blob.core.windows.net/slike/klinika5.jpg",
+      title: "klinika5",
     },
     {
-      url: "https://apolonocnaklinika.com/wp-content/uploads/2023/12/zasto7-min.png",
-      title: "boat",
+      url: "https://dzemil.blob.core.windows.net/slike/klinika6.jpg",
+      title: "klinika6",
+    },
+    {
+      url: "https://dzemil.blob.core.windows.net/slike/klinika7.jpg",
+      title: "klinika7",
     },
   ];
 
@@ -185,6 +191,32 @@ const Home = () => {
     { day: "Subota", hours: " 09:00 - 12:00" },
     { day: "Nedelja", hours: " Zatvoreno" },
   ];
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsExiting(true);
+      setTimeout(() => {
+        setShowSplash(false);
+      }, 1000);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (showSplash) {
+    return (
+      <div className="home-page">
+      <div className={`splash-container ${isExiting ? 'exiting' : ''}`}>
+        <img 
+          src="https://dzemil.blob.core.windows.net/slike/oculus.png" 
+          alt="Splash Logo"
+          className={`splash-image ${isExiting ? 'exiting' : ''}`}
+        />
+      </div>
+      </div>
+    );
+  }
+
 
   return (
     <div className="home-container">

@@ -1,4 +1,13 @@
-/* Slider Base */
+.home-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 100vw;
+  min-height: 100vh;
+  background-color: var(--neutral-light);
+  padding: 1rem;
+}
+
 .slider {
   position: relative;
   width: 100vw;
@@ -325,4 +334,35 @@ section h2 {
   .section-content {
     padding: 3rem 1rem;
   }
+}
+.splash-container {
+  position: fixed;
+  top: 0px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #003366;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5000;
+  opacity: 1;
+  transition: opacity 1s ease-in-out;
+}
+
+.splash-container.exiting {
+  opacity: 0;
+}
+
+.splash-image {
+  width: 100vw;
+  height: 100vh;
+  object-fit: contain;
+  transform: scale(1);
+  transition: transform 1s ease-in-out, filter 1s ease-in-out;
+}
+
+.splash-image.exiting {
+  transform: scale(1.1);
+  filter: blur(4px);
 }
