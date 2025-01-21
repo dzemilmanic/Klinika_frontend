@@ -242,7 +242,7 @@ const Appointments = () => {
   return (
     <div className="appointments-page">
       <div className="container">
-        <h2>Registrovani korisnici</h2>
+        <h2>Termini</h2>
         <div className="filter">
           <label htmlFor="statusFilter">Prikaži po statusu: </label>
           <select

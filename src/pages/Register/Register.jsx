@@ -17,6 +17,10 @@ export default function Register() {
   const [successMessage, setSuccessMessage] = useState("");
   const [passwordFocused, setPasswordFocused] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [verificationCode, setVerificationCode] = useState("");
+  const [isVerified, setIsVerified] = useState(false);
+  const [codeError, setCodeError] = useState("");
+  const [codeSuccessMessage, setCodeSuccessMessage] = useState("");
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
@@ -67,6 +71,25 @@ export default function Register() {
       setError(
         err.response?.data?.message ||
           "Došlo je do greške prilikom registracije."
+      );
+    }
+  };
+
+  const handleVerification = async (e) => {
+    e.preventDefault();
+    setCodeError("");
+    setCodeSuccessMessage("");
+
+    try {
+      const response = await axios.post(
+        "https://localhost:7151/api/Auth/Verify",
+        { email: formData.email, code: verificationCode }
+      );
+      setCodeSuccessMessage(response.data.message || "Verifikacija uspešna!");
+      setIsVerified(true);
+    } catch (err) {
+      setCodeError(
+        err.response?.data?.message || "Neispravan verifikacioni kod."
       );
     }
   };
@@ -188,6 +211,25 @@ export default function Register() {
         </form>
         {error && <p className="error-message">{error}</p>}
         {successMessage && <p className="success-message">{successMessage}</p>}
+        
+        {successMessage && !isVerified && (
+          <div className="verification-container">
+            <h3>Unesite verifikacioni kod</h3>
+            <form onSubmit={handleVerification}>
+              <input
+                type="text"
+                value={verificationCode}
+                onChange={(e) => setVerificationCode(e.target.value)}
+                placeholder="Verifikacioni kod"
+                required
+              />
+              <button type="submit">Verifikuj</button>
+            </form>
+            {codeError && <p className="error-message">{codeError}</p>}
+            {codeSuccessMessage && <p className="success-message">{codeSuccessMessage}</p>}
+          </div>
+        )}
+        
         <div className="register-link">
           Već imate nalog? <Link to="/login">Prijavite se</Link>
         </div>
