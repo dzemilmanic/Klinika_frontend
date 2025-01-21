@@ -56,7 +56,7 @@ export default function Register() {
 
     try {
       const response = await axios.post(
-        "https://localhost:7151/api/Auth/Register",
+        "https://klinikabackend-production.up.railway.app/api/Auth/Register",
         formData
       );
       setSuccessMessage(response.data.message || "Uspešna registracija!");
@@ -82,7 +82,7 @@ export default function Register() {
 
     try {
       const response = await axios.post(
-        "https://localhost:7151/api/Auth/Verify",
+        "https://klinikabackend-production.up.railway.app/api/Auth/Verify",
         { email: formData.email, code: verificationCode }
       );
       setCodeSuccessMessage(response.data.message || "Verifikacija uspešna!");
@@ -211,7 +211,7 @@ export default function Register() {
         </form>
         {error && <p className="error-message">{error}</p>}
         {successMessage && <p className="success-message">{successMessage}</p>}
-        
+
         {successMessage && !isVerified && (
           <div className="verification-container">
             <h3>Unesite verifikacioni kod</h3>
@@ -226,10 +226,12 @@ export default function Register() {
               <button type="submit">Verifikuj</button>
             </form>
             {codeError && <p className="error-message">{codeError}</p>}
-            {codeSuccessMessage && <p className="success-message">{codeSuccessMessage}</p>}
+            {codeSuccessMessage && (
+              <p className="success-message">{codeSuccessMessage}</p>
+            )}
           </div>
         )}
-        
+
         <div className="register-link">
           Već imate nalog? <Link to="/login">Prijavite se</Link>
         </div>

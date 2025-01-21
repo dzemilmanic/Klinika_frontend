@@ -3,8 +3,7 @@ import { ArrowUpDown } from "lucide-react";
 import NewsCard from "../../components/News/NewsCard";
 import AddNewsModal from "../../components/News/AddNewsModal";
 import "./News.css";
-import { toast } from 'react-toastify';
-
+import { toast } from "react-toastify";
 
 const News = () => {
   const [news, setNews] = useState([]);
@@ -25,7 +24,9 @@ const News = () => {
 
   const fetchNews = async () => {
     try {
-      const response = await fetch("https://localhost:7151/api/News");
+      const response = await fetch(
+        "https://klinikabackend-production.up.railway.app/api/News"
+      );
       if (!response.ok) {
         throw new Error("Error loading news.");
       }
@@ -76,18 +77,21 @@ const News = () => {
 
     const token = localStorage.getItem("jwtToken");
     try {
-      const response = await fetch("https://localhost:7151/api/News", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          title,
-          content,
-          publishedDate: new Date().toISOString(),
-        }),
-      });
+      const response = await fetch(
+        "https://klinikabackend-production.up.railway.app/api/News",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            title,
+            content,
+            publishedDate: new Date().toISOString(),
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Error adding news.");
@@ -119,7 +123,7 @@ const News = () => {
     const token = localStorage.getItem("jwtToken");
     try {
       const response = await fetch(
-        `https://localhost:7151/api/News/${editNews.id}`,
+        `https://klinikabackend-production.up.railway.app/api/News/${editNews.id}`,
         {
           method: "PUT",
           headers: {
@@ -162,7 +166,7 @@ const News = () => {
     const token = localStorage.getItem("jwtToken");
     try {
       const response = await fetch(
-        `https://localhost:7151/api/News/${newsToDeleteId}`,
+        `https://klinikabackend-production.up.railway.app/api/News/${newsToDeleteId}`,
         {
           method: "DELETE",
           headers: {
@@ -233,7 +237,10 @@ const News = () => {
               {sortOrder === "desc" ? "Najnovije prvo" : "Najstarije prvo"}
             </button>
             {isAdmin && (
-              <button className="add-news-btn" onClick={() => setIsModalOpen(true)}>
+              <button
+                className="add-news-btn"
+                onClick={() => setIsModalOpen(true)}
+              >
                 Dodaj novu vest
               </button>
             )}

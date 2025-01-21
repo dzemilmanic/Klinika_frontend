@@ -91,7 +91,7 @@ const AllAppointmentsModal = ({ isOpen, onClose, appointments }) => {
     setLoading(true);
     try {
       const response = await fetch(
-        `https://localhost:7151/api/Appointment/update-notes/${selectedAppointmentId}`,
+        `https://klinikabackend-production.up.railway.app/api/Appointment/update-notes/${selectedAppointmentId}`,
         {
           method: "PUT",
           headers: {

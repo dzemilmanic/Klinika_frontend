@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import RoleRequestForm from "../../components/Staff/RoleRequestForm";
 import RoleRequests from "../../components/Staff/RoleRequests";
 import "./Staff.css";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 const Staff = () => {
   const [users, setUsers] = useState([]);
@@ -19,10 +19,13 @@ const Staff = () => {
     const fetchUsers = async () => {
       setLoading(true);
       try {
-        const response = await fetch("https://localhost:7151/api/Roles/doctors", {
-          method: "GET",
-          credentials: "include",
-        });
+        const response = await fetch(
+          "https://klinikabackend-production.up.railway.app/api/Roles/doctors",
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
 
         if (!response.ok) {
           throw new Error("Greška prilikom fetchovanja lekara.");
@@ -36,7 +39,10 @@ const Staff = () => {
           try {
             const payload = token.split(".")[1];
             const decodedPayload = JSON.parse(atob(payload));
-            const roles = decodedPayload["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || "User";
+            const roles =
+              decodedPayload[
+                "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+              ] || "User";
             setRole(roles);
           } catch (error) {
             setError("Greška prilikom dekodovanja tokena.");
@@ -54,12 +60,15 @@ const Staff = () => {
       if (!token) return;
 
       try {
-        const response = await fetch("https://localhost:7151/api/RoleRequest/status", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          "https://klinikabackend-production.up.railway.app/api/RoleRequest/status",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (!response.ok) {
           throw new Error("Failed to fetch request status.");
@@ -83,12 +92,15 @@ const Staff = () => {
     if (!token) return;
 
     try {
-      const response = await fetch("https://localhost:7151/api/RoleRequest/all", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        "https://klinikabackend-production.up.railway.app/api/RoleRequest/all",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to fetch role requests.");
@@ -107,7 +119,7 @@ const Staff = () => {
 
     try {
       const response = await fetch(
-        `https://localhost:7151/api/RoleRequest/${action}/${requestId}`,
+        `https://klinikabackend-production.up.railway.app/api/RoleRequest/${action}/${requestId}`,
         {
           method: "POST",
           headers: {
@@ -120,7 +132,9 @@ const Staff = () => {
         throw new Error("Ažuriranje statusa zahteva nije uspelo.");
       }
 
-      toast.success(`Zahtev je ${action === "approve" ? "odobren" : "odbijen"}.`);
+      toast.success(
+        `Zahtev je ${action === "approve" ? "odobren" : "odbijen"}.`
+      );
       fetchRoleRequests();
     } catch (err) {
       toast.error("Greška pri ažuriranju statusa zahteva: " + err.message);
@@ -132,13 +146,16 @@ const Staff = () => {
     if (!token) return;
 
     try {
-      const response = await fetch("https://localhost:7151/api/RoleRequest/submit", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
+      const response = await fetch(
+        "https://klinikabackend-production.up.railway.app/api/RoleRequest/submit",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to submit role request.");
@@ -183,7 +200,9 @@ const Staff = () => {
             <button
               onClick={() => {
                 if (requestStatus === "Pending") {
-                  toast.success("Već imate zahtev na čekanju. Molimo pričekajte rezultat.");
+                  toast.success(
+                    "Već imate zahtev na čekanju. Molimo pričekajte rezultat."
+                  );
                 } else {
                   setShowForm(!showForm);
                 }
@@ -246,11 +265,17 @@ const Staff = () => {
 
         {showRequests && (
           <div className="modal-staff" onClick={() => setShowRequests(false)}>
-            <div className="modal-staff-content" onClick={(e) => e.stopPropagation()}>
+            <div
+              className="modal-staff-content"
+              onClick={(e) => e.stopPropagation()}
+            >
               {requests.length === 0 ? (
                 <p className="no-requests-message">Nema pristiglih zahteva</p>
               ) : (
-                <RoleRequests requests={requests} onAction={handleRequestAction} />
+                <RoleRequests
+                  requests={requests}
+                  onAction={handleRequestAction}
+                />
               )}
             </div>
           </div>
@@ -258,7 +283,10 @@ const Staff = () => {
 
         {selectedDoctor && (
           <div className="modal" onClick={() => setSelectedDoctor(null)}>
-            <div className="doctor-modal-content" onClick={(e) => e.stopPropagation()}>
+            <div
+              className="doctor-modal-content"
+              onClick={(e) => e.stopPropagation()}
+            >
               <div className="doctor-modal-header">
                 <img
                   src={
@@ -269,7 +297,9 @@ const Staff = () => {
                   className="doctor-modal-image"
                 />
                 <div className="doctor-modal-title">
-                  <h3>{selectedDoctor.firstName} {selectedDoctor.lastName}</h3>
+                  <h3>
+                    {selectedDoctor.firstName} {selectedDoctor.lastName}
+                  </h3>
                   <p className="doctor-modal-email">{selectedDoctor.email}</p>
                 </div>
               </div>
@@ -279,7 +309,7 @@ const Staff = () => {
                   <p>{selectedDoctor.biography}</p>
                 </div>
               </div>
-              <button 
+              <button
                 className="doctor-modal-close"
                 onClick={() => setSelectedDoctor(null)}
               >

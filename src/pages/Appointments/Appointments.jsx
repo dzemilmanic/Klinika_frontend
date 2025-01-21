@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { UserPlus } from "lucide-react";
 import ApproveAppointmentModal from "../../components/Appointments/ApproveAppointmentModal";
 import "./Appointments.css";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 const Appointments = () => {
   const [appointments, setAppointments] = useState([]);
@@ -18,14 +18,15 @@ const Appointments = () => {
 
   const checkAndUpdateExpiredAppointments = async (appointments) => {
     const now = new Date();
-    const expiredAppointments = appointments.filter(appointment => 
-      appointment.status === 0 && new Date(appointment.appointmentDate) < now
+    const expiredAppointments = appointments.filter(
+      (appointment) =>
+        appointment.status === 0 && new Date(appointment.appointmentDate) < now
     );
 
     for (const appointment of expiredAppointments) {
       try {
         const response = await fetch(
-          `https://localhost:7151/api/Appointment/${appointment.id}/cancel`,
+          `https://klinikabackend-production.up.railway.app/api/Appointment/${appointment.id}/cancel`,
           { method: "PUT" }
         );
 
@@ -35,8 +36,8 @@ const Appointments = () => {
         }
 
         const updatedAppointment = await response.json();
-        setAppointments(prevAppointments =>
-          prevAppointments.map(app =>
+        setAppointments((prevAppointments) =>
+          prevAppointments.map((app) =>
             app.id === appointment.id ? updatedAppointment : app
           )
         );
@@ -46,9 +47,9 @@ const Appointments = () => {
     }
 
     if (expiredAppointments.length > 0) {
-      setFilteredAppointments(prevFiltered => {
-        const updatedFiltered = prevFiltered.map(app => {
-          if (expiredAppointments.some(expired => expired.id === app.id)) {
+      setFilteredAppointments((prevFiltered) => {
+        const updatedFiltered = prevFiltered.map((app) => {
+          if (expiredAppointments.some((expired) => expired.id === app.id)) {
             return { ...app, status: 3 }; // 3 is canceled status
           }
           return app;
@@ -61,7 +62,9 @@ const Appointments = () => {
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        const response = await fetch("https://localhost:7151/api/Appointment");
+        const response = await fetch(
+          "https://klinikabackend-production.up.railway.app/api/Appointment"
+        );
         if (!response.ok) throw new Error("Failed to fetch appointments");
         const data = await response.json();
         setAppointments(data);
@@ -89,7 +92,7 @@ const Appointments = () => {
     const fetchDoctors = async () => {
       try {
         const response = await fetch(
-          "https://localhost:7151/api/Roles/doctors"
+          "https://klinikabackend-production.up.railway.app/api/Roles/doctors"
         );
         if (!response.ok)
           throw new Error("Greška prilikom fetchovanja lekara.");
@@ -108,7 +111,7 @@ const Appointments = () => {
       if (selectedDoctor) {
         try {
           const response = await fetch(
-            `https://localhost:7151/api/Appointment/doctor/${selectedDoctor.id}/appointments`
+            `https://klinikabackend-production.up.railway.app/api/Appointment/doctor/${selectedDoctor.id}/appointments`
           );
           if (!response.ok)
             throw new Error("Failed to fetch doctor's appointments");
@@ -155,7 +158,7 @@ const Appointments = () => {
 
     try {
       const response = await fetch(
-        `https://localhost:7151/api/Appointment/${selectedAppointment.id}/assign-doctor?doctorId=${selectedDoctor.id}`,
+        `https://klinikabackend-production.up.railway.app/api/Appointment/${selectedAppointment.id}/assign-doctor?doctorId=${selectedDoctor.id}`,
         { method: "PUT" }
       );
 
@@ -270,15 +273,16 @@ const Appointments = () => {
                 {statusMap[appointment.status] || "Nepoznato"}
               </div>
 
-              {appointment.status === 0 && new Date(appointment.appointmentDate) > new Date() && (
-                <button
-                  className="approve-button"
-                  onClick={() => openDoctorModal(appointment)}
-                >
-                  <UserPlus size={18} style={{ marginRight: "8px" }} />
-                  Dodeli lekaru
-                </button>
-              )}
+              {appointment.status === 0 &&
+                new Date(appointment.appointmentDate) > new Date() && (
+                  <button
+                    className="approve-button"
+                    onClick={() => openDoctorModal(appointment)}
+                  >
+                    <UserPlus size={18} style={{ marginRight: "8px" }} />
+                    Dodeli lekaru
+                  </button>
+                )}
             </div>
           ))}
         </div>

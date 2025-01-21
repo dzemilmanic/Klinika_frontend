@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import './AddServiceModal.css';
-import { toast } from 'react-toastify';
-
+import "./AddServiceModal.css";
+import { toast } from "react-toastify";
 
 const AddServiceModal = ({
   newService,
@@ -15,12 +14,15 @@ const AddServiceModal = ({
   // Funkcija za preuzimanje kategorija sa API-ja
   const fetchCategories = async () => {
     try {
-      const response = await fetch("https://localhost:7151/api/ServiceCategory", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
-        },
-      });
+      const response = await fetch(
+        "https://klinikabackend-production.up.railway.app/api/ServiceCategory",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+          },
+        }
+      );
       if (!response.ok) {
         throw new Error("Greška prilikom preuzimanja kategorija.");
       }
@@ -35,7 +37,7 @@ const AddServiceModal = ({
   const fetchCategoryData = async (categoryId) => {
     try {
       const response = await fetch(
-        `https://localhost:7151/api/ServiceCategory/${categoryId}`,
+        `https://klinikabackend-production.up.railway.app/api/ServiceCategory/${categoryId}`,
         {
           method: "GET",
           headers: {
@@ -54,17 +56,22 @@ const AddServiceModal = ({
   };
   const checkIfServiceExists = async (name) => {
     try {
-      const response = await fetch(`https://localhost:7151/api/Service/exists?name=${encodeURIComponent(name)}`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
-        },
-      });
-  
+      const response = await fetch(
+        `https://klinikabackend-production.up.railway.app/api/Service/exists?name=${encodeURIComponent(
+          name
+        )}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+          },
+        }
+      );
+
       if (!response.ok) {
         throw new Error("Greška prilikom provere postojanja usluge.");
       }
-  
+
       const exists = await response.json();
       return exists;
     } catch (err) {
@@ -72,7 +79,6 @@ const AddServiceModal = ({
       return false;
     }
   };
-  
 
   // Učitavanje kategorija prilikom montaže komponente
   useEffect(() => {
@@ -86,7 +92,7 @@ const AddServiceModal = ({
       setErrorMessage("Naziv usluge mora imati najmanje 5 karaktera.");
       return;
     }
-  
+
     if (newService.description.length < 5) {
       setErrorMessage("Opis usluge mora imati najmanje 5 karaktera.");
       return;
@@ -97,26 +103,29 @@ const AddServiceModal = ({
       return;
     }
     const serviceExists = await checkIfServiceExists(newService.name);
-  if (serviceExists) {
-    toast.error("Usluga sa tim imenom već postoji.");
-    return;
-  }
+    if (serviceExists) {
+      toast.error("Usluga sa tim imenom već postoji.");
+      return;
+    }
 
     try {
-      const response = await fetch("https://localhost:7151/api/Service", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
-        },
-        body: JSON.stringify({
-          name: newService.name,
-          price: parseFloat(newService.price),
-          description: newService.description,
-          categoryId: newService.categoryId,
-          category: selectedCategory, 
-        }),
-      });
+      const response = await fetch(
+        "https://klinikabackend-production.up.railway.app/api/Service",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+          },
+          body: JSON.stringify({
+            name: newService.name,
+            price: parseFloat(newService.price),
+            description: newService.description,
+            categoryId: newService.categoryId,
+            category: selectedCategory,
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Greška prilikom dodavanja usluge.");
@@ -133,7 +142,7 @@ const AddServiceModal = ({
       }); // Resetovanje forme
       setSelectedCategory(null);
       toast.success("Usluga je uspešno dodata!");
-      window.location.reload()
+      window.location.reload();
     } catch (err) {
       console.error("Greška:", err.message);
     }
@@ -155,8 +164,8 @@ const AddServiceModal = ({
               required
             />
             {errorMessage && newService.name.length < 5 && (
-            <p className="error-message">{errorMessage}</p>
-          )}
+              <p className="error-message">{errorMessage}</p>
+            )}
           </div>
           <div>
             <label>Opis:</label>
@@ -168,8 +177,8 @@ const AddServiceModal = ({
               required
             />
             {errorMessage && newService.description.length < 5 && (
-            <p className="error-message">{errorMessage}</p>
-          )}
+              <p className="error-message">{errorMessage}</p>
+            )}
           </div>
           <div>
             <label>Cena:</label>
@@ -188,7 +197,10 @@ const AddServiceModal = ({
               value={newService.categoryId}
               onChange={(e) => {
                 const selectedCategoryId = e.target.value;
-                setNewService({ ...newService, categoryId: selectedCategoryId });
+                setNewService({
+                  ...newService,
+                  categoryId: selectedCategoryId,
+                });
                 fetchCategoryData(selectedCategoryId); // Preuzimanje podataka o selektovanoj kategoriji
               }}
               required

@@ -3,7 +3,7 @@ import "./Services.css";
 import AddServiceModal from "../../components/Service/AddServiceModal";
 import AppointmentModal from "../../components/Service/AppointmentModal";
 import { Pencil, Trash2, Search, ArrowUpDown } from "lucide-react";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 const Services = () => {
   const [services, setServices] = useState([]);
@@ -35,10 +35,13 @@ const Services = () => {
     const fetchServices = async () => {
       setLoading(true);
       try {
-        const response = await fetch("https://localhost:7151/api/Service", {
-          method: "GET",
-          credentials: "include",
-        });
+        const response = await fetch(
+          "https://klinikabackend-production.up.railway.app/api/Service",
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
 
         if (!response.ok) {
           throw new Error("Greška prilikom fethovanja usluga.");
@@ -68,13 +71,16 @@ const Services = () => {
   }, []);
   const fetchCategories = async () => {
     try {
-      const response = await fetch("https://localhost:7151/api/ServiceCategory", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
-        },
-      });
-  
+      const response = await fetch(
+        "https://klinikabackend-production.up.railway.app/api/ServiceCategory",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+          },
+        }
+      );
+
       if (response.ok) {
         const data = await response.json();
         setCategories(data);
@@ -85,24 +91,26 @@ const Services = () => {
       console.error("Greška:", error);
     }
   };
-  
 
   const handleAddService = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("https://localhost:7151/api/Service", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
-        },
-        body: JSON.stringify({
-          name: newService.name,
-          price: parseFloat(newService.price),
-          description: newService.description,
-          categoryId: newService.categoryId,
-        }),
-      });
+      const response = await fetch(
+        "https://klinikabackend-production.up.railway.app/api/Service",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+          },
+          body: JSON.stringify({
+            name: newService.name,
+            price: parseFloat(newService.price),
+            description: newService.description,
+            categoryId: newService.categoryId,
+          }),
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -135,15 +143,18 @@ const Services = () => {
 
   const confirmDelete = async () => {
     try {
-      const response = await fetch(`https://localhost:7151/api/Service/${selectedServiceId}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `https://klinikabackend-production.up.railway.app/api/Service/${selectedServiceId}`,
+        {
+          method: "DELETE",
+        }
+      );
       if (response.ok) {
         setServices((prevServices) =>
           prevServices.filter((service) => service.id !== selectedServiceId)
         );
         setShowDeleteModal(false);
-        toast.success("Usluga uspešno izbrisana!")
+        toast.success("Usluga uspešno izbrisana!");
       } else {
         throw new Error("Greška pri brisanju usluge.");
       }
@@ -158,7 +169,7 @@ const Services = () => {
   };
 
   const handleReserveClick = (service) => {
-    if (role === ""){ 
+    if (role === "") {
       toast.error("Morate biti prijavljeni da biste rezervisali termin.");
       return;
     }
@@ -183,16 +194,16 @@ const Services = () => {
 
     try {
       const response = await fetch(
-        `https://localhost:7151/api/Service/${selectedServiceId}/price`,
+        `https://klinikabackend-production.up.railway.app/api/Service/${selectedServiceId}/price`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
           },
-          body: JSON.stringify({ 
-            id: selectedServiceId, 
-            price: parseFloat(newPrice)  
+          body: JSON.stringify({
+            id: selectedServiceId,
+            price: parseFloat(newPrice),
           }),
         }
       );
@@ -227,40 +238,47 @@ const Services = () => {
       setErrorMessage("Naziv kategorije mora biti najmanje 3 karaktera.");
       return;
     }
-  
+
     if (description.length < 3) {
       setErrorMessage("Opis kategorije mora biti najmanje 3 karaktera.");
       return;
     }
-  
-  
+
     try {
-      const checkResponse = await fetch(`https://localhost:7151/api/ServiceCategory/exists?name=${encodeURIComponent(name)}`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
-        },
-      });
-  
+      const checkResponse = await fetch(
+        `https://klinikabackend-production.up.railway.app/api/ServiceCategory/exists?name=${encodeURIComponent(
+          name
+        )}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+          },
+        }
+      );
+
       if (!checkResponse.ok) {
         throw new Error("Greška prilikom provere postojanja kategorije.");
       }
-  
+
       const categoryExists = await checkResponse.json();
       if (categoryExists) {
         toast.error("Kategorija sa ovim imenom već postoji.");
         return;
       }
-  
-      const response = await fetch("https://localhost:7151/api/ServiceCategory", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
-        },
-        body: JSON.stringify({ name, description }),
-      });
-  
+
+      const response = await fetch(
+        "https://klinikabackend-production.up.railway.app/api/ServiceCategory",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+          },
+          body: JSON.stringify({ name, description }),
+        }
+      );
+
       if (response.ok) {
         const newCategory = await response.json();
         onAddCategory(newCategory);
@@ -276,7 +294,6 @@ const Services = () => {
       console.error("Greška:", error);
     }
   };
-  
 
   const onAddCategory = (newCategory) => {
     setCategories((prevCategories) => [...prevCategories, newCategory]);
@@ -285,7 +302,6 @@ const Services = () => {
   useEffect(() => {
     fetchCategories();
   }, []);
-
 
   const handleSortChange = (newSortType) => {
     setSortType(newSortType);
@@ -377,13 +393,13 @@ const Services = () => {
             </button>
           )}
           {role === "Admin" && (
-        <button
-          onClick={() => setShowModal2(true)}
-          className="add-service-btn"
-        >
-          Dodaj novu kategoriju
-        </button>
-      )}
+            <button
+              onClick={() => setShowModal2(true)}
+              className="add-service-btn"
+            >
+              Dodaj novu kategoriju
+            </button>
+          )}
         </div>
 
         {showModal && (
@@ -431,9 +447,12 @@ const Services = () => {
                 <p>{service.description}</p>
                 <p>Price: {service.price} RSD</p>
                 {role !== "Admin" && (
-                <button className="reserve-button" onClick={() => handleReserveClick(service)}>
-                  Rezerviši termin
-                </button>
+                  <button
+                    className="reserve-button"
+                    onClick={() => handleReserveClick(service)}
+                  >
+                    Rezerviši termin
+                  </button>
                 )}
               </div>
             ))}
@@ -496,16 +515,16 @@ const Services = () => {
               onChange={(e) => setName(e.target.value)}
             />
             {errorMessage && name.length < 3 && (
-            <p className="error-message">{errorMessage}</p>
-          )}
+              <p className="error-message">{errorMessage}</p>
+            )}
             <textarea
               placeholder="Opis"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
             {errorMessage && description.length < 3 && (
-            <p className="error-message">{errorMessage}</p>
-          )}
+              <p className="error-message">{errorMessage}</p>
+            )}
             <button onClick={handleAddCategory}>Dodaj</button>
             <button onClick={() => setShowModal2(false)}>Zatvori</button>
           </div>

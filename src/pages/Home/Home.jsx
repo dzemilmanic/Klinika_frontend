@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import "./Home.css";
 import ReviewSection from "../../components/Home/ReviewSection";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -95,10 +95,13 @@ const Home = () => {
     const fetchServices = async () => {
       setLoading(true);
       try {
-        const response = await fetch("https://localhost:7151/api/Service", {
-          method: "GET",
-          credentials: "include",
-        });
+        const response = await fetch(
+          "https://klinikabackend-production.up.railway.app/api/Service",
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
 
         if (!response.ok) {
           throw new Error("Greška prilikom fetchovanja usluga.");
@@ -118,7 +121,9 @@ const Home = () => {
 
   const fetchReviews = async () => {
     try {
-      const response = await fetch("https://localhost:7151/api/Review");
+      const response = await fetch(
+        "https://klinikabackend-production.up.railway.app/api/Review"
+      );
       if (!response.ok) {
         throw new Error("Greška prilikom dohvatanja recenzija");
       }
@@ -148,14 +153,17 @@ const Home = () => {
 
   const handleAddReview = async (newReview) => {
     try {
-      const response = await fetch("https://localhost:7151/api/Review", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
-        },
-        body: JSON.stringify(newReview),
-      });
+      const response = await fetch(
+        "https://klinikabackend-production.up.railway.app/api/Review",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+          },
+          body: JSON.stringify(newReview),
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -164,9 +172,9 @@ const Home = () => {
         } else {
           toast.error("Došlo je do greške prilikom dodavanja recenzije.");
         }
-        return; 
+        return;
       }
-  
+
       // Ako je uspešno, dodajte recenziju i osvežite listu
       setReviews((prevReviews) => [...prevReviews, newReview]);
       fetchReviews(); // Osvežavanje liste recenzija
@@ -181,10 +189,10 @@ const Home = () => {
     fetchReviews();
   }, []);
 
-
-
   const handleDeleteReview = (reviewId) => {
-    setReviews((prevReviews) => prevReviews.filter((review) => review.id !== reviewId));
+    setReviews((prevReviews) =>
+      prevReviews.filter((review) => review.id !== reviewId)
+    );
   };
   const workingHours = [
     { day: "Ponedeljak - Petak", hours: " 08:00 - 16:00" },
@@ -206,17 +214,16 @@ const Home = () => {
   if (showSplash) {
     return (
       <div className="home-page">
-      <div className={`splash-container ${isExiting ? 'exiting' : ''}`}>
-        <img 
-          src="https://dzemil.blob.core.windows.net/slike/oculus.png" 
-          alt="Splash Logo"
-          className={`splash-image ${isExiting ? 'exiting' : ''}`}
-        />
-      </div>
+        <div className={`splash-container ${isExiting ? "exiting" : ""}`}>
+          <img
+            src="https://dzemil.blob.core.windows.net/slike/oculus.png"
+            alt="Splash Logo"
+            className={`splash-image ${isExiting ? "exiting" : ""}`}
+          />
+        </div>
       </div>
     );
   }
-
 
   return (
     <div className="home-container">
@@ -367,14 +374,13 @@ const Home = () => {
           </div>
         </div>
       </section>
-      
-        <ReviewSection
-          reviews={reviews}
-          onAddReview={handleAddReview}
-          onDeleteReview={handleDeleteReview}
-          role={userRole}
-        />
-      
+
+      <ReviewSection
+        reviews={reviews}
+        onAddReview={handleAddReview}
+        onDeleteReview={handleDeleteReview}
+        role={userRole}
+      />
     </div>
   );
 };

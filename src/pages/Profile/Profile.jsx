@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
-import { Lock } from "lucide-react"; 
+import { Lock } from "lucide-react";
 import AllAppointmentsModal from "../../components/Profile/AllAppointmentsModal";
 import MedicalRecordModal from "../../components/Profile/MedicalRecordModal";
 import "./Profile.css";
-import { toast } from 'react-toastify';
-
+import { toast } from "react-toastify";
 
 export default function Profile() {
   const [user, setUser] = useState({
@@ -28,14 +27,15 @@ export default function Profile() {
   const [role, setRole] = useState("");
   const [doctorId, setDoctorId] = useState("");
   const [appointmentsModalOpen, setAppointmentsModalOpen] = useState(false);
-  const [isMedicalRecordModalOpen, setIsMedicalRecordModalOpen] = useState(false);
+  const [isMedicalRecordModalOpen, setIsMedicalRecordModalOpen] =
+    useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const token = localStorage.getItem("jwtToken");
         const response = await fetch(
-          "https://localhost:7151/api/Auth/GetUserData",
+          "https://klinikabackend-production.up.railway.app/api/Auth/GetUserData",
           {
             method: "GET",
             headers: {
@@ -93,7 +93,7 @@ export default function Profile() {
         let response;
         if (role.includes("Doctor") && doctorId) {
           response = await fetch(
-            `https://localhost:7151/api/Appointment/doctor/${doctorId}/appointments`,
+            `https://klinikabackend-production.up.railway.app/api/Appointment/doctor/${doctorId}/appointments`,
             {
               method: "GET",
               headers: {
@@ -103,7 +103,7 @@ export default function Profile() {
           );
         } else {
           response = await fetch(
-            `https://localhost:7151/api/Appointment/user/${patientId}`,
+            `https://klinikabackend-production.up.railway.app/api/Appointment/user/${patientId}`,
             {
               method: "GET",
               headers: {
@@ -193,7 +193,7 @@ export default function Profile() {
     try {
       const token = localStorage.getItem("jwtToken");
       const response = await fetch(
-        "https://localhost:7151/api/ChangeUserData/update",
+        "https://klinikabackend-production.up.railway.app/api/ChangeUserData/update",
         {
           method: "PUT",
           headers: {
@@ -285,7 +285,10 @@ export default function Profile() {
             <label>Biografija:</label>
             <div className="input-container">
               <input type="text" value={user.biography} disabled />
-              <span className="edit-icon" onClick={() => handleEdit("biography")}>
+              <span
+                className="edit-icon"
+                onClick={() => handleEdit("biography")}
+              >
                 ✏️
               </span>
             </div>
@@ -308,10 +311,10 @@ export default function Profile() {
             Vaši termini
           </button>
         )}
-        {role.includes('User') && !role.includes("Doctor") && (
+        {role.includes("User") && !role.includes("Doctor") && (
           <button
             onClick={async () => {
-              await fetchAppointments(); 
+              await fetchAppointments();
               setIsMedicalRecordModalOpen(true);
             }}
             className="appointments-button"

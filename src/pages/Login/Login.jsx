@@ -25,7 +25,7 @@ export default function Login() {
     const loginData = { email, password };
 
     try {
-      const response = await axios.post("https://localhost:7151/api/Auth/Login", loginData);
+      const response = await axios.post("https://klinikabackend-production.up.railway.app/api/Auth/Login", loginData);
       setSuccessMessage("Uspešno ste se prijavili!");
       console.log(response.data);
       // Sačuvaj JWT token u lokalnom skladištu

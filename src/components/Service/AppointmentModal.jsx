@@ -4,10 +4,12 @@ import { jwtDecode } from "jwt-decode";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./AppointmentModal.css";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 const AppointmentModal = ({ isOpen, onClose, service }) => {
-  const [selectedDate, setSelectedDate] = useState(new Date(new Date().setDate(new Date().getDate() + 1)));
+  const [selectedDate, setSelectedDate] = useState(
+    new Date(new Date().setDate(new Date().getDate() + 1))
+  );
   const [selectedTime, setSelectedTime] = useState("");
   const [availableTimes, setAvailableTimes] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -97,20 +99,20 @@ const AppointmentModal = ({ isOpen, onClose, service }) => {
       const availableSlots = [];
 
       for (const time of timeSlots) {
-        const [hours, minutes] = time.split(':');
+        const [hours, minutes] = time.split(":");
         const appointmentDate = new Date(selectedDate);
         appointmentDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
 
         try {
           const response = await fetch(
-            `https://localhost:7151/api/Appointment/check-availability`,
+            `https://klinikabackend-production.up.railway.app/api/Appointment/check-availability`,
             {
-              method: 'POST',
+              method: "POST",
               headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
               },
-              body: JSON.stringify(appointmentDate.toISOString())
+              body: JSON.stringify(appointmentDate.toISOString()),
             }
           );
 
@@ -150,24 +152,27 @@ const AppointmentModal = ({ isOpen, onClose, service }) => {
 
     try {
       const decoded = jwtDecode(token);
-      const patientId = decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
+      const patientId =
+        decoded[
+          "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+        ];
       const patientFullName = `${decoded.FirstName} ${decoded.LastName}`;
 
       // Create appointment date
-      const [hours, minutes] = selectedTime.split(':');
+      const [hours, minutes] = selectedTime.split(":");
       const appointmentDate = new Date(selectedDate);
       appointmentDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
 
       // Final availability check
       const availabilityResponse = await fetch(
-        `https://localhost:7151/api/Appointment/check-availability`,
+        `https://klinikabackend-production.up.railway.app/api/Appointment/check-availability`,
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(appointmentDate.toISOString())
+          body: JSON.stringify(appointmentDate.toISOString()),
         }
       );
 
@@ -189,14 +194,17 @@ const AppointmentModal = ({ isOpen, onClose, service }) => {
         notes: "",
       };
 
-      const response = await fetch("https://localhost:7151/api/Appointment", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-        body: JSON.stringify(appointmentData),
-      });
+      const response = await fetch(
+        "https://klinikabackend-production.up.railway.app/api/Appointment",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(appointmentData),
+        }
+      );
 
       if (!response.ok) {
         if (response.status === 401) {
@@ -217,7 +225,10 @@ const AppointmentModal = ({ isOpen, onClose, service }) => {
 
   return (
     <div className="modal-appointment">
-      <div ref={modalRef} className="modal-appointment-content appointment-modal">
+      <div
+        ref={modalRef}
+        className="modal-appointment-content appointment-modal"
+      >
         <div className="modal-appointment-header">
           <h3>Zakazivanje termina</h3>
           <button className="close-button" onClick={onClose}>
@@ -240,7 +251,9 @@ const AppointmentModal = ({ isOpen, onClose, service }) => {
                 selected={selectedDate}
                 onChange={(date) => setSelectedDate(date)}
                 minDate={new Date(new Date().setDate(new Date().getDate() + 1))}
-                maxDate={new Date(new Date().setDate(new Date().getDate() + 30))}
+                maxDate={
+                  new Date(new Date().setDate(new Date().getDate() + 30))
+                }
                 filterDate={(date) => date.getDay() !== 0}
                 dateFormat="dd/MM/yyyy"
                 className="date-picker"
@@ -264,7 +277,9 @@ const AppointmentModal = ({ isOpen, onClose, service }) => {
                       <button
                         key={time}
                         type="button"
-                        className={`time-slot ${selectedTime === time ? "selected" : ""}`}
+                        className={`time-slot ${
+                          selectedTime === time ? "selected" : ""
+                        }`}
                         onClick={() => setSelectedTime(time)}
                       >
                         {time}

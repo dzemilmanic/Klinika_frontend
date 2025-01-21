@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { UserCircle2, Mail, Trash, Search } from "lucide-react";
 import "./Users.css";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -24,7 +24,7 @@ const Users = () => {
     const fetchUsers = async () => {
       try {
         const response = await fetch(
-          "https://localhost:7151/api/Auth/GetUsers",
+          "https://klinikabackend-production.up.railway.app/api/Auth/GetUsers",
           {
             method: "GET",
             headers: {
@@ -58,7 +58,7 @@ const Users = () => {
   const confirmDelete = async () => {
     try {
       const response = await fetch(
-        `https://localhost:7151/api/Auth/${userToDelete}`,
+        `https://klinikabackend-production.up.railway.app/api/Auth/${userToDelete}`,
         {
           method: "DELETE",
           headers: {
@@ -99,14 +99,17 @@ const Users = () => {
 
   const handleAddUser = async () => {
     try {
-      const response = await fetch("https://localhost:7151/api/Auth/Register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
-        },
-        body: JSON.stringify(newUser),
-      });
+      const response = await fetch(
+        "https://klinikabackend-production.up.railway.app/api/Auth/Register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+          },
+          body: JSON.stringify(newUser),
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -170,7 +173,7 @@ const Users = () => {
       </div>
     );
   }
- 
+
   return (
     <div className="users-page">
       <div className="users-container">
