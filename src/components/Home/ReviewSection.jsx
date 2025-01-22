@@ -96,8 +96,9 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
             handleCloseAddReviewModal();
             setNewReview({ rating: 0, content: "" });
             setErrorMessage("");
-            toast.success("Recenzija je uspešno kreirana!");
             setModalOpen(false);
+            toast.success("Recenzija je uspešno kreirana!");
+            
           }
         } catch (error) {
           if (error.response && error.response.data) {
