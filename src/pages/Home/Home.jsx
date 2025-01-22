@@ -195,7 +195,7 @@ const Home = () => {
     );
   };
   const workingHours = [
-    { day: "Ponedeljak - Petak", hours: " 08:00 - 16:00" },
+    { day: "Ponedeljak - Petak", hours: " 08:00 - 16:30" },
     { day: "Subota", hours: " 09:00 - 12:00" },
     { day: "Nedelja", hours: " Zatvoreno" },
   ];
