@@ -75,24 +75,7 @@ export default function Register() {
     }
   };
 
-  const handleVerification = async (e) => {
-    e.preventDefault();
-    setCodeError("");
-    setCodeSuccessMessage("");
-
-    try {
-      const response = await axios.post(
-        "https://klinikabackend-production.up.railway.app/api/Auth/Verify",
-        { email: formData.email, code: verificationCode }
-      );
-      setCodeSuccessMessage(response.data.message || "Verifikacija uspešna!");
-      setIsVerified(true);
-    } catch (err) {
-      setCodeError(
-        err.response?.data?.message || "Neispravan verifikacioni kod."
-      );
-    }
-  };
+  
 
   const ValidationIcon = ({ isValid }) => {
     return isValid ? (
@@ -211,27 +194,6 @@ export default function Register() {
         </form>
         {error && <p className="error-message">{error}</p>}
         {successMessage && <p className="success-message">{successMessage}</p>}
-
-        {successMessage && !isVerified && (
-          <div className="verification-container">
-            <h3>Unesite verifikacioni kod</h3>
-            <form onSubmit={handleVerification}>
-              <input
-                type="text"
-                value={verificationCode}
-                onChange={(e) => setVerificationCode(e.target.value)}
-                placeholder="Verifikacioni kod"
-                required
-              />
-              <button type="submit">Verifikuj</button>
-            </form>
-            {codeError && <p className="error-message">{codeError}</p>}
-            {codeSuccessMessage && (
-              <p className="success-message">{codeSuccessMessage}</p>
-            )}
-          </div>
-        )}
-
         <div className="register-link">
           Već imate nalog? <Link to="/login">Prijavite se</Link>
         </div>
