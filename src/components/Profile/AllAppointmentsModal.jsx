@@ -28,33 +28,40 @@ const AllAppointmentsModal = ({ isOpen, onClose, appointments }) => {
         ];
       setUserRole(roles);
     }
-
-    let initialAppointments = [...appointments];
-    if (userRole === "User") {
-      initialAppointments = initialAppointments.filter(
-        (app) => app.status !== 2
-      );
-    }
-
-    let filtered = [...initialAppointments];
-
-    if (filters.sortBy === "newest") {
-      filtered.sort(
-        (a, b) => new Date(b.appointmentDate) - new Date(a.appointmentDate)
-      );
-    } else {
-      filtered.sort(
-        (a, b) => new Date(a.appointmentDate) - new Date(b.appointmentDate)
-      );
-    }
-
-    if (filters.status !== "all") {
-      filtered = filtered.filter(
-        (app) => app.status === parseInt(filters.status)
-      );
-    }
-
-    setFilteredAppointments(filtered);
+  }, []);
+  
+  useEffect(() => {
+    const filterAppointments = () => {
+      let initialAppointments = [...appointments];
+  
+      if (userRole === "User") {
+        initialAppointments = initialAppointments.filter(
+          (app) => app.status !== 2
+        );
+      }
+  
+      let filtered = [...initialAppointments];
+  
+      if (filters.sortBy === "newest") {
+        filtered.sort(
+          (a, b) => new Date(b.appointmentDate) - new Date(a.appointmentDate)
+        );
+      } else {
+        filtered.sort(
+          (a, b) => new Date(a.appointmentDate) - new Date(b.appointmentDate)
+        );
+      }
+  
+      if (filters.status !== "all") {
+        filtered = filtered.filter(
+          (app) => app.status === parseInt(filters.status)
+        );
+      }
+  
+      setFilteredAppointments(filtered);
+    };
+  
+    filterAppointments();
   }, [appointments, filters, userRole]);
 
   const getStatusText = (status) => {
@@ -122,6 +129,12 @@ const AllAppointmentsModal = ({ isOpen, onClose, appointments }) => {
     }));
   };
 
+  const isAppointmentPassed = (appointmentDate) => {
+    const now = new Date();
+    const appDate = new Date(appointmentDate);
+    return appDate < now;
+  };
+
   return (
     <div className="modal-appoints">
       <div className="modal-appoints-content">
@@ -177,6 +190,8 @@ const AllAppointmentsModal = ({ isOpen, onClose, appointments }) => {
                   minute: "2-digit",
                 });
 
+                const appointmentPassed = isAppointmentPassed(appointment.appointmentDate);
+
                 return (
                   <li key={appointment.id}>
                     <strong>Datum:</strong> {formattedDate} <br />
@@ -186,7 +201,8 @@ const AllAppointmentsModal = ({ isOpen, onClose, appointments }) => {
                     <br />
                     {userRole &&
                       userRole.includes("Doctor") &&
-                      appointment.status !== 2 && (
+                      appointment.status !== 2 &&
+                      appointmentPassed && (
                         <button
                           className="add-notes-btn"
                           onClick={() =>

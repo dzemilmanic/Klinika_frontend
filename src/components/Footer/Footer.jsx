@@ -16,7 +16,7 @@ export default function Footer() {
             <i className="fab fa-twitter"></i>
           </a>
         </div>
-        <p>&copy; 2024 Oculus. Sva prava zadržana.</p>
+        <p>&copy; 2025 Oculus. Sva prava zadržana.</p>
       </div>
     </footer>
   );

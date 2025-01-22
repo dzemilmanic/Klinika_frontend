@@ -79,6 +79,7 @@
   border: 1px solid rgba(0, 102, 255, 0.1);
   overflow: hidden;
   position: relative;
+  text-align: center;
 }
 
 .news-card:hover {
