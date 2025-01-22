@@ -5,7 +5,7 @@
 
   color-scheme: light dark;
   color: rgba(0, 0, 0, 0.87);
-  background-color: #242424;
+  background-color: #ffffff;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -119,11 +119,11 @@ button:focus-visible {
   max-width: 400px;
 }
 .Toastify__toast-container {
-  width: 90%; /* Postavlja širinu toasta na 90% ekrana */
-  max-width: 500px; /* Maksimalna širina za veće ekrane */
+  width: 90%; 
+  max-width: 500px; 
 }
 
 .Toastify__toast {
-  font-size: 1rem; /* Prilagodite veličinu teksta */
-  word-wrap: break-word; /* Omogućava prelamanje teksta na manjim ekranima */
+  font-size: 1rem; 
+  word-wrap: break-word; 
 }
