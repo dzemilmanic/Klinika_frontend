@@ -56,7 +56,7 @@ export default function Register() {
 
     try {
       const response = await axios.post(
-        "https://klinikabackend-production.up.railway.app/api/Auth/Register",
+        "https://klinikabackend-production.up.railway.app/api/Auth/RegisterVerif",
         formData
       );
       setSuccessMessage(response.data.message || "Uspešna registracija!");
