@@ -445,7 +445,7 @@ const Services = () => {
                   )}
                 </div>
                 <p>{service.description}</p>
-                <p>Price: {service.price} RSD</p>
+                <p>Cena: {service.price} RSD</p>
                 {role !== "Admin" && (
                   <button
                     className="reserve-button"

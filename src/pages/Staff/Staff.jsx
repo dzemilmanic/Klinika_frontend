@@ -200,7 +200,7 @@ const Staff = () => {
             <button
               onClick={() => {
                 if (requestStatus === "Pending") {
-                  toast.success(
+                  toast.error(
                     "Već imate zahtev na čekanju. Molimo pričekajte rezultat."
                   );
                 } else {

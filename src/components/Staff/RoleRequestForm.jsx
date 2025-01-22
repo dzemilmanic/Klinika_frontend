@@ -10,11 +10,11 @@ const RoleRequestForm = ({ onSubmit, onClose, isOpen }) => {
     e.preventDefault();
     
     if (biography.length < 10) {
-      setErrorMessage("Biography must be at least 10 characters long.");
+      setErrorMessage("Biografija mora imati makar 10 karaktera.");
       return;
     }
     if (!image) {
-      setErrorMessage("Please select an image.");
+      setErrorMessage("Molimo dodajte fotografiju.");
       return;
     }
 
