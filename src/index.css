@@ -12,11 +12,11 @@
   -moz-osx-font-smoothing: grayscale;
 
   --primary-blue: #0652c5;
-  --primary-dark: #0047b3;
-  --primary-light: #4d94ff;
-  --accent-blue: #00c6ff;
-  --neutral-light: #f5f9ff;
-  --neutral-dark: #1a1a1a;
+  --primary-dark: #0047B3;
+  --primary-light: #4D94FF;
+  --accent-blue: #00C6FF;
+  --neutral-light: #F5F9FF;
+  --neutral-dark: #1A1A1A;
   --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -98,9 +98,9 @@ button:focus-visible {
 }
 
 .error-content {
-  background: #fee2e2;
-  border: 1px solid #ef4444;
-  color: #b91c1c;
+  background: #FEE2E2;
+  border: 1px solid #EF4444;
+  color: #B91C1C;
   padding: 1.5rem;
   border-radius: 1rem;
   text-align: center;
@@ -108,38 +108,11 @@ button:focus-visible {
 }
 
 .Toastify__toast-container {
-  width: 90%;
-  max-width: 500px;
+  width: 90%; 
+  max-width: 500px; 
 }
 
 .Toastify__toast {
-  font-size: 1rem;
-  word-wrap: break-word;
-}
-
-/* Default light/dark styling */
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #000000;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    color: #e0e0e0;
-    background-color: #121212;
-  }
-  a:hover {
-    color: #a3b8ff;
-  }
-  button {
-    background-color: #1e1e1e;
-  }
+  font-size: 1rem; 
+  word-wrap: break-word; 
 }
