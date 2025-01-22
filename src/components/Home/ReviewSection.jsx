@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
-import { Trash2, ChevronLeft, ChevronRight, Star } from "lucide-react";
+import { Trash2, Star } from "lucide-react";
 import "./ReviewSection.css";
 import { toast } from "react-toastify";
 
@@ -43,6 +43,14 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
     setActiveIndex((prevIndex) =>
       prevIndex === reviews.length - 1 ? 0 : prevIndex + 1
     );
+  };
+
+  const handleReviewClick = (direction) => {
+    if (direction === 'prev') {
+      handlePrevSlide();
+    } else if (direction === 'next') {
+      handleNextSlide();
+    }
   };
 
   const getSlideClassName = (index) => {
@@ -95,7 +103,7 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
             const { error: isError, message } = error.response.data;
 
             if (isError && message) {
-              toast.error(message); // Prikazuje poruku sa backend-a
+              toast.error(message);
             } else {
               toast.error("Došlo je do greške pri slanju recenzije.");
             }
@@ -192,18 +200,74 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
     return <div className="stars-container">{stars}</div>;
   };
 
+  const renderStarRating = () => (
+    <div className="stars-interactive">
+      {[1, 2, 3, 4, 5].map((star) => (
+        <button
+          key={star}
+          type="button"
+          className={`star-button ${
+            star <= (hoverRating || newReview.rating) ? 'filled' : ''
+          } ${star <= hoverRating ? 'hover' : ''}`}
+          onClick={() => setNewReview({ ...newReview, rating: star })}
+          onMouseEnter={() => setHoverRating(star)}
+          onMouseLeave={() => setHoverRating(0)}
+        >
+          <Star
+            size={24}
+            className={`${
+              star <= (hoverRating || newReview.rating)
+                ? 'text-yellow-400 fill-yellow-400'
+                : 'text-gray-300'
+            }`}
+          />
+        </button>
+      ))}
+    </div>
+  );
+
+  const renderReviewForm = () => (
+    <form className="review-form" onSubmit={handleSubmitReview}>
+      <div className="form-group">
+        <label>Ocena:</label>
+        {renderStarRating()}
+      </div>
+      <div className="form-group">
+        <label>Komentar:</label>
+        <textarea
+          value={newReview.content}
+          onChange={(e) =>
+            setNewReview({ ...newReview, content: e.target.value })
+          }
+          required
+        />
+      </div>
+      <button
+        type="submit"
+        className="submit-button"
+        disabled={newReview.rating === 0}
+      >
+        Pošalji
+      </button>
+    </form>
+  );
+
   return (
     <section className="reviews-section">
       <div className="section-content">
         <h2>Recenzije</h2>
 
         <div className="reviews-carousel">
-          <button className="carousel-button prev" onClick={handlePrevSlide}>
-            <ChevronLeft size={24} />
-          </button>
-
           {reviews.map((review, index) => (
-            <div key={review.id} className={getSlideClassName(index)}>
+            <div
+              key={review.id}
+              className={getSlideClassName(index)}
+              onClick={() => {
+                const position = getSlideClassName(index);
+                if (position.includes('prev')) handleReviewClick('prev');
+                if (position.includes('next')) handleReviewClick('next');
+              }}
+            >
               <div className="review-rating">
                 <StarRating rating={review.rating} />
               </div>
@@ -216,20 +280,16 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
                 <button
                   className="delete-button"
                   title="Obriši recenziju"
-                  onClick={() => handleShowDeleteModal(review.id)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleShowDeleteModal(review.id);
+                  }}
                 >
-                  <Trash2
-                    size={18}
-                    className="text-red-500 hover:text-red-700"
-                  />
+                  <Trash2 size={18} className="text-red-500 hover:text-red-700" />
                 </button>
               )}
             </div>
           ))}
-
-          <button className="carousel-button next" onClick={handleNextSlide}>
-            <ChevronRight size={24} />
-          </button>
         </div>
 
         <div className="review-actions">
@@ -290,51 +350,7 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
                 </button>
               </div>
               <div className="modal-body">
-                <form className="review-form" onSubmit={handleSubmitReview}>
-                  <div className="form-group">
-                    <label>Ocena:</label>
-                    <div className="stars-interactive">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <button
-                          key={star}
-                          type="button"
-                          className="star-button"
-                          onClick={() =>
-                            setNewReview({ ...newReview, rating: star })
-                          }
-                          onMouseEnter={() => setHoverRating(star)}
-                          onMouseLeave={() => setHoverRating(0)}
-                        >
-                          <Star
-                            size={24}
-                            className={`${
-                              star <= (hoverRating || newReview.rating)
-                                ? "text-yellow-400 fill-yellow-400"
-                                : "text-gray-300"
-                            }`}
-                          />
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="form-group">
-                    <label>Komentar:</label>
-                    <textarea
-                      value={newReview.content}
-                      onChange={(e) =>
-                        setNewReview({ ...newReview, content: e.target.value })
-                      }
-                      required
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    className="submit-button"
-                    disabled={newReview.rating === 0}
-                  >
-                    Pošalji
-                  </button>
-                </form>
+                {renderReviewForm()}
                 {errorMessage && (
                   <p className="error-message">{errorMessage}</p>
                 )}
