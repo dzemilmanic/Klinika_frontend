@@ -205,8 +205,8 @@ const Home = () => {
       setIsExiting(true);
       setTimeout(() => {
         setShowSplash(false);
-      }, 1000);
-    }, 2000);
+      }, 700);
+    }, 1400);
 
     return () => clearTimeout(timer);
   }, []);
