@@ -17,13 +17,32 @@ export default function Navbar() {
     } else {
       setIsLoggedIn(false);
     }
-  }, []);
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
+    // Add click event listener to handle clicks outside navbar
+    const handleClickOutside = (event) => {
+      const navContainer = document.querySelector('.nav-container');
+      const menuToggle = document.querySelector('.menu-toggle');
+      
+      if (isMenuOpen && navContainer && menuToggle) {
+        // Check if click is outside both the nav container and menu toggle
+        if (!navContainer.contains(event.target) && !menuToggle.contains(event.target)) {
+          setIsMenuOpen(false);
+        }
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [isMenuOpen]);
+
+  const toggleMenu = (e) => {
+    e.stopPropagation();
+    setIsMenuOpen((prev) => !prev);
   };
-
-  const handleLogout = () => {
+  
+  const handleLogout = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     localStorage.removeItem("jwtToken");
     setIsLoggedIn(false);
     navigate("/pocetna");
@@ -53,7 +72,7 @@ export default function Navbar() {
   return (
     <header className="header">
       <nav className="navbar">
-      <div className="navbar-logo">
+        <div className="navbar-logo">
           <NavLink to="/pocetna" onClick={closeMenu}>
             <img
               src="https://dzemil.blob.core.windows.net/slike/oculus-simple.png"
@@ -63,7 +82,11 @@ export default function Navbar() {
           </NavLink>
         </div>
 
-        <button className="menu-toggle" onClick={toggleMenu} aria-label="Toggle menu">
+        <button 
+          className="menu-toggle" 
+          onClick={toggleMenu}
+          aria-label="Toggle menu"
+        >
           {isMenuOpen ? (
             <X className="menu-icon" size={24} />
           ) : (
@@ -71,7 +94,10 @@ export default function Navbar() {
           )}
         </button>
 
-        <div className={`nav-container ${isMenuOpen ? "menu-open" : ""}`}>
+        <div 
+          className={`nav-container ${isMenuOpen ? "menu-open" : ""}`}
+          onClick={(e) => e.stopPropagation()}
+        >
           <ul className="nav-items">
             <li>
               <NavLink 
@@ -153,7 +179,10 @@ export default function Navbar() {
                   <User size={18} />
                   <span>Profil</span>
                 </NavLink>
-                <button onClick={handleLogout} className="logout-button">
+                <button 
+                  onClick={handleLogout}
+                  className="logout-button"
+                >
                   <LogOut size={18} />
                   <span>Odjavi se</span>
                 </button>
