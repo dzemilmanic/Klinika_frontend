@@ -261,7 +261,7 @@ const Home = () => {
               key={slideIndex}
               onClick={() => goToSlide(slideIndex)}
             >
-              ●
+              
             </div>
           ))}
         </div>
