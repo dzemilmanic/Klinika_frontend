@@ -332,6 +332,27 @@ section h2::after {
   box-shadow: 0 12px 20px rgba(0, 102, 255, 0.15);
 }
 
+.map-container {
+  margin-top: 1rem;
+  width: 100%;
+  height: 200px;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  transition: var(--transition-smooth);
+  border: 1px solid rgba(0, 102, 255, 0.1);
+}
+
+.map-container:hover {
+  transform: scale(1.02);
+  box-shadow: 0 12px 20px rgba(0, 102, 255, 0.15);
+}
+
+.map-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
 .appointment-button {
   margin-top: 1.5rem;
   padding: 1rem 2rem;
@@ -424,6 +445,10 @@ section h2::after {
   .service-card p {
     font-size: 1rem;
   }
+  
+  .map-container {
+    height: 180px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -445,5 +470,9 @@ section h2::after {
 
   .services-grid {
     gap: 1.5rem;
+  }
+  
+  .map-container {
+    height: 150px;
   }
 }

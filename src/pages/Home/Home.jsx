@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Clock,
   MapPin,
@@ -8,10 +8,10 @@ import {
   Users,
   Calendar,
   CheckCircle2,
-} from "lucide-react";
-import "./Home.css";
+} from 'lucide-react';
 import ReviewSection from "../../components/Home/ReviewSection";
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
+import './Home.css';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -21,31 +21,31 @@ const Home = () => {
   const [reviews, setReviews] = useState([]);
   const [isModalOpen, setModalOpen] = useState(false);
   const [isAddReviewModalOpen, setAddReviewModalOpen] = useState(false);
-  const [newReview, setNewReview] = useState({ rating: "", content: "" });
-  const [userRole, setUserRole] = useState("");
+  const [newReview, setNewReview] = useState({ rating: '', content: '' });
+  const [userRole, setUserRole] = useState('');
   const [showSplash, setShowSplash] = useState(true);
   const [isExiting, setIsExiting] = useState(false);
 
   const slides = [
     {
-      url: "https://dzemil.blob.core.windows.net/slike/klinika1.jpeg",
-      title: "klinika1",
+      url: 'https://dzemil.blob.core.windows.net/slike/klinika1.jpeg',
+      title: 'klinika1',
     },
     {
-      url: "https://dzemil.blob.core.windows.net/slike/klinika2.jpeg",
-      title: "klinika2",
+      url: 'https://dzemil.blob.core.windows.net/slike/klinika2.jpeg',
+      title: 'klinika2',
     },
     {
-      url: "https://dzemil.blob.core.windows.net/slike/klinika5.jpg",
-      title: "klinika5",
+      url: 'https://dzemil.blob.core.windows.net/slike/klinika5.jpg',
+      title: 'klinika5',
     },
     {
-      url: "https://dzemil.blob.core.windows.net/slike/klinika6.jpg",
-      title: "klinika6",
+      url: 'https://dzemil.blob.core.windows.net/slike/klinika6.jpg',
+      title: 'klinika6',
     },
     {
-      url: "https://dzemil.blob.core.windows.net/slike/klinika7.jpg",
-      title: "klinika7",
+      url: 'https://dzemil.blob.core.windows.net/slike/klinika7.jpg',
+      title: 'klinika7',
     },
   ];
 
@@ -76,35 +76,36 @@ const Home = () => {
   }, [currentIndex]);
 
   const checkUserRole = () => {
-    const token = localStorage.getItem("jwtToken");
+    const token = localStorage.getItem('jwtToken');
     if (token) {
       try {
-        const payload = token.split(".")[1];
+        const payload = token.split('.')[1];
         const decodedPayload = JSON.parse(atob(payload));
         const roles =
           decodedPayload[
-            "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
-          ] || "";
+            'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
+          ] || '';
         setUserRole(roles);
       } catch (error) {
-        setError("Error decoding token.");
+        setError('Error decoding token.');
       }
     }
   };
+
   useEffect(() => {
     const fetchServices = async () => {
       setLoading(true);
       try {
         const response = await fetch(
-          "https://klinikabackend-production.up.railway.app/api/Service",
+          'https://klinikabackend-production.up.railway.app/api/Service',
           {
-            method: "GET",
-            credentials: "include",
+            method: 'GET',
+            credentials: 'include',
           }
         );
 
         if (!response.ok) {
-          throw new Error("Greška prilikom fetchovanja usluga.");
+          throw new Error('Greška prilikom fetchovanja usluga.');
         }
 
         const data = await response.json();
@@ -122,10 +123,10 @@ const Home = () => {
   const fetchReviews = async () => {
     try {
       const response = await fetch(
-        "https://klinikabackend-production.up.railway.app/api/Review"
+        'https://klinikabackend-production.up.railway.app/api/Review'
       );
       if (!response.ok) {
-        throw new Error("Greška prilikom dohvatanja recenzija");
+        throw new Error('Greška prilikom dohvatanja recenzija');
       }
       const data = await response.json();
       setReviews(data);
@@ -148,18 +149,18 @@ const Home = () => {
 
   const handleCloseAddReviewModal = () => {
     setAddReviewModalOpen(false);
-    setNewReview({ rating: "", content: "" }); // Resetuj formu
+    setNewReview({ rating: '', content: '' });
   };
 
   const handleAddReview = async (newReview) => {
     try {
       const response = await fetch(
-        "https://klinikabackend-production.up.railway.app/api/Review",
+        'https://klinikabackend-production.up.railway.app/api/Review',
         {
-          method: "POST",
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,
           },
           body: JSON.stringify(newReview),
         }
@@ -168,20 +169,19 @@ const Home = () => {
       if (!response.ok) {
         const errorData = await response.json();
         if (errorData && errorData.message) {
-          toast.error(`${errorData.message}`); // Prikazuje poruku greške sa servera
+          toast.error(`${errorData.message}`);
         } else {
-          toast.error("Došlo je do greške prilikom dodavanja recenzije.");
+          toast.error('Došlo je do greške prilikom dodavanja recenzije.');
         }
         return;
       }
 
-      // Ako je uspešno, dodajte recenziju i osvežite listu
       setReviews((prevReviews) => [...prevReviews, newReview]);
-      fetchReviews(); // Osvežavanje liste recenzija
-      toast.success("Recenzija je uspešno dodata!");
+      fetchReviews();
+      toast.success('Recenzija je uspešno dodata!');
     } catch (error) {
-      console.error("Greška prilikom dodavanja recenzije:", error);
-      toast.error("Došlo je do greške prilikom povezivanja sa serverom.");
+      console.error('Greška prilikom dodavanja recenzije:', error);
+      toast.error('Došlo je do greške prilikom povezivanja sa serverom.');
     }
   };
 
@@ -194,10 +194,11 @@ const Home = () => {
       prevReviews.filter((review) => review.id !== reviewId)
     );
   };
+
   const workingHours = [
-    { day: "Ponedeljak - Petak", hours: " 08:00 - 16:30" },
-    { day: "Subota", hours: " 09:00 - 12:00" },
-    { day: "Nedelja", hours: " Zatvoreno" },
+    { day: 'Ponedeljak - Petak', hours: ' 08:00 - 16:30' },
+    { day: 'Subota', hours: ' 09:00 - 12:00' },
+    { day: 'Nedelja', hours: ' Zatvoreno' },
   ];
 
   useEffect(() => {
@@ -214,11 +215,11 @@ const Home = () => {
   if (showSplash) {
     return (
       <div className="home-page">
-        <div className={`splash-container ${isExiting ? "exiting" : ""}`}>
+        <div className={`splash-container ${isExiting ? 'exiting' : ''}`}>
           <img
             src="https://dzemil.blob.core.windows.net/slike/oculus.png"
             alt="Splash Logo"
-            className={`splash-image ${isExiting ? "exiting" : ""}`}
+            className={`splash-image ${isExiting ? 'exiting' : ''}`}
           />
         </div>
       </div>
@@ -230,10 +231,7 @@ const Home = () => {
       <div className="slider">
         <div className="welcome-text">Dobrodošli u Oculus</div>
         <div className="reserve-appointment">
-          <button
-            className="reserve-button"
-            onClick={() => navigate("/usluge")}
-          >
+          <button className="reserve-button" onClick={() => navigate('/usluge')}>
             Rezerviši svoj termin na vreme!
           </button>
         </div>
@@ -249,7 +247,7 @@ const Home = () => {
           <div
             key={slideIndex}
             className={`slide ${
-              currentIndex === slideIndex ? "slide-active" : ""
+              currentIndex === slideIndex ? 'slide-active' : ''
             }`}
             style={{ backgroundImage: `url(${slide.url})` }}
           ></div>
@@ -257,17 +255,14 @@ const Home = () => {
         <div className="dots-container">
           {slides.map((slide, slideIndex) => (
             <div
-              className="dot"
+              className={`dot ${currentIndex === slideIndex ? 'active' : ''}`}
               key={slideIndex}
               onClick={() => goToSlide(slideIndex)}
-            >
-              
-            </div>
+            ></div>
           ))}
         </div>
       </div>
 
-      {/* Mission Section */}
       <section className="mission-section">
         <div className="section-content">
           <h2>Naša Misija</h2>
@@ -298,7 +293,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Services Section */}
       <section className="services-section">
         <div className="section-content">
           <h2>Naše Usluge</h2>
@@ -319,7 +313,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Working Hours Section */}
       <section className="working-hours-section">
         <div className="section-content">
           <h2>Radno Vreme</h2>
@@ -339,7 +332,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Contact Section */}
       <section className="contact-section">
         <div className="section-content">
           <h2>Kontakt Informacije</h2>
@@ -349,6 +341,16 @@ const Home = () => {
               <div>
                 <h3>Adresa</h3>
                 <p>Pešterska 17, Tutin</p>
+                <div className="map-container">
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2933.951426231645!2d20.3398131!3d42.6743543!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1356c8b9c979f61b%3A0xbf25af65730780f9!2sPe%C5%A1terska%2017%2C%20Tutin!5e0!3m2!1sen!2srs!4v1717433835783!5m2!1sen!2srs"
+                    className="map-iframe"
+                    allowFullScreen={true}
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="Lokacija Oculus klinike"
+                  ></iframe>
+                </div>
               </div>
             </div>
             <div className="contact-item">
@@ -365,7 +367,7 @@ const Home = () => {
                 <h3>Zakazivanje</h3>
                 <button
                   className="appointment-button"
-                  onClick={() => navigate("/usluge")}
+                  onClick={() => navigate('/usluge')}
                 >
                   Zakaži pregled
                 </button>
@@ -376,11 +378,11 @@ const Home = () => {
       </section>
 
       <ReviewSection
-        reviews={reviews}
-        onAddReview={handleAddReview}
-        onDeleteReview={handleDeleteReview}
-        role={userRole}
-      />
+    reviews={reviews}
+    onAddReview={handleAddReview}
+    onDeleteReview={handleDeleteReview}
+    role={userRole}
+  />
     </div>
   );
 };
