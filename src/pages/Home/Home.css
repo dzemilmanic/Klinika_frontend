@@ -34,7 +34,6 @@
   transform: scale(1);
 }
 
-/* Modern Text Styles */
 .welcome-text {
   position: absolute;
   top: 50%;
@@ -68,7 +67,6 @@
   gap: 1.5rem;
 }
 
-/* Modern Button Styles */
 .reserve-button {
   background: var(--primary-blue);
   color: white;
@@ -80,6 +78,8 @@
   transition: var(--transition-smooth);
   font-weight: 600;
   box-shadow: 0 4px 6px rgba(0, 102, 255, 0.2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .reserve-button:hover {
@@ -88,7 +88,6 @@
   box-shadow: 0 6px 8px rgba(0, 102, 255, 0.3);
 }
 
-/* Navigation Elements */
 .arrow {
   position: absolute;
   top: 50%;
@@ -139,11 +138,11 @@
   background: var(--primary-blue);
   transform: scale(1.2);
 }
+
 .dot:hover {
   background-color: var(--primary-blue);
 }
 
-/* Section Styles */
 .section-content {
   max-width: 1280px;
   margin: 0 auto;
@@ -156,9 +155,22 @@ section h2 {
   color: var(--neutral-dark);
   margin-bottom: 3rem;
   font-weight: 800;
+  position: relative;
+  padding-bottom: 1.5rem;
 }
 
-/* Mission Section */
+section h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: var(--primary-blue);
+  border-radius: 2px;
+}
+
 .mission-section {
   background: white;
 }
@@ -184,15 +196,29 @@ section h2 {
   box-shadow: 0 20px 25px -5px rgba(0, 102, 255, 0.1);
 }
 
-/* Services Section */
 .services-section {
   background: var(--neutral-light);
+  position: relative;
+  overflow: hidden;
+}
+
+.services-section::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(0, 102, 255, 0.03) 0%, transparent 70%);
+  z-index: 0;
 }
 
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
+  position: relative;
+  z-index: 1;
 }
 
 .service-card {
@@ -201,17 +227,55 @@ section h2 {
   gap: 1.5rem;
   padding: 2rem;
   background: white;
-  border-radius: 1rem;
-  box-shadow: 0 4px 6px rgba(0, 102, 255, 0.1);
-  transition: var(--transition-smooth);
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 102, 255, 0.08);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(0, 102, 255, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.service-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--primary-blue);
+  opacity: 0;
+  transition: all 0.4s ease;
 }
 
 .service-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 20px rgba(0, 102, 255, 0.15);
+  transform: translateY(-6px) translateX(6px);
+  box-shadow: 0 20px 30px rgba(0, 102, 255, 0.15);
+  background: linear-gradient(to right, rgba(0, 102, 255, 0.02), white);
 }
 
-/* Working Hours Section */
+.service-card:hover::before {
+  opacity: 1;
+}
+
+.service-card .icon {
+  background: rgba(0, 102, 255, 0.1);
+  padding: 1rem;
+  border-radius: 1rem;
+  transition: all 0.4s ease;
+}
+
+.service-card:hover .icon {
+  transform: scale(1.1);
+  background: rgba(0, 102, 255, 0.15);
+}
+
+.service-card p {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--neutral-dark);
+  margin: 0;
+}
+
 .working-hours-section {
   background: white;
 }
@@ -242,7 +306,6 @@ section h2 {
   background: rgba(0, 102, 255, 0.05);
 }
 
-/* Contact Section */
 .contact-section {
   background: var(--neutral-light);
 }
@@ -288,56 +351,12 @@ section h2 {
   box-shadow: 0 6px 8px rgba(0, 102, 255, 0.3);
 }
 
-/* Icon styles */
 .icon {
   width: 28px;
   height: 28px;
   color: var(--primary-blue);
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .welcome-text {
-    font-size: 2.25rem;
-    width: 90%;
-  }
-
-  .reserve-button {
-    font-size: 1.125rem;
-    padding: 0.875rem 2rem;
-  }
-
-  .arrow {
-    font-size: 2rem;
-    padding: 0.875rem;
-  }
-
-  .section-content {
-    padding: 4rem 1.5rem;
-  }
-
-  section h2 {
-    font-size: 2.25rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .welcome-text {
-    font-size: 1.75rem;
-  }
-
-  .arrow-left {
-    left: 1rem;
-  }
-
-  .arrow-right {
-    right: 1rem;
-  }
-
-  .section-content {
-    padding: 3rem 1rem;
-  }
-}
 .splash-container {
   position: fixed;
   top: 0px;
@@ -368,4 +387,63 @@ section h2 {
 .splash-image.exiting {
   transform: scale(1.1);
   filter: blur(4px);
+}
+
+@media (max-width: 768px) {
+  .welcome-text {
+    font-size: 2.25rem;
+    width: 90%;
+  }
+
+  .reserve-button {
+    font-size: 1.125rem;
+    padding: 0.875rem 2rem;
+  }
+
+  .arrow {
+    font-size: 2rem;
+    padding: 0.875rem;
+  }
+
+  .section-content {
+    padding: 4rem 1.5rem;
+  }
+
+  section h2 {
+    font-size: 2.25rem;
+  }
+
+  .service-card {
+    padding: 1.5rem;
+  }
+
+  .service-card .icon {
+    padding: 0.75rem;
+  }
+
+  .service-card p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .welcome-text {
+    font-size: 1.75rem;
+  }
+
+  .arrow-left {
+    left: 1rem;
+  }
+
+  .arrow-right {
+    right: 1rem;
+  }
+
+  .section-content {
+    padding: 3rem 1rem;
+  }
+
+  .services-grid {
+    gap: 1.5rem;
+  }
 }
