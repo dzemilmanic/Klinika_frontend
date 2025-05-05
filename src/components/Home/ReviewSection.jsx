@@ -333,7 +333,7 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
-          <button 
+          {/* <button 
             className="carousel-button prev"
             onClick={handlePrevSlide}
             aria-label="Previous review"
@@ -347,7 +347,7 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
             aria-label="Next review"
           >
             <ChevronRight size={20} />
-          </button>
+          </button> */}
           
           {reviews.map((review, index) => (
             <div
