@@ -57,7 +57,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/reset-password" element={<PasswordReset />} />
-        <Route path="/reset-password/:token" element={<PasswordResetForm />} />
+        <Route path="/reset-password/*" element={<PasswordResetForm />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
