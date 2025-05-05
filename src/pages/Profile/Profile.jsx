@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import { Lock } from "lucide-react";
-import AllAppointmentsModal from "./AllAppointmentsModal";
-import MedicalRecordModal from "./MedicalRecordModal";
+import AllAppointmentsModal from "../../components/Profile/AllAppointmentsModal";
+import MedicalRecordModal from "../../components/Profile/MedicalRecordModal";
 import "./Profile.css";
 import { toast } from "react-toastify";
 
@@ -357,11 +357,10 @@ export default function Profile() {
             {modalField === "biography" && (
               <div>
                 <label>Biografija:</label>
-                <textarea
-                  className="biography-textarea"
+                <input
+                  type="text"
                   value={newBiography}
                   onChange={(e) => setNewBiography(e.target.value)}
-                  placeholder="Unesite svoju biografiju..."
                 />
               </div>
             )}
