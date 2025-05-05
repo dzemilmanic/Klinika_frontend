@@ -200,6 +200,27 @@
   box-shadow: 0 6px 8px rgba(239, 68, 68, 0.2);
 }
 
+/* Biography textarea in modal */
+.biography-textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 1rem;
+  border: 2px solid rgba(0, 102, 255, 0.1);
+  border-radius: 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  resize: vertical;
+  transition: var(--transition-smooth);
+  background: var(--neutral-light);
+  font-family: inherit;
+}
+
+.biography-textarea:focus {
+  outline: none;
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 4px rgba(0, 102, 255, 0.1);
+}
+
 @keyframes modalFade {
   from {
     opacity: 0;
@@ -236,6 +257,10 @@
 
   .modal-content button {
     width: 100%;
+  }
+  
+  .biography-textarea {
+    min-height: 100px;
   }
 }
 
