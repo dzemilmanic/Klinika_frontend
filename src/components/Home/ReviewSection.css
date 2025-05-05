@@ -43,7 +43,7 @@
   opacity: 0;
   transform: scale(0.8) translateX(100%);
   text-align: center;
-  pointer-events: none; /* Disable interaction by default */
+  pointer-events: none;
   will-change: transform, opacity;
 }
 
@@ -51,8 +51,8 @@
   opacity: 1;
   transform: scale(1) translateX(0);
   z-index: 2;
-  pointer-events: auto; /* Enable interaction for active slide */
-  cursor: default; /* Remove pointer cursor from active slide */
+  pointer-events: auto;
+  cursor: default;
 }
 
 .review-item.prev,
@@ -60,8 +60,8 @@
   opacity: 0.7;
   transform: scale(0.8) translateX(-100%);
   z-index: 1;
-  pointer-events: auto; /* Enable interaction for adjacent slides */
-  cursor: pointer; /* Add pointer cursor to show clickability */
+  pointer-events: auto;
+  cursor: pointer;
 }
 
 .review-item.next {
@@ -115,33 +115,6 @@
   right: 20px;
 }
 
-/* Carousel dots indicator */
-.carousel-indicators {
-  position: absolute;
-  bottom: -30px;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-}
-
-.carousel-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: #ccc;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.carousel-dot.active {
-  background-color: var(--primary-blue);
-  transform: scale(1.2);
-}
-
 /* Review Content Styles */
 .review-rating {
   margin-bottom: 1rem;
@@ -159,6 +132,7 @@
   font-size: 1.5rem;
   line-height: 1;
 }
+
 .stars-interactive {
   display: flex;
   gap: 0.25rem;
@@ -176,6 +150,7 @@
 .star-button:hover {
   transform: scale(1.1);
 }
+
 .star-button svg {
   transition: all 0.3s ease;
 }
@@ -213,7 +188,6 @@
   margin-top: 2rem;
 }
 
-.show-all-button,
 .add-review-button {
   padding: 0.75rem 1.5rem;
   border-radius: 0.5rem;
@@ -221,21 +195,6 @@
   cursor: pointer;
   transition: var(--transition-smooth);
   border: none;
-}
-
-.show-all-button {
-  background: var(--neutral-light);
-  color: var(--primary-blue);
-  border: 2px solid var(--primary-blue);
-}
-
-.show-all-button:hover {
-  background: var(--primary-blue);
-  color: white;
-  transform: translateY(-2px);
-}
-
-.add-review-button {
   background: var(--primary-blue);
   color: white;
 }

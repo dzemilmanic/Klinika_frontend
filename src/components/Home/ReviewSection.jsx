@@ -132,10 +132,6 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
     return {};
   };
 
-  const handleShowAllReviews = () => {
-    setModalOpen(true);
-  };
-
   const handleCloseModal = () => {
     setModalOpen(false);
   };
@@ -337,7 +333,6 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
-          {/* Navigation buttons for accessibility */}
           <button 
             className="carousel-button prev"
             onClick={handlePrevSlide}
@@ -354,7 +349,6 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
             <ChevronRight size={20} />
           </button>
           
-          {/* Review items */}
           {reviews.map((review, index) => (
             <div
               key={review.id}
@@ -388,28 +382,9 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
               )}
             </div>
           ))}
-          
-          {/* Dots indicator for mobile */}
-          <div className="carousel-indicators">
-            {reviews.map((_, index) => (
-              <button
-                key={index}
-                className={`carousel-dot ${index === activeIndex ? 'active' : ''}`}
-                onClick={() => setActiveIndex(index)}
-                aria-label={`Go to review ${index + 1}`}
-              />
-            ))}
-          </div>
         </div>
 
         <div className="review-actions">
-          <button 
-            className="show-all-button"
-            onClick={handleShowAllReviews}
-          >
-            Prikaži sve recenzije
-          </button>
-          
           {role === "User" && !userHasReview && (
             <button
               className="add-review-button"
@@ -419,40 +394,6 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
             </button>
           )}
         </div>
-
-        {isModalOpen && (
-          <div className="modal-review">
-            <div
-              ref={modalRef}
-              className="modal-review-content modal-content-wide"
-            >
-              <div className="modal-review-header">
-                <h3>Sve recenzije</h3>
-                <button className="close-button" onClick={handleCloseModal}>
-                  ×
-                </button>
-              </div>
-              <div className="modal-body">
-                <div className="reviews-grid-modal">
-                  {reviews.map((review) => (
-                    <div key={review.id} className="review-item">
-                      <div className="review-rating">
-                        <StarRating rating={review.rating} />
-                      </div>
-                      <p className="review-content">{review.content}</p>
-                      <p className="review-author">
-                        Autor: {review.authorName || "Nepoznato"}
-                      </p>
-                      <p className="review-date">
-                        Datum: {new Date(review.createdOn).toLocaleDateString()}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
 
         {isAddReviewModalOpen && (
           <div className="modal-review">
