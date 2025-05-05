@@ -262,6 +262,43 @@
   box-shadow: 0 6px 8px rgba(239, 68, 68, 0.2);
 }
 
+/* Password field styles */
+.password-field {
+  margin-bottom: 1.5rem;
+}
+
+.password-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-container input {
+  width: 100%;
+  padding: 1rem;
+  padding-right: 2.5rem;
+  border: 2px solid rgba(0, 102, 255, 0.1);
+  border-radius: 1rem;
+  font-size: 1rem;
+  transition: var(--transition-smooth);
+  background: var(--neutral-light);
+}
+
+.password-toggle {
+  position: absolute;
+  right: 1rem;
+  cursor: pointer;
+  color: var(--primary-blue);
+  display: flex;
+  align-items: center;
+  transition: var(--transition-smooth);
+}
+
+.password-toggle:hover {
+  color: var(--primary-dark);
+  transform: scale(1.1);
+}
+
 @keyframes modalFade {
   from {
     opacity: 0;
@@ -393,6 +430,7 @@
   border-radius: 0.5rem;
   font-style: italic;
 }
+
 .appointments-button {
   background: linear-gradient(135deg, var(--primary-blue), var(--accent-blue));
   color: white;

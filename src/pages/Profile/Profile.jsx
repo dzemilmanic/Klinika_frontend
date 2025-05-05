@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
-import { Lock } from "lucide-react";
+import { Lock, Eye, EyeOff } from "lucide-react";
 import AllAppointmentsModal from "../../components/Profile/AllAppointmentsModal";
 import MedicalRecordModal from "../../components/Profile/MedicalRecordModal";
 import "./Profile.css";
@@ -22,6 +22,8 @@ export default function Profile() {
   const [newBiography, setNewBiography] = useState("");
   const [newOldPassword, setNewOldPassword] = useState("");
   const [newNewPassword, setNewNewPassword] = useState("");
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [appointments, setAppointments] = useState([]);
   const [role, setRole] = useState("");
@@ -147,6 +149,8 @@ export default function Profile() {
     } else if (field === "password") {
       setNewOldPassword("");
       setNewNewPassword("");
+      setShowOldPassword(false);
+      setShowNewPassword(false);
     }
   };
 
@@ -221,6 +225,8 @@ export default function Profile() {
         // Reset password fields
         setNewOldPassword("");
         setNewNewPassword("");
+        setShowOldPassword(false);
+        setShowNewPassword(false);
       } else {
         const textResponse = await response.text();
         try {
@@ -245,6 +251,8 @@ export default function Profile() {
     setErrorMessage("");
     setNewOldPassword("");
     setNewNewPassword("");
+    setShowOldPassword(false);
+    setShowNewPassword(false);
   };
 
   return (
@@ -374,19 +382,35 @@ export default function Profile() {
               <div>
                 <div className="password-field">
                   <label>Stara lozinka:</label>
-                  <input
-                    type="password"
-                    value={newOldPassword}
-                    onChange={(e) => setNewOldPassword(e.target.value)}
-                  />
+                  <div className="password-input-container">
+                    <input
+                      type={showOldPassword ? "text" : "password"}
+                      value={newOldPassword}
+                      onChange={(e) => setNewOldPassword(e.target.value)}
+                    />
+                    <span 
+                      className="password-toggle"
+                      onClick={() => setShowOldPassword(!showOldPassword)}
+                    >
+                      {showOldPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </span>
+                  </div>
                 </div>
                 <div className="password-field">
                   <label>Nova lozinka:</label>
-                  <input
-                    type="password"
-                    value={newNewPassword}
-                    onChange={(e) => setNewNewPassword(e.target.value)}
-                  />
+                  <div className="password-input-container">
+                    <input
+                      type={showNewPassword ? "text" : "password"}
+                      value={newNewPassword}
+                      onChange={(e) => setNewNewPassword(e.target.value)}
+                    />
+                    <span 
+                      className="password-toggle"
+                      onClick={() => setShowNewPassword(!showNewPassword)}
+                    >
+                      {showNewPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </span>
+                  </div>
                 </div>
               </div>
             )}
