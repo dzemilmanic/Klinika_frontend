@@ -138,3 +138,33 @@
   border-radius: 0.5rem;
   text-align: center;
 }
+.forgot-password-link {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.35rem;
+}
+
+.forgot-password-link button {
+  background: none;
+  border: none;
+  color: #2563eb;
+  font-size: 0.8rem;
+  padding: 0;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  text-decoration: none;
+}
+
+.forgot-password-link button:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+.forgot-password-link .link-disabled {
+  color: #10b981;
+  cursor: default;
+}
+
+.forgot-password-link .link-disabled:hover {
+  text-decoration: none;
+}
