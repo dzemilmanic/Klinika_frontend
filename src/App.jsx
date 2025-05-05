@@ -14,6 +14,8 @@ import Appointments from "./pages/Appointments/Appointments";
 import Unauthorized from "./pages/Unauthorized/Unauthorized";
 import NotFound from "./components/NotFound/NotFound";
 import ProtectedRoute from "./components/ProtectRoute/ProtectedRoute ";
+import PasswordReset from './components/PasswordReset/PasswordReset';
+import PasswordResetForm from './components/PasswordReset/PasswordResetForm';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -54,6 +56,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route path="/reset-password" element={<PasswordReset />} />
+        <Route path="/reset-password/:token" element={<PasswordResetForm />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
