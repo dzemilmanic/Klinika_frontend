@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
-import { Trash2, Star } from "lucide-react";
+import { Trash2, Star, ChevronLeft, ChevronRight } from "lucide-react";
 import "./ReviewSection.css";
 import { toast } from "react-toastify";
 
@@ -14,8 +14,18 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [userHasReview, setUserHasReview] = useState(false);
+  
+  // Touch handling states
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+  const [isSwiping, setIsSwiping] = useState(false);
+  const [swipeDistance, setSwipeDistance] = useState(0);
 
   const modalRef = useRef(null);
+  const carouselRef = useRef(null);
+
+  // Required minimum swipe distance in pixels
+  const minSwipeDistance = 50; 
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -32,6 +42,49 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isModalOpen]);
+
+  // Handle touch start
+  const handleTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+    setIsSwiping(true);
+  };
+
+  // Handle touch move
+  const handleTouchMove = (e) => {
+    if (!touchStart) {
+      return;
+    }
+    
+    const currentTouch = e.targetTouches[0].clientX;
+    setTouchEnd(currentTouch);
+    
+    // Calculate distance for visual feedback during swipe
+    const distance = currentTouch - touchStart;
+    setSwipeDistance(distance);
+  };
+
+  // Handle touch end
+  const handleTouchEnd = () => {
+    setIsSwiping(false);
+    setSwipeDistance(0);
+    
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchEnd - touchStart;
+    const isLeftSwipe = distance < -minSwipeDistance;
+    const isRightSwipe = distance > minSwipeDistance;
+    
+    if (isLeftSwipe) {
+      handleNextSlide();
+    } else if (isRightSwipe) {
+      handlePrevSlide();
+    }
+    
+    // Reset touch coordinates
+    setTouchStart(null);
+    setTouchEnd(null);
+  };
 
   const handlePrevSlide = () => {
     setActiveIndex((prevIndex) =>
@@ -54,11 +107,29 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
   };
 
   const getSlideClassName = (index) => {
-    if (index === activeIndex) return "review-item active";
+    let className = "review-item";
+    
+    if (index === activeIndex) className += " active";
     if (index === (activeIndex - 1 + reviews.length) % reviews.length)
-      return "review-item prev";
-    if (index === (activeIndex + 1) % reviews.length) return "review-item next";
-    return "review-item";
+      className += " prev";
+    if (index === (activeIndex + 1) % reviews.length) className += " next";
+    
+    if (isSwiping && index === activeIndex) {
+      className += " swiping";
+    }
+    
+    return className;
+  };
+
+  // Get transform style for active slide when swiping
+  const getSwipeStyle = (index) => {
+    if (isSwiping && index === activeIndex && swipeDistance !== 0) {
+      return {
+        transform: `translateX(${swipeDistance * 0.5}px)`,
+        transition: 'none'
+      };
+    }
+    return {};
   };
 
   const handleShowAllReviews = () => {
@@ -259,11 +330,36 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
       <div className="section-content">
         <h2>Recenzije</h2>
 
-        <div className="reviews-carousel">
+        <div 
+          ref={carouselRef}
+          className="reviews-carousel"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          {/* Navigation buttons for accessibility */}
+          <button 
+            className="carousel-button prev"
+            onClick={handlePrevSlide}
+            aria-label="Previous review"
+          >
+            <ChevronLeft size={20} />
+          </button>
+          
+          <button 
+            className="carousel-button next"
+            onClick={handleNextSlide}
+            aria-label="Next review"
+          >
+            <ChevronRight size={20} />
+          </button>
+          
+          {/* Review items */}
           {reviews.map((review, index) => (
             <div
               key={review.id}
               className={getSlideClassName(index)}
+              style={getSwipeStyle(index)}
               onClick={() => {
                 const position = getSlideClassName(index);
                 if (position.includes('prev')) handleReviewClick('prev');
@@ -292,9 +388,28 @@ const ReviewSection = ({ reviews, onAddReview, onDeleteReview, role }) => {
               )}
             </div>
           ))}
+          
+          {/* Dots indicator for mobile */}
+          <div className="carousel-indicators">
+            {reviews.map((_, index) => (
+              <button
+                key={index}
+                className={`carousel-dot ${index === activeIndex ? 'active' : ''}`}
+                onClick={() => setActiveIndex(index)}
+                aria-label={`Go to review ${index + 1}`}
+              />
+            ))}
+          </div>
         </div>
 
         <div className="review-actions">
+          <button 
+            className="show-all-button"
+            onClick={handleShowAllReviews}
+          >
+            Prikaži sve recenzije
+          </button>
+          
           {role === "User" && !userHasReview && (
             <button
               className="add-review-button"
