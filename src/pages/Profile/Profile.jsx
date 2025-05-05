@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import { Lock } from "lucide-react";
-import AllAppointmentsModal from "../../components/Profile/AllAppointmentsModal";
-import MedicalRecordModal from "../../components/Profile/MedicalRecordModal";
+import AllAppointmentsModal from "./AllAppointmentsModal";
+import MedicalRecordModal from "./MedicalRecordModal";
 import "./Profile.css";
 import { toast } from "react-toastify";
 
@@ -280,20 +280,25 @@ export default function Profile() {
           <label>Email:</label>
           <input type="email" value={user.email} disabled />
         </div>
-        {user.biography && (
-          <div className="profile-field">
-            <label>Biografija:</label>
-            <div className="input-container">
-              <input type="text" value={user.biography} disabled />
-              <span
-                className="edit-icon"
-                onClick={() => handleEdit("biography")}
-              >
-                ✏️
-              </span>
-            </div>
+        
+        <div className="profile-field">
+          <label>Biografija:</label>
+          <div className="biography-container">
+            <textarea 
+              className="biography-text" 
+              value={user.biography} 
+              disabled 
+              rows={4}
+            />
+            <span
+              className="biography-edit-icon"
+              onClick={() => handleEdit("biography")}
+            >
+              ✏️
+            </span>
           </div>
-        )}
+        </div>
+        
         <div className="profile-field">
           <label>Lozinka:</label>
           <div className="input-container">
@@ -357,10 +362,10 @@ export default function Profile() {
             {modalField === "biography" && (
               <div>
                 <label>Biografija:</label>
-                <input
-                  type="text"
+                <textarea
                   value={newBiography}
                   onChange={(e) => setNewBiography(e.target.value)}
+                  rows={6}
                 />
               </div>
             )}
