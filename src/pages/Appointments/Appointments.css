@@ -1,166 +1,258 @@
 .appointments-page {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-width: 100vw;
-    min-height: 100vh;
-    background: var(--neutral-light);
-    padding: 2rem;
-  } 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 100vw;
+  min-height: 100vh;
+  background: var(--neutral-light);
+  padding: 2rem;
+} 
+
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 60px auto 0;
+  padding: 3rem 2rem;
+  background: var(--neutral-light);
+}
+
+.container h2 {
+  color: var(--neutral-dark);
+  font-size: 2.75rem;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 3rem;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.container h2::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: var(--primary-blue);
+  border-radius: 2px;
+}
+
+.filter {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.filter select {
+  padding: 0.5rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  margin-left: 1rem;
+  background-color: white;
+  color: var(--neutral-dark);
+  transition: var(--transition-smooth);
+}
+
+.filter select:focus {
+  outline: none;
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 3px rgba(6, 82, 197, 0.1);
+}
+
+.appointments-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: var(--transition-smooth);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.card h3 {
+  color: var(--primary-blue);
+  margin: 0 0 1rem 0;
+  font-size: 1.25rem;
+}
+
+.card p {
+  margin: 0.5rem 0;
+  color: var(--neutral-dark);
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-top: 0.5rem;
+}
+
+.status-pending {
+  background-color: #FEF3C7;
+  color: #92400E;
+}
+
+.status-approved {
+  background-color: #D1FAE5;
+  color: #065F46;
+}
+
+.status-completed {
+  background-color: #E0E7FF;
+  color: #3730A3;
+}
+
+.status-canceled {
+  background-color: #FEE2E2;
+  color: #991B1B;
+}
+
+.doctor-list {
+  max-height: 300px;
+  overflow-y: auto;
+  margin: 1rem 0;
+  padding: 0.5rem;
+  border-radius: 8px;
+  background-color: #f8fafc;
+}
+
+.doctor-item {
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: white;
+  border: 1px solid #e2e8f0;
+}
+
+.doctor-item:hover {
+  border-color: var(--primary-blue);
+  background-color: #f0f9ff;
+}
+
+.doctor-item.selected {
+  background-color: var(--primary-blue);
+  color: white;
+  border-color: var(--primary-blue);
+}
+
+.conflict-warning {
+  font-size: 0.875rem;
+  color: #dc2626;
+  margin-left: 0.5rem;
+}
+
+.approve-button {
+  background-color: var(--primary-blue);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  width: 100%;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.approve-button:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+.approve-button:active {
+  transform: translateY(0);
+}
+
+.approve-button:disabled {
+  background-color: #E5E7EB;
+  cursor: not-allowed;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.cancel-button, .assign-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.cancel-button {
+  background-color: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+
+.cancel-button:hover {
+  background-color: #e2e8f0;
+}
+
+.assign-button {
+  background-color: var(--primary-blue);
+  color: white;
+  border: none;
+}
+
+.assign-button:hover {
+  background-color: var(--primary-dark);
+}
+
+.assign-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  background-color: var(--primary-blue);
+}
+
+@media (max-width: 640px) {
   .container {
-    width: 100%;
-    max-width: 1280px;
-    margin: 60px auto 0;
-    padding: 3rem 2rem;
-    background: var(--neutral-light);
+      padding: 2rem 1rem;
+      margin-top: 40px;
   }
+
   .container h2 {
-    color: var(--neutral-dark);
-    font-size: 2.75rem;
-    font-weight: 800;
-    text-align: center;
-    margin-bottom: 3rem;
-    position: relative;
-    padding-bottom: 1rem;
+      font-size: 2rem;
   }
-  
-  .container h2::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80px;
-    height: 4px;
-    background: var(--primary-blue);
-    border-radius: 2px;
-  }
-  .filter {
-    margin-bottom: 2rem;
-    padding: 1rem;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-  
-  .filter select {
-    padding: 0.5rem 1rem;
-    border: 1px solid #e2e8f0;
-    border-radius: 6px;
-    margin-left: 1rem;
-    background-color: white;
-    color: var(--neutral-dark);
-    transition: var(--transition-smooth);
-  }
-  
-  .filter select:focus {
-    outline: none;
-    border-color: var(--primary-blue);
-    box-shadow: 0 0 0 3px rgba(6, 82, 197, 0.1);
-  }
-  
+
   .appointments-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
+      grid-template-columns: 1fr;
   }
-  
-  .card {
-    background: white;
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    transition: var(--transition-smooth);
+
+  .modal-actions {
+      flex-direction: column;
   }
-  
-  .card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+  .cancel-button, .assign-button {
+      width: 100%;
   }
-  
-  .card h3 {
-    color: var(--primary-blue);
-    margin: 0 0 1rem 0;
-    font-size: 1.25rem;
-  }
-  
-  .card p {
-    margin: 0.5rem 0;
-    color: var(--neutral-dark);
-  }
-  
-  .status-badge {
-    display: inline-block;
-    padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    margin-top: 0.5rem;
-  }
-  
-  .status-pending {
-    background-color: #FEF3C7;
-    color: #92400E;
-  }
-  
-  .status-approved {
-    background-color: #D1FAE5;
-    color: #065F46;
-  }
-  
-  .status-completed {
-    background-color: #E0E7FF;
-    color: #3730A3;
-  }
-  
-  .status-canceled {
-    background-color: #FEE2E2;
-    color: #991B1B;
-  }
-  
-  .doctor-list {
-    max-height: 300px;
-    overflow-y: auto;
-    margin: 1rem 0;
-  }
-  
-  .doctor-item {
-    padding: 0.75rem;
-    border-radius: 6px;
-    margin-bottom: 0.5rem;
-    cursor: pointer;
-    transition: var(--transition-smooth);
-    display: flex;
-    align-items: center;
-  }
-  
-  .doctor-item:hover {
-    background-color: var(--neutral-light);
-  }
-  
-  .doctor-item.selected {
-    background-color: var(--primary-light);
-    color: white;
-  }
-  
-  .approve-button {
-    background-color: var(--primary-blue);
-    color: white;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 6px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: var(--transition-smooth);
-    width: 100%;
-    margin-top: 1rem;
-  }
-  
-  .approve-button:hover {
-    background-color: var(--primary-dark);
-  }
-  
-  .approve-button:disabled {
-    background-color: #E5E7EB;
-    cursor: not-allowed;
-  }
+}
