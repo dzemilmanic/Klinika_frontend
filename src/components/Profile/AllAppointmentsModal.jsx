@@ -188,8 +188,8 @@ const AllAppointmentsModal = ({ isOpen, onClose, appointments }) => {
                 value={filters.sortBy}
                 onChange={handleFilterChange}
               >
-                <option value="nearest">Najskoriji prvo (najbliže u budućnosti)</option>
-                <option value="furthest">Najdalji prvo (najdalje u budućnosti)</option>
+                <option value="nearest">Najskoriji prvo </option>
+                <option value="furthest">Najdalji prvo </option>
               </select>
               <ArrowUpDown className="sort-icon" size={20} />
             </div>
