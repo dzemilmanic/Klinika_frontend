@@ -17,11 +17,17 @@ export default function PasswordResetForm() {
   const [isTokenValid, setIsTokenValid] = useState(true);
   
   useEffect(() => {
-    // Validate token when component mounts
     const validateToken = async () => {
+      if (!token) {
+        setIsTokenValid(false);
+        setError('Token za resetovanje lozinke nije pronađen.');
+        return;
+      }
+
       try {
         await axios.get(
-          `https://klinikabackend-production.up.railway.app/api/Auth/ValidateResetToken?token=${token}`
+          `https://klinikabackend-production.up.railway.app/api/Auth/ValidateResetToken`,
+          { params: { token } }
         );
         setIsTokenValid(true);
       } catch (err) {
@@ -36,7 +42,6 @@ export default function PasswordResetForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Password validation
     if (newPassword.length < 8) {
       setError('Lozinka mora imati najmanje 8 karaktera.');
       return;
@@ -71,7 +76,6 @@ export default function PasswordResetForm() {
       );
       setSuccessMessage('Vaša lozinka je uspešno promenjena! Preusmerićemo vas na stranicu za prijavu.');
       
-      // Redirect to login after 3 seconds
       setTimeout(() => {
         navigate('/login');
       }, 3000);
