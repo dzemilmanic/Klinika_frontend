@@ -39,7 +39,6 @@ This project aims to digitize the workflow of a private eye clinic by offering a
 ### 🩺 Doctor
 - View personal appointment schedule
 - Edit own profile
-- Apply for employment if not already approved
 
 ### 🛠️ Admin
 - Manage service listings (add/update/remove)
