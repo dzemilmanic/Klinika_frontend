@@ -2,7 +2,7 @@
 
 **Oculus** is a full-stack web application developed for a private eye clinic. It allows patients, doctors, and administrators to manage appointments, access medical history, and view important clinic services. The system is designed with user roles to ensure privacy, efficiency, and clear interaction.
 
-🌐 **Live Website:** [https://oculusklinika.app](https://oculusklinika.up.railway.app/)
+🌐 **Live Website:** [oculusklinika.app](https://oculusklinika.up.railway.app/)
 
 ---
 
