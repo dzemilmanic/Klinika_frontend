@@ -73,3 +73,11 @@ This project aims to digitize the workflow of a private eye clinic by offering a
 ## 📄 License
 
 This project is open-source and available under the MIT License. Feel free to use, modify, and share it for educational or development purposes.
+
+---
+
+## 📬 Contact
+
+For any inquiries or suggestions:  
+**Project Owner:** Džemil Manić  
+**Email:** dzemilmanic@hotmail.com
