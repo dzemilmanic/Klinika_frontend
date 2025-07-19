@@ -79,5 +79,6 @@ This project is open-source and available under the MIT License. Feel free to us
 ## 📬 Contact
 
 For any inquiries or suggestions:  
+
 **Project Owner:** Džemil Manić  
 **Email:** dzemilmanic@hotmail.com
